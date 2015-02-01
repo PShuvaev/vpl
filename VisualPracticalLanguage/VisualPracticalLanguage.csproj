@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{30DC0358-52E1-42A3-AD0B-3AB870DDD9DB}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>VisualPracticalLanguage</RootNamespace>
+    <AssemblyName>VisualPracticalLanguage</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="App.cs" />
+    <Compile Include="IVExpression.cs" />
+    <Compile Include="vprimops\Function.cs" />
+    <Compile Include="Const.cs" />
+    <Compile Include="vprimops\Variable.cs" />
+    <Compile Include="vbase\DraggableControl.cs" />
+    <Compile Include="vprimops\Expression.cs" />
+    <Compile Include="vbase\VBaseElement.cs" />
+    <Compile Include="vbase\CustomLabel.cs" />
+    <Compile Include="vprimops\BinaryOp.cs" />
+    <Compile Include="vprimops\StringConst.cs" />
+    <Compile Include="vprimops\NumberConst.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="vprimops\" />
+    <Folder Include="vbase\" />
+  </ItemGroup>
+</Project>
