@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace VisualPracticalLanguage
 {
@@ -8,6 +9,13 @@ namespace VisualPracticalLanguage
 		
 		private bool isDragging = false;
 		private int oldX, oldY;
+		private Label markLabel = new Label ()
+		{
+			Text = "*",
+			AutoSize = true,
+			Location = new Point (-2, -2),
+			ForeColor = Color.Red
+		};
 
 		public DraggableControl(){
 			MouseDown += new MouseEventHandler(OnMouseDown);
@@ -21,6 +29,9 @@ namespace VisualPracticalLanguage
 			oldX = e.X;
 			oldY = e.Y;
 			BringToFront ();
+
+			Controls.Add (markLabel);
+			markLabel.BringToFront ();
 		}
 
 		private void OnMouseMove(object sender, MouseEventArgs e) 
@@ -35,6 +46,7 @@ namespace VisualPracticalLanguage
 		private void OnMouseUp(object sender, MouseEventArgs e) 
 		{
 			isDragging = false;
+			Controls.Remove (markLabel);
 		}
 	}
 }

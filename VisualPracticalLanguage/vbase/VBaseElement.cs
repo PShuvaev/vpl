@@ -17,6 +17,7 @@ namespace VisualPracticalLanguage
 		{
 		}
 
+
 		/// <summary>
 		/// Принимает ли выражение, дабы вложить его в себя
 		/// </summary>

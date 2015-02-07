@@ -27,7 +27,6 @@ namespace VisualPracticalLanguage
 			f.AddExpression (new StringConst("somes"));
 			f.AddExpression (new NumberConst(100009));
 			f.Parent = workPanel;
-
 			
 			f.AddArgument ("key");
 			f.AddArgument ("state");
