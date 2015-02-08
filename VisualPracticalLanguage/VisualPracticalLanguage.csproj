@@ -34,25 +34,46 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="IVExpression.cs" />
-    <Compile Include="vprimops\Function.cs" />
     <Compile Include="Const.cs" />
-    <Compile Include="vprimops\Variable.cs" />
     <Compile Include="vbase\DraggableControl.cs" />
-    <Compile Include="vprimops\Expression.cs" />
     <Compile Include="vbase\VBaseElement.cs" />
     <Compile Include="vbase\CustomLabel.cs" />
-    <Compile Include="vprimops\BinaryOp.cs" />
-    <Compile Include="vprimops\StringConst.cs" />
-    <Compile Include="vprimops\NumberConst.cs" />
+    <Compile Include="util\Logger.cs" />
+    <Compile Include="vprimops\VVariable.cs" />
+    <Compile Include="lang\Variable.cs" />
+    <Compile Include="lang\SetVariableStatement.cs" />
+    <Compile Include="lang\IfStatement.cs" />
+    <Compile Include="vprimops\VFunction.cs" />
+    <Compile Include="vprimops\VExpression.cs" />
+    <Compile Include="vprimops\VBinaryOp.cs" />
+    <Compile Include="vprimops\VStringConst.cs" />
+    <Compile Include="vprimops\VNumberConst.cs" />
+    <Compile Include="lang\FunctionCall.cs" />
+    <Compile Include="lang\FunctionDefinition.cs" />
+    <Compile Include="util\SugarExtension.cs" />
+    <Compile Include="codegen\Generator.cs" />
+    <Compile Include="lang\FunCallStatement.cs" />
+    <Compile Include="lang\ReturnStatement.cs" />
+    <Compile Include="lang\ConstExpression.cs" />
+    <Compile Include="lang\Expression.cs" />
+    <Compile Include="lang\IStatement.cs" />
+    <Compile Include="lang\WhileStatement.cs" />
+    <Compile Include="lang\FunctionDeclaration.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="vprimops\" />
     <Folder Include="vbase\" />
+    <Folder Include="util\" />
+    <Folder Include="lang\" />
+    <Folder Include="lang\functions\" />
+    <Folder Include="lang\test\" />
+    <Folder Include="codegen\" />
   </ItemGroup>
 </Project>

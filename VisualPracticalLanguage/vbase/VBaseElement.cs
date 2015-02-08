@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace VisualPracticalLanguage
 {
-	public class VBaseElement : DraggableControl
+	public abstract class VBaseElement : DraggableControl
 	{
 		public Color color { get; set; }
 
@@ -21,6 +21,6 @@ namespace VisualPracticalLanguage
 		/// <summary>
 		/// Принимает ли выражение, дабы вложить его в себя
 		/// </summary>
-		//protected abstract bool TakeElement (Point p, VBaseElement el);
+		protected abstract bool TakeElement (Point p, VBaseElement el);
 	}
 }

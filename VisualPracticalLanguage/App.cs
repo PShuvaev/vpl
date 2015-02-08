@@ -21,11 +21,11 @@ namespace VisualPracticalLanguage
 			workPanel.Dock = DockStyle.Fill;
 			workPanel.BackColor = Color.White;
 			
-			var f = new Function ("fibbs");
-			f.AddExpression (new Variable("a"));
-			f.AddExpression (BinaryOp.PLUS);
-			f.AddExpression (new StringConst("somes"));
-			f.AddExpression (new NumberConst(100009));
+			var f = new VFunction ("fibbs");
+			f.AddExpression (new VVariable("a"));
+			f.AddExpression (VBinaryOp.PLUS);
+			f.AddExpression (new VStringConst("somes"));
+			f.AddExpression (new VNumberConst(100009));
 			f.Parent = workPanel;
 			
 			f.AddArgument ("key");
@@ -44,6 +44,7 @@ namespace VisualPracticalLanguage
 
 		static public void Main()
 		{
+			new GeneratorTest ().Test ();
 			Application.Run(new MForm());
 		}
 	}

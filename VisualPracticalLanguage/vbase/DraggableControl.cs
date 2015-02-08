@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
+using System.IO;
 
 namespace VisualPracticalLanguage
 {
@@ -39,7 +40,9 @@ namespace VisualPracticalLanguage
 			if (isDragging)
 			{
 				Top = Top + (e.Y - oldY); 
-				Left = Left + (e.X - oldX); 
+				Left = Left + (e.X - oldX);
+
+				Logger.Log (e.Location.ToString());
 			}
 		}
 

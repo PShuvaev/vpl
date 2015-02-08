@@ -4,11 +4,11 @@ using System.Drawing;
 
 namespace VisualPracticalLanguage
 {
-	public class Variable : VBaseElement
+	public class VVariable : VBaseElement
 	{
 		private CustomLabel name;
 
-		public Variable (string vname)
+		public VVariable (string vname)
 		{
 			color = Color.Yellow;
 			Size = new Size (100, 50);
@@ -29,6 +29,16 @@ namespace VisualPracticalLanguage
 				var rectangle = new RectangleF (new PointF (0, 0), new SizeF (Size.Width, Const.EXPR_HIGHT));
 				e.Graphics.FillRectangle (new SolidBrush (color), rectangle);
 			}
+			
+			{
+				var rectangle = new RectangleF (new PointF (35, 5), new SizeF (5, 5));
+				e.Graphics.FillRectangle (new SolidBrush (Color.White), rectangle);
+			}
+		}
+		
+		protected override bool TakeElement (Point p, VBaseElement el)
+		{
+			return el is VExpression;// && location;
 		}
 	}
 }

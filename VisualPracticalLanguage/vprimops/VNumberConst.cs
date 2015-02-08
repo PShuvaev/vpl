@@ -4,17 +4,17 @@ using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public class StringConst : VBaseElement
+	public class VNumberConst : VBaseElement
 	{
-		private string str;
+		private decimal number;
 
-		public StringConst (string str)
+		public VNumberConst (decimal number)
 		{
-			this.str = str;
+			this.number = number;
 			
-			color = Color.Orange;
+			color = Color.Blue;
 			Size = new Size (100, 50);
-			var lbl = new CustomLabel (str, color);
+			var lbl = new CustomLabel (number.ToString(), color);
 
 			Controls.Add (lbl);
 		}
@@ -25,6 +25,11 @@ namespace VisualPracticalLanguage
 				var rectangle = new RectangleF (new PointF (0, 0), new SizeF (Size.Width, Const.HEADER_SIZE));
 				e.Graphics.FillRectangle (new SolidBrush (color), rectangle);
 			}
+		}
+
+		protected override bool TakeElement (Point p, VBaseElement el)
+		{
+			return false;
 		}
 	}
 }

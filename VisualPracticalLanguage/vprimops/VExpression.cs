@@ -2,9 +2,9 @@ using System;
 
 namespace VisualPracticalLanguage
 {
-	public class Expression : VBaseElement
+	public class VExpression// : VBaseElement
 	{
-		public Expression ()
+		public VExpression ()
 		{
 		}
 	}

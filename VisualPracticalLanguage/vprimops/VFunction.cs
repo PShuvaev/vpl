@@ -6,14 +6,14 @@ using System.Linq;
 
 namespace VisualPracticalLanguage
 {
-	public class Function : VBaseElement
+	public class VFunction : VBaseElement
 	{
 		private string name;
 		private IList<VBaseElement> expressions;
 		private IList<CustomLabel> arguments;
 		private CustomLabel funName;
 
-		public Function (string name)
+		public VFunction (string name)
 		{
 			this.name = name;
 
@@ -71,6 +71,11 @@ namespace VisualPracticalLanguage
 			}
 			
 			expressions.Add (expr);
+		}
+
+		protected override bool TakeElement (Point p, VBaseElement el)
+		{
+			return el is VExpression;// && location;
 		}
 	}
 }

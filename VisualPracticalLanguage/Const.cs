@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 
 namespace VisualPracticalLanguage
 {
@@ -8,6 +9,9 @@ namespace VisualPracticalLanguage
 		public static readonly int HEADER_SIZE = 20;
 		public static readonly int PALLET_HEIGHT = 2;
 		public static readonly int EXPR_HIGHT = 20;
+
+		
+		public static readonly SizeF ArgSize = new SizeF (11, 11);
 	}
 }
 
