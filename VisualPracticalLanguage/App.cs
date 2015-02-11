@@ -45,6 +45,7 @@ namespace VisualPracticalLanguage
 		static public void Main()
 		{
 			new GeneratorTest ().Test ();
+			new BinGenerator ().Run ();
 			Application.Run(new MForm());
 		}
 	}

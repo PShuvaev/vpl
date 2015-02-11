@@ -10,6 +10,7 @@ namespace VisualPracticalLanguage
 
 		public VBaseElement ()
 		{
+			ResizeRedraw = true;
 			color = Color.Green;
 		}
 		
@@ -17,10 +18,6 @@ namespace VisualPracticalLanguage
 		{
 		}
 
-
-		/// <summary>
-		/// Принимает ли выражение, дабы вложить его в себя
-		/// </summary>
-		protected abstract bool TakeElement (Point p, VBaseElement el);
+		public abstract bool TryPutElement (ArgumentPlaceholder p, VBaseElement el);
 	}
 }

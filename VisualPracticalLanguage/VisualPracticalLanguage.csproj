@@ -59,6 +59,10 @@
     <Compile Include="lang\IStatement.cs" />
     <Compile Include="lang\WhileStatement.cs" />
     <Compile Include="lang\FunctionDeclaration.cs" />
+    <Compile Include="codegen\BinGenerator.cs" />
+    <Compile Include="vbase\ChildArea.cs" />
+    <Compile Include="util\CloningExtension.cs" />
+    <Compile Include="vprimops\ArgumentPlaceholder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
@@ -75,5 +79,6 @@
     <Folder Include="lang\functions\" />
     <Folder Include="lang\test\" />
     <Folder Include="codegen\" />
+    <Folder Include="New Folder\" />
   </ItemGroup>
 </Project>

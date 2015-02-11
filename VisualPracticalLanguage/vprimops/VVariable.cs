@@ -36,7 +36,7 @@ namespace VisualPracticalLanguage
 			}
 		}
 		
-		protected override bool TakeElement (Point p, VBaseElement el)
+		public override bool TryPutElement (ArgumentPlaceholder p, VBaseElement el)
 		{
 			return el is VExpression;// && location;
 		}
