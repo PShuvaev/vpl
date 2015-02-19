@@ -19,7 +19,7 @@ namespace VisualPracticalLanguage
 
 			
 			funName = new CustomLabel (name, color);
-			Controls.Add (funName);
+			funName.Parent = this;
 
 			Size = new Size (200, 200);
 			expressions = new List<VBaseElement> ();

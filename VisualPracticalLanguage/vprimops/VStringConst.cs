@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public class VStringConst : VBaseElement
+	public class VStringConst : VExpression
 	{
 		private string str;
 

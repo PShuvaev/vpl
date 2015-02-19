@@ -14,7 +14,7 @@ namespace VisualPracticalLanguage
 		{
 			Text = "*",
 			AutoSize = true,
-			Location = new Point (-2, -2),
+			Location = new Point (1, 1),
 			ForeColor = Color.Red
 		};
 
@@ -41,8 +41,6 @@ namespace VisualPracticalLanguage
 			{
 				Top = Top + (e.Y - oldY); 
 				Left = Left + (e.X - oldX);
-
-				Logger.Log (e.Location.ToString());
 			}
 		}
 
@@ -53,4 +51,3 @@ namespace VisualPracticalLanguage
 		}
 	}
 }
-

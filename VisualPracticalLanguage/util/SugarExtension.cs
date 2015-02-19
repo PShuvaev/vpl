@@ -7,6 +7,7 @@ namespace VisualPracticalLanguage
 	public static class SugarExtension
 	{
 		public static B With<T, B>(this T obj, Func<T, B> func, B defaultObj)
+			where T : class
 		{
 			if (obj != null) {
 				return func (obj);
@@ -15,6 +16,7 @@ namespace VisualPracticalLanguage
 		}
 
 		public static T With<T>(this T obj, Action<T> action)
+			where T : class
 		{
 			if (obj != null) {
 				action (obj);

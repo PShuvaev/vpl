@@ -60,9 +60,9 @@
     <Compile Include="lang\WhileStatement.cs" />
     <Compile Include="lang\FunctionDeclaration.cs" />
     <Compile Include="codegen\BinGenerator.cs" />
-    <Compile Include="vbase\ChildArea.cs" />
     <Compile Include="util\CloningExtension.cs" />
     <Compile Include="vprimops\ArgumentPlaceholder.cs" />
+    <Compile Include="util\DiverseUtilExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />

@@ -20,7 +20,8 @@ namespace VisualPracticalLanguage
 			BackColor = Color.WhiteSmoke;
 		}
 
-		private void OnDrop(VBaseElement el){
+		public void OnDrop(VBaseElement el){
+			BackColor = Color.Red;
 			if (parent.TryPutElement (this, el)) {
 				//?
 			}

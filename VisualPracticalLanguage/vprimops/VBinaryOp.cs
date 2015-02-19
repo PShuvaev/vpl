@@ -17,7 +17,7 @@ namespace VisualPracticalLanguage
 		CustomLabel OpSymbol;
 
 		// отступ от границ компонента
-		private const int BorderPadding = 15;
+		private const int BorderPadding = 10;
 
 		// промежуток между операцией и аргументом
 		private const int OpArgPadding = 5;
@@ -38,11 +38,11 @@ namespace VisualPracticalLanguage
 			firstArgPlaceHolder = new ArgumentPlaceholder (this);
 			secondArgPlaceHolder = new ArgumentPlaceholder (this);
 
-			Controls.Add (firstArgPlaceHolder);
-			Controls.Add (secondArgPlaceHolder);
+			firstArgPlaceHolder.Parent = this;
+			secondArgPlaceHolder.Parent = this;
 
 			OpSymbol = new CustomLabel (symbol, color);
-			Controls.Add (OpSymbol);
+			OpSymbol.Parent = this;
 
 			UpdateSize ();
 
@@ -73,16 +73,19 @@ namespace VisualPracticalLanguage
 		{
 			if (!(el is VExpression))
 				return false;
-			
+
 			if (p == firstArgPlaceHolder && firstArg == null) {
+				
+				Console.WriteLine ("1");
+
 				firstArg = (VExpression)el;
 				firstArgPlaceHolder.Dispose ();
 				firstArgPlaceHolder = null;
 				UpdateSize ();
 				return true;
 			}
-
-			if (p == firstArgPlaceHolder && firstArg == null) {
+			
+			if (p == secondArgPlaceHolder && secondArg == null) {
 				secondArg = (VExpression)el;
 				secondArgPlaceHolder.Dispose ();
 				secondArgPlaceHolder = null;
