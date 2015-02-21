@@ -5,11 +5,13 @@ using System.IO;
 
 namespace VisualPracticalLanguage
 {
-	public class DraggableControl : Control
+	public abstract class DraggableControl : Control
 	{
 		
 		private bool isDragging = false;
-		private int oldX, oldY;
+		private int? oldX, oldY;
+		public DraggableControl EParent{ get; set; }
+
 		private Label markLabel = new Label ()
 		{
 			Text = "*",
@@ -27,20 +29,39 @@ namespace VisualPracticalLanguage
 		private void OnMouseDown(object sender, MouseEventArgs e) 
 		{
 			isDragging = true;
-			oldX = e.X;
-			oldY = e.Y;
+
+			
+			Logger.Log (Parent);
+
+			//if(EParent != null) EParent.OnChildDisconnect (this);
+			EParent = null;
+			this.Parent = App.Form.workPanel;
+			
+			Logger.Log (Parent);
+
+
 			BringToFront ();
+
 
 			Controls.Add (markLabel);
 			markLabel.BringToFront ();
+
+
+			oldX = null;
+			oldY = null;
+			oldPos = Cursor.Position;
 		}
+
+		private Point oldPos;
 
 		private void OnMouseMove(object sender, MouseEventArgs e) 
 		{
 			if (isDragging)
 			{
-				Top = Top + (e.Y - oldY); 
-				Left = Left + (e.X - oldX);
+				var pos = Cursor.Position;
+				Top = Top + (pos.Y - oldPos.Y);
+				Left = Left + (pos.X - oldPos.X);
+				oldPos = Cursor.Position;
 			}
 		}
 
@@ -48,6 +69,23 @@ namespace VisualPracticalLanguage
 		{
 			isDragging = false;
 			Controls.Remove (markLabel);
+
+			var targetControl = GetTargetControl ();
+
+			var placeholder = targetControl as ArgumentPlaceholder;
+			if (placeholder != null) {
+				placeholder.OnDrop ((VBaseElement)this);
+			}
 		}
+
+		private Control GetTargetControl(){
+			var movedContolPos = this.AbsolutePoint ();
+			movedContolPos.X--;
+			movedContolPos.Y--;
+
+			return App.Form.GetDeepChild (movedContolPos);
+		}
+
+		public abstract void OnChildDisconnect (DraggableControl c);
 	}
 }

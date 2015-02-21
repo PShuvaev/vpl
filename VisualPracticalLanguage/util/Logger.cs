@@ -9,7 +9,7 @@ namespace VisualPracticalLanguage
 		{
 		}
 
-		public static void Log(string str){
+		public static void Log(object str){
 			File.AppendAllText ("/home/ps/projects/VisualPracticalLanguage/VisualPracticalLanguage/log.txt", str+"\n");
 			Console.WriteLine (str);
 		}

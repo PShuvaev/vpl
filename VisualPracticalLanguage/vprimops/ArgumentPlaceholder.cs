@@ -22,7 +22,7 @@ namespace VisualPracticalLanguage
 
 		public void OnDrop(VBaseElement el){
 			BackColor = Color.Red;
-			if (parent.TryPutElement (this, el)) {
+			if (parent.PutElement (this, el)) {
 				//?
 			}
 		}

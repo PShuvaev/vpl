@@ -27,9 +27,17 @@ namespace VisualPracticalLanguage
 			}
 		}
 		
-		public override bool TryPutElement (ArgumentPlaceholder p, VBaseElement el)
+		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
 		{
 			return false;
+		}
+
+		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
+		{
+			return false;
+		}
+		
+		public override void OnChildDisconnect (DraggableControl c){
 		}
 	}
 }

@@ -6,12 +6,6 @@ namespace VisualPracticalLanguage
 {
 	public static class DiverseUtilExtensions
 	{
-		public static Control RootPanel(this Control el){
-			if (el is Panel)
-				return el;
-			return el.Parent.RootPanel ();
-		}
-
 		/// <summary>
 		/// Получает самый вложенный элемент в точке p относительно контрола parentControl
 		/// </summary>

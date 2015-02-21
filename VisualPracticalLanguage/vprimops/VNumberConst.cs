@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public class VNumberConst : VBaseElement
+	public class VNumberConst : VExpression
 	{
 		private decimal number;
 
@@ -26,10 +26,19 @@ namespace VisualPracticalLanguage
 				e.Graphics.FillRectangle (new SolidBrush (color), rectangle);
 			}
 		}
-
-		public override bool TryPutElement (ArgumentPlaceholder p, VBaseElement el)
+		
+		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
 		{
 			return false;
+		}
+
+		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
+		{
+			return false;
+		}
+
+		
+		public override void OnChildDisconnect (DraggableControl c){
 		}
 	}
 }

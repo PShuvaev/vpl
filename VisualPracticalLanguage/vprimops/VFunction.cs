@@ -72,10 +72,19 @@ namespace VisualPracticalLanguage
 			
 			expressions.Add (expr);
 		}
-
-		public override bool TryPutElement (ArgumentPlaceholder p, VBaseElement el)
+		
+		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
 		{
 			return el is VExpression;// && location;
+		}
+
+		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
+		{
+			return el is VExpression;// && location;
+		}
+
+		
+		public override void OnChildDisconnect (DraggableControl c){
 		}
 	}
 }

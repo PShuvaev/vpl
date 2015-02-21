@@ -66,34 +66,65 @@ namespace VisualPracticalLanguage
 			sArg.Location = new Point (Size.Width - BorderPadding - sArg.Width, BorderPadding);
 		}
 
-		/// <summary>
-		/// Вызывается плейсхолдером p при попытке заменить плейсходер выражением el
-		/// </summary>
-		public override bool TryPutElement (ArgumentPlaceholder p, VBaseElement el)
+		
+		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
 		{
 			if (!(el is VExpression))
 				return false;
 
 			if (p == firstArgPlaceHolder && firstArg == null) {
-				
-				Console.WriteLine ("1");
+				return true;
+			}
 
+			if (p == secondArgPlaceHolder && secondArg == null) {
+				return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Вызывается плейсхолдером p при попытке заменить плейсходер выражением el
+		/// </summary>
+		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
+		{
+			if (!(el is VExpression))
+				return false;
+			
+			if (p == firstArgPlaceHolder && firstArg == null) {
 				firstArg = (VExpression)el;
-				firstArgPlaceHolder.Dispose ();
-				firstArgPlaceHolder = null;
+				firstArg.Parent = this;
+				((DraggableControl)firstArg).EParent = this;
+
+				Hide (firstArgPlaceHolder);
+
 				UpdateSize ();
 				return true;
 			}
 			
 			if (p == secondArgPlaceHolder && secondArg == null) {
 				secondArg = (VExpression)el;
-				secondArgPlaceHolder.Dispose ();
-				secondArgPlaceHolder = null;
+				secondArg.Parent = this;
+				((DraggableControl)secondArg).EParent = this;
+
+				Hide (secondArgPlaceHolder);
+
 				UpdateSize ();
 				return true;
 			}
 
 			return false;
+		}
+
+		private void Hide(ArgumentPlaceholder h){
+			h.Location = new Point (-100, -100);
+		}
+		
+		public override void OnChildDisconnect (DraggableControl c){
+			if (firstArg == c) {
+				firstArg = null;
+			}
+			UpdateSize ();
 		}
 	}
 }
