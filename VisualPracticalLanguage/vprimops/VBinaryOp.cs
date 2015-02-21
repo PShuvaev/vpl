@@ -124,8 +124,12 @@ namespace VisualPracticalLanguage
 			if (firstArg == c) {
 				firstArg = null;
 			}
+			if (secondArg == c) {
+				secondArg = null;
+			}
 			UpdateSize ();
 		}
+
 	}
 }
 

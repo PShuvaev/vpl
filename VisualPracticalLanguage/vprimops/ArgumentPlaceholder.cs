@@ -21,10 +21,17 @@ namespace VisualPracticalLanguage
 		}
 
 		public void OnDrop(VBaseElement el){
-			BackColor = Color.Red;
-			if (parent.PutElement (this, el)) {
-				//?
+			parent.PutElement (this, el);
+		}
+
+		public void OnOver(DraggableControl c){
+			if (parent.CanPutElement (this, c as VBaseElement)) {
+				BackColor = Color.Red;
 			}
+		}
+
+		public void OnLeave (DraggableControl c){
+			BackColor = Color.WhiteSmoke;
 		}
 	}
 }

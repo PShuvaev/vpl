@@ -9,7 +9,6 @@ namespace VisualPracticalLanguage
 	{
 		
 		private bool isDragging = false;
-		private int? oldX, oldY;
 		public DraggableControl EParent{ get; set; }
 
 		private Label markLabel = new Label ()
@@ -30,15 +29,15 @@ namespace VisualPracticalLanguage
 		{
 			isDragging = true;
 
-			
-			Logger.Log (Parent);
 
-			//if(EParent != null) EParent.OnChildDisconnect (this);
+			if(EParent != null) EParent.OnChildDisconnect (this);
 			EParent = null;
-			this.Parent = App.Form.workPanel;
-			
-			Logger.Log (Parent);
 
+			var absPos = this.AbsolutePoint ();
+
+			this.Parent = App.Form.workPanel;
+
+			this.Location = absPos;
 
 			BringToFront ();
 
@@ -47,17 +46,25 @@ namespace VisualPracticalLanguage
 			markLabel.BringToFront ();
 
 
-			oldX = null;
-			oldY = null;
 			oldPos = Cursor.Position;
 		}
 
 		private Point oldPos;
 
+		ArgumentPlaceholder lastControl;
+
 		private void OnMouseMove(object sender, MouseEventArgs e) 
 		{
 			if (isDragging)
 			{
+				var control = GetTargetControl () as ArgumentPlaceholder;
+
+				if (lastControl != control && lastControl != null) {
+					lastControl.OnLeave (this);
+				}
+				lastControl = control.With(_ => _.OnOver(this));
+
+
 				var pos = Cursor.Position;
 				Top = Top + (pos.Y - oldPos.Y);
 				Left = Left + (pos.X - oldPos.X);
