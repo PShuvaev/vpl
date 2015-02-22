@@ -10,20 +10,35 @@ namespace VisualPracticalLanguage
 	{
 		private string name;
 		private IList<VBaseElement> expressions;
+		private IList<ArgumentPlaceholder> placeholders;
 		private IList<CustomLabel> arguments;
 		private CustomLabel funName;
+
+		
+
+		// отступ от границ компонента
+		private const int BorderPadding = 10;
+
+		// промежуток между операцией и аргументом
+		private const int OpArgPadding = 5;
 
 		public VFunction (string name)
 		{
 			this.name = name;
 
-			
 			funName = new CustomLabel (name, color);
 			funName.Parent = this;
 
 			Size = new Size (200, 200);
 			expressions = new List<VBaseElement> ();
 			arguments = new List<CustomLabel> ();
+			placeholders = new List<ArgumentPlaceholder> { 
+				new ArgumentPlaceholder(this).With(_ => {
+					_.Parent = this;
+				})
+			};
+
+			UpdateSize ();
 		}
 
 		public void AddArgument(string arg)
@@ -41,7 +56,28 @@ namespace VisualPracticalLanguage
 
 			Controls.Add (label);
 		}
-		
+
+
+		public override void UpdateSize(){
+			var declwidth = funName.Size.Width + arguments.Sum (x => x.Size.Width) + OpArgPadding * (arguments.Count - 1);
+			var bodyexprWidth = expressions.Aggregate (0, (acc, e) => Math.Max (acc, e.Size.Width));
+			var width = 2 * BorderPadding + declwidth + bodyexprWidth;
+
+			var declHeight = funName.Size.Height;
+			var bodyexprHeight = expressions.Sum (x => x.Size.Height);
+
+			var height = 2 * BorderPadding + funName.Size.Height;
+
+			foreach (var el in placeholders.Intercalate<Control>(expressions)) {
+				el.Location = new Point(el.Location.X, height);
+				height += el.Size.Height;
+			}
+
+			height += BorderPadding;
+
+			Size = new Size (Size.Width, height);
+		}
+
 		protected override void OnPaint (PaintEventArgs e)
 		{
 			{
@@ -62,6 +98,7 @@ namespace VisualPracticalLanguage
 
 		public void AddExpression(VBaseElement expr){
 			expr.Parent = this;
+			expr.EParent = this;
 
 			if (!expressions.Any ()) {
 				expr.Location = new Point (Const.TAB_SIZE, Const.HEADER_SIZE);
@@ -71,20 +108,39 @@ namespace VisualPracticalLanguage
 			}
 			
 			expressions.Add (expr);
+			placeholders.Add (
+				new ArgumentPlaceholder(this).With(_ => {
+				_.Parent = this;
+			}));
+			UpdateSize ();
 		}
 		
 		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
 		{
-			return el is VExpression;// && location;
+			return el is VExpression;
 		}
 
 		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
 		{
-			return el is VExpression;// && location;
+			var pos = placeholders.IndexOf (p);
+
+			expressions.Remove (el);
+
+			expressions.Insert (pos, el);
+			placeholders.Insert (pos,
+				new ArgumentPlaceholder(this).With(_ => {
+				_.Parent = this;
+			}));
+			UpdateSize ();
+
+			return true;
 		}
 
 		
 		public override void OnChildDisconnect (DraggableControl c){
+			var pos = expressions.IndexOf ((VBaseElement)c);
+			expressions.RemoveAt (pos);
+			placeholders.RemoveAt (pos);
 		}
 
 	}

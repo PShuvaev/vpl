@@ -30,7 +30,10 @@ namespace VisualPracticalLanguage
 			isDragging = true;
 
 
-			if(EParent != null) EParent.OnChildDisconnect (this);
+			if (EParent != null) {
+				EParent.OnChildDisconnect (this);
+				EParent.UpdateSize ();
+			}
 			EParent = null;
 
 			var absPos = this.AbsolutePoint ();
@@ -81,7 +84,10 @@ namespace VisualPracticalLanguage
 
 			var placeholder = targetControl as ArgumentPlaceholder;
 			if (placeholder != null) {
-				placeholder.OnDrop ((VBaseElement)this);
+				var result = placeholder.OnDrop ((VBaseElement)this);
+				if (result) {
+					placeholder.parent.UpdateSize ();
+				}
 			}
 		}
 
@@ -93,6 +99,14 @@ namespace VisualPracticalLanguage
 			return App.Form.GetDeepChild (movedContolPos);
 		}
 
+		
+		protected void Hide(ArgumentPlaceholder h){
+			h.Location = new Point (-100, -100);
+		}
+
 		public abstract void OnChildDisconnect (DraggableControl c);
+
+		
+		public abstract void UpdateSize ();
 	}
 }

@@ -53,6 +53,20 @@ namespace VisualPracticalLanguage
 				IterSep (restlist, action, separatorAction);
 			}
 		}
+
+		public static IList<T> Intercalate<T>(this IEnumerable<T> list1, IEnumerable<T> list2){
+			var num1 = list1.GetEnumerator ();
+			var num2 = list2.GetEnumerator ();
+			var list = new List<T> ();
+
+			while (num1.MoveNext()) {
+				list.Add (num1.Current);
+				if (num2.MoveNext())
+					list.Add (num2.Current);
+			}
+
+			return list;
+		}
 	}
 }
 

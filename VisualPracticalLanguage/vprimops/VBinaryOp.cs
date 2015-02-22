@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public class VBinaryOp : VBaseElement
+	public class VBinaryOp : VExpression
 	{
 		public static readonly VBinaryOp PLUS = new VBinaryOp ("+");
 		public static readonly VBinaryOp MINUS = new VBinaryOp ("-");
@@ -12,7 +12,6 @@ namespace VisualPracticalLanguage
 		public static readonly VBinaryOp DIVIDE = new VBinaryOp ("/");
 
 		private string symbol;
-		private Func<decimal, decimal, decimal> op;
 
 		CustomLabel OpSymbol;
 
@@ -21,7 +20,6 @@ namespace VisualPracticalLanguage
 
 		// промежуток между операцией и аргументом
 		private const int OpArgPadding = 5;
-
 
 		private VExpression firstArg;
 		private VExpression secondArg;
@@ -49,7 +47,7 @@ namespace VisualPracticalLanguage
 			BackColor = Color.Green;
 		}
 
-		private void UpdateSize(){
+		public override void UpdateSize(){
 			Control fArg = (Control)firstArg ?? firstArgPlaceHolder;
 			Control sArg = (Control)secondArg ?? secondArgPlaceHolder;
 
@@ -116,9 +114,6 @@ namespace VisualPracticalLanguage
 			return false;
 		}
 
-		private void Hide(ArgumentPlaceholder h){
-			h.Location = new Point (-100, -100);
-		}
 		
 		public override void OnChildDisconnect (DraggableControl c){
 			if (firstArg == c) {

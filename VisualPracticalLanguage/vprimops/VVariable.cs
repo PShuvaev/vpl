@@ -4,52 +4,97 @@ using System.Drawing;
 
 namespace VisualPracticalLanguage
 {
-	public class VVariable : VBaseElement
+	public class VVariable : VExpression
 	{
 		private CustomLabel name;
+		private CustomLabel eqLabel;
+
+		
+		private VExpression arg;
+
+		private ArgumentPlaceholder argPlaceHolder;
+
+		
+		// отступ от границ компонента
+		private const int BorderPadding = 10;
+
+		// промежуток между операцией и аргументом
+		private const int OpArgPadding = 5;
 
 		public VVariable (string vname)
 		{
+			BackColor = Color.Yellow;
 			color = Color.Yellow;
-			Size = new Size (100, 50);
+			Size = new Size (100, Const.EXPR_HIGHT);
 			name = new CustomLabel (vname, color);
 
+			
+			argPlaceHolder = new ArgumentPlaceholder (this);
+			argPlaceHolder.Parent = this;
 			Controls.Add (name);
-			var eq = new CustomLabel (" = ", color);
-			Controls.Add (eq);
+			eqLabel = new CustomLabel (" = ", color);
+			Controls.Add (eqLabel);
 			name.TextChanged += delegate {
 				var nameLoc = name.Location;
-				eq.Location = new Point(nameLoc.X + name.Width + 10, 0);
+				eqLabel.Location = new Point(nameLoc.X + name.Width + 10, 0);
 			};
+
+			UpdateSize ();
 		}
-		
-		protected override void OnPaint (PaintEventArgs e)
-		{
-			{
-				var rectangle = new RectangleF (new PointF (0, 0), new SizeF (Size.Width, Const.EXPR_HIGHT));
-				e.Graphics.FillRectangle (new SolidBrush (color), rectangle);
-			}
-			
-			{
-				var rectangle = new RectangleF (new PointF (35, 5), new SizeF (5, 5));
-				e.Graphics.FillRectangle (new SolidBrush (Color.White), rectangle);
-			}
-		}
-		
+
 		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
 		{
-			return el is VExpression;// && location;
+			if (!(el is VExpression))
+				return false;
+
+			if (p == argPlaceHolder && arg == null) {
+				return true;
+			}
+
+			return false;
 		}
 
 		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
 		{
-			return el is VExpression;// && location;
+			if (p == argPlaceHolder && arg == null) {
+				arg = (VExpression)el;
+				arg.Parent = this;
+				((DraggableControl)arg).EParent = this;
+
+				Hide (argPlaceHolder);
+
+				UpdateSize ();
+				return true;
+			}
+
+			return false;
 		}
 
 		
 		public override void OnChildDisconnect (DraggableControl c){
+			if (arg == c) {
+				arg = null;
+			}
+			UpdateSize ();
 		}
+		
+		public override void UpdateSize (){
+			Control fArg = (Control)arg ?? argPlaceHolder;
 
+			var argHeight = fArg.With(_ => _.Height, 0);
+			var height = 2 * BorderPadding + argHeight;
+
+			var argsWidth = fArg.With(_ => _.Width, 0) ;
+			var width = 2 * BorderPadding + 2*OpArgPadding + argsWidth + name.Width+eqLabel.Size.Width;
+
+			Size = new Size (width, height);
+
+
+			name.Location = new Point (BorderPadding, BorderPadding);
+			eqLabel.Location = new Point (name.Location.X + name.Size.Width + OpArgPadding, BorderPadding);
+
+			fArg.Location = new Point (eqLabel.Location.X + eqLabel.Size.Width + OpArgPadding, BorderPadding);
+		}
 	}
 }
 

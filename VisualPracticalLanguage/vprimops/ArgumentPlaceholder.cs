@@ -11,7 +11,7 @@ namespace VisualPracticalLanguage
 	/// </summary>
 	public class ArgumentPlaceholder : Control
 	{
-		private VBaseElement parent;
+		public VBaseElement parent;
 
 		public ArgumentPlaceholder (VBaseElement parent)
 		{
@@ -20,8 +20,8 @@ namespace VisualPracticalLanguage
 			BackColor = Color.WhiteSmoke;
 		}
 
-		public void OnDrop(VBaseElement el){
-			parent.PutElement (this, el);
+		public bool OnDrop(VBaseElement el){
+			return parent.PutElement (this, el);
 		}
 
 		public void OnOver(DraggableControl c){

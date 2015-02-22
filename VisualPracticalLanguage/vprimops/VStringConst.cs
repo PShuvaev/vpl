@@ -13,7 +13,7 @@ namespace VisualPracticalLanguage
 			this.str = str;
 			
 			color = Color.Orange;
-			Size = new Size (100, 50);
+			Size = new Size (100, Const.HEADER_SIZE);
 			var lbl = new CustomLabel (str, color);
 
 			Controls.Add (lbl);
@@ -22,7 +22,7 @@ namespace VisualPracticalLanguage
 		protected override void OnPaint (PaintEventArgs e)
 		{
 			{
-				var rectangle = new RectangleF (new PointF (0, 0), new SizeF (Size.Width, Const.HEADER_SIZE));
+				var rectangle = new RectangleF (new PointF (0, 0), new SizeF (Size.Width, Const.EXPR_HIGHT));
 				e.Graphics.FillRectangle (new SolidBrush (color), rectangle);
 			}
 		}
@@ -38,6 +38,10 @@ namespace VisualPracticalLanguage
 		}
 		
 		public override void OnChildDisconnect (DraggableControl c){
+		}
+
+		public override void UpdateSize ()
+		{
 		}
 	}
 }
