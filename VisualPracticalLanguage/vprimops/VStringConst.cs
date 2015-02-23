@@ -22,7 +22,7 @@ namespace VisualPracticalLanguage
 		protected override void OnPaint (PaintEventArgs e)
 		{
 			{
-				var rectangle = new RectangleF (new PointF (0, 0), new SizeF (Size.Width, Const.EXPR_HIGHT));
+				var rectangle = new RectangleF (new PointF (0, 0), new SizeF (Size.Width, Const.EXPR_HEIGHT));
 				e.Graphics.FillRectangle (new SolidBrush (color), rectangle);
 			}
 		}

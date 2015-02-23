@@ -25,9 +25,8 @@ namespace VisualPracticalLanguage
 		{
 			BackColor = Color.Yellow;
 			color = Color.Yellow;
-			Size = new Size (100, Const.EXPR_HIGHT);
+			Size = new Size (100, Const.EXPR_HEIGHT);
 			name = new CustomLabel (vname, color);
-
 			
 			argPlaceHolder = new ArgumentPlaceholder (this);
 			argPlaceHolder.Parent = this;
@@ -69,7 +68,6 @@ namespace VisualPracticalLanguage
 
 			return false;
 		}
-
 		
 		public override void OnChildDisconnect (DraggableControl c){
 			if (arg == c) {
