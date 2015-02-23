@@ -64,6 +64,7 @@
     <Compile Include="vprimops\ArgumentPlaceholder.cs" />
     <Compile Include="util\DiverseUtilExtensions.cs" />
     <Compile Include="vprimops\VFunCall.cs" />
+    <Compile Include="vprimops\VSetVariable.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />

@@ -25,7 +25,7 @@ namespace VisualPracticalLanguage
 			workPanel.BackColor = Color.White;
 
 			var f = new VFunction ("fibbs");
-			f.AddExpression (new VVariable("a"));
+			f.AddExpression (new VSetVariable("a"));
 			f.AddExpression (new VFunCall(".Substring", 2));
 			f.AddExpression (VBinaryOp.PLUS);
 			f.AddExpression (VBinaryOp.MINUS);
