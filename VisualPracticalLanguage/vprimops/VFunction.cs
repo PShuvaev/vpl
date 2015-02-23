@@ -75,7 +75,7 @@ namespace VisualPracticalLanguage
 
 			height += BorderPadding;
 
-			Size = new Size (Size.Width, height);
+			Size = new Size (width, height);
 		}
 
 		protected override void OnPaint (PaintEventArgs e)
@@ -123,10 +123,16 @@ namespace VisualPracticalLanguage
 		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
 		{
 			var pos = placeholders.IndexOf (p);
+			
+			Logger.Log ("put  " + el + " at " + pos);
 
 			expressions.Remove (el);
 
 			expressions.Insert (pos, el);
+
+			el.Parent = this;
+			el.EParent = this;
+
 			placeholders.Insert (pos,
 				new ArgumentPlaceholder(this).With(_ => {
 				_.Parent = this;
@@ -138,6 +144,7 @@ namespace VisualPracticalLanguage
 
 		
 		public override void OnChildDisconnect (DraggableControl c){
+			Logger.Log ("disconnect " + c);
 			var pos = expressions.IndexOf ((VBaseElement)c);
 			expressions.RemoveAt (pos);
 			placeholders.RemoveAt (pos);
