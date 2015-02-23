@@ -10,13 +10,15 @@ namespace VisualPracticalLanguage
 	public class MForm : Form {
 		public Panel workPanel;
 		public MForm() {
-			var expPanel = new Panel ();
+			Size = new Size (600, 400);
+
+			var expPanel = new FlowLayoutPanel ();
 			expPanel.Parent = this;
 			expPanel.Width = 100;
 			expPanel.Dock = DockStyle.Right;
 			expPanel.BackColor = Color.MintCream;
 			expPanel.BorderStyle = BorderStyle.FixedSingle;
-			
+
 			workPanel = new Panel ();
 			workPanel.Parent = this;
 			workPanel.Dock = DockStyle.Fill;
@@ -33,6 +35,24 @@ namespace VisualPracticalLanguage
 			
 			f.AddArgument ("key");
 			f.AddArgument ("state");
+
+			
+			var btn = new Button {
+				Text = "add fun"
+			};
+
+			int fin = 0;
+			btn.Click += (object sender, EventArgs e) => {
+				Control control = null;
+				workPanel.Controls.Add(control = new VFunction ("fun " + fin++));
+				control.BringToFront();
+			};
+			expPanel.Controls.Add (btn);
+
+			var btn2 = new Button {
+				Text = "add op"
+			};
+			expPanel.Controls.Add (btn2);
 
 			CenterToScreen();
 		}

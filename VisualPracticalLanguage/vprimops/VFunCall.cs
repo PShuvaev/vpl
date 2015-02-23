@@ -80,6 +80,8 @@ namespace VisualPracticalLanguage
 			el.Parent = this;
 			el.EParent = this;
 
+			Hide (p);
+
 			UpdateSize ();
 
 			return true;

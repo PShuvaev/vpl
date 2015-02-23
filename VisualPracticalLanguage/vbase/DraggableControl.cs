@@ -106,7 +106,6 @@ namespace VisualPracticalLanguage
 
 		public abstract void OnChildDisconnect (DraggableControl c);
 
-		
 		public abstract void UpdateSize ();
 	}
 }
