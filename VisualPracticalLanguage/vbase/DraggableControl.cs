@@ -67,7 +67,6 @@ namespace VisualPracticalLanguage
 				}
 				lastControl = control.With(_ => _.OnOver(this));
 
-
 				var pos = Cursor.Position;
 				Top = Top + (pos.Y - oldPos.Y);
 				Left = Left + (pos.X - oldPos.X);
@@ -86,7 +85,7 @@ namespace VisualPracticalLanguage
 			if (placeholder != null) {
 				var result = placeholder.OnDrop ((VBaseElement)this);
 				if (result) {
-					placeholder.parent.UpdateSize ();
+					placeholder.parent.UpdateRecSize ();
 				}
 			}
 		}
@@ -105,7 +104,14 @@ namespace VisualPracticalLanguage
 		}
 
 		public abstract void OnChildDisconnect (DraggableControl c);
-
+		
 		public abstract void UpdateSize ();
+
+		public void UpdateRecSize (){
+			UpdateSize ();
+			if (EParent != null) {
+				EParent.UpdateRecSize ();
+			}
+		}
 	}
 }

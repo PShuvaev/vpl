@@ -112,7 +112,7 @@ namespace VisualPracticalLanguage
 				new ArgumentPlaceholder(this).With(_ => {
 				_.Parent = this;
 			}));
-			UpdateSize ();
+			UpdateRecSize ();
 		}
 		
 		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
@@ -137,7 +137,6 @@ namespace VisualPracticalLanguage
 				new ArgumentPlaceholder(this).With(_ => {
 				_.Parent = this;
 			}));
-			UpdateSize ();
 
 			return true;
 		}

@@ -82,8 +82,6 @@ namespace VisualPracticalLanguage
 
 			Hide (p);
 
-			UpdateSize ();
-
 			return true;
 		}
 

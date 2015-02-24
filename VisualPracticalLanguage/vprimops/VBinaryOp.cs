@@ -95,8 +95,6 @@ namespace VisualPracticalLanguage
 				((DraggableControl)firstArg).EParent = this;
 
 				Hide (firstArgPlaceHolder);
-
-				UpdateSize ();
 				return true;
 			}
 			
@@ -106,8 +104,6 @@ namespace VisualPracticalLanguage
 				((DraggableControl)secondArg).EParent = this;
 
 				Hide (secondArgPlaceHolder);
-
-				UpdateSize ();
 				return true;
 			}
 

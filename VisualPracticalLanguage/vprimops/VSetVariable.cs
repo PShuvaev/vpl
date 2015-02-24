@@ -61,8 +61,6 @@ namespace VisualPracticalLanguage
 				((DraggableControl)arg).EParent = this;
 
 				Hide (argPlaceHolder);
-
-				UpdateSize ();
 				return true;
 			}
 
@@ -73,7 +71,6 @@ namespace VisualPracticalLanguage
 			if (arg == c) {
 				arg = null;
 			}
-			UpdateSize ();
 		}
 		
 		public override void UpdateSize (){
