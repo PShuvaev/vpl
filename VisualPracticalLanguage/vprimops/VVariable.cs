@@ -41,6 +41,7 @@ namespace VisualPracticalLanguage
 			var v = new VVariableRef ();
 			VariableRefs.Add(v);
 			v.SetDragged ();
+			v.Location = this.AbsolutePoint ();
 		}
 
 		private static string ShowDialog(string text, string caption)

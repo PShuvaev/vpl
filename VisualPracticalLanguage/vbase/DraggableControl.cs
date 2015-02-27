@@ -66,6 +66,7 @@ namespace VisualPracticalLanguage
 					placeholder.parent.UpdateRecSize ();
 				}
 			}
+
 		}
 
 		private Control GetTargetControl(){
@@ -93,9 +94,10 @@ namespace VisualPracticalLanguage
 			isDragging = true;
 
 			DisconnectFromParent ();
-
+			
+			var absPos = this.AbsolutePoint ();
 			this.Parent = App.Form.workPanel;
-			this.Location = this.AbsolutePoint ();
+			this.Location = absPos;
 
 			BringToFront ();
 
