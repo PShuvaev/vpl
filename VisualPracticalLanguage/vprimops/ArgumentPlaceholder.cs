@@ -11,21 +11,21 @@ namespace VisualPracticalLanguage
 	/// </summary>
 	public class ArgumentPlaceholder : Control
 	{
-		public VBaseElement parent;
+		public IPlaceholderContainer parent;
 
-		public ArgumentPlaceholder (VBaseElement parent)
+		public ArgumentPlaceholder (IPlaceholderContainer parent)
 		{
 			this.parent = parent;
 			Size = new Size (15, 15);
 			BackColor = Color.WhiteSmoke;
 		}
 
-		public bool OnDrop(VBaseElement el){
+		public bool OnDrop(DraggableControl el){
 			return parent.PutElement (this, el);
 		}
 
 		public void OnOver(DraggableControl c){
-			if (parent.CanPutElement (this, c as VBaseElement)) {
+			if (parent.CanPutElement (this, c)) {
 				BackColor = Color.Red;
 			}
 		}

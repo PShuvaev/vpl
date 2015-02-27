@@ -36,7 +36,6 @@
     <Compile Include="IVExpression.cs" />
     <Compile Include="Const.cs" />
     <Compile Include="vbase\DraggableControl.cs" />
-    <Compile Include="vbase\VBaseElement.cs" />
     <Compile Include="vbase\CustomLabel.cs" />
     <Compile Include="util\Logger.cs" />
     <Compile Include="vprimops\VVariable.cs" />
@@ -44,7 +43,6 @@
     <Compile Include="lang\SetVariableStatement.cs" />
     <Compile Include="lang\IfStatement.cs" />
     <Compile Include="vprimops\VFunction.cs" />
-    <Compile Include="vprimops\VExpression.cs" />
     <Compile Include="vprimops\VBinaryOp.cs" />
     <Compile Include="vprimops\VStringConst.cs" />
     <Compile Include="vprimops\VNumberConst.cs" />
@@ -65,6 +63,8 @@
     <Compile Include="util\DiverseUtilExtensions.cs" />
     <Compile Include="vprimops\VFunCall.cs" />
     <Compile Include="vprimops\VSetVariable.cs" />
+    <Compile Include="vprimops\VVariableRef.cs" />
+    <Compile Include="vprimops\IPlaceholderContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />

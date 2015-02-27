@@ -6,12 +6,12 @@ using System.Linq;
 
 namespace VisualPracticalLanguage
 {
-	public class VFunction : VBaseElement
+	public class VFunction : DraggableControl, IPlaceholderContainer
 	{
 		private string name;
-		private IList<VBaseElement> expressions;
+		private IList<DraggableControl> expressions;
 		private IList<ArgumentPlaceholder> placeholders;
-		private IList<CustomLabel> arguments;
+		private IList<VVariable> arguments;
 		private CustomLabel funName;
 
 		
@@ -26,12 +26,14 @@ namespace VisualPracticalLanguage
 		{
 			this.name = name;
 
-			funName = new CustomLabel (name, color);
+			BackColor = Color.LightBlue;
+
+			funName = new CustomLabel (name, Color.Black);
 			funName.Parent = this;
 
 			Size = new Size (200, 200);
-			expressions = new List<VBaseElement> ();
-			arguments = new List<CustomLabel> ();
+			expressions = new List<DraggableControl> ();
+			arguments = new List<VVariable> ();
 			placeholders = new List<ArgumentPlaceholder> { 
 				new ArgumentPlaceholder(this).With(_ => {
 					_.Parent = this;
@@ -43,7 +45,7 @@ namespace VisualPracticalLanguage
 
 		public void AddArgument(string arg)
 		{
-			var label = new CustomLabel (arg, color);
+			var label = new VVariable (arg, this);
 
 			if (!arguments.Any ()) {
 				label.Location = new Point (funName.Location.X + funName.Size.Width + 10, 0);
@@ -58,7 +60,7 @@ namespace VisualPracticalLanguage
 		}
 
 
-		public override void UpdateSize(){
+		public void UpdateSize(){
 			var declwidth = funName.Size.Width + arguments.Sum (x => x.Size.Width) + OpArgPadding * (arguments.Count - 1);
 			var bodyexprWidth = expressions.Aggregate (0, (acc, e) => Math.Max (acc, e.Size.Width));
 			var width = 2 * BorderPadding + declwidth + bodyexprWidth;
@@ -82,21 +84,21 @@ namespace VisualPracticalLanguage
 		{
 			{
 				var rectangle = new RectangleF (new PointF (0, 0), new SizeF (Size.Width, Const.HEADER_SIZE));
-				e.Graphics.FillRectangle (new SolidBrush (color), rectangle);
+				e.Graphics.FillRectangle (new SolidBrush (BackColor), rectangle);
 				
 			}
 			{
 				var rectangle = new RectangleF (new PointF (0, Const.HEADER_SIZE), new SizeF (Const.TAB_SIZE, Size.Height-Const.PALLET_HEIGHT));
-				e.Graphics.FillRectangle (new SolidBrush (color), rectangle);
+				e.Graphics.FillRectangle (new SolidBrush (BackColor), rectangle);
 			}
 
 			{
 				var rectangle = new RectangleF (new PointF (0, Size.Height-Const.PALLET_HEIGHT), new SizeF (Size.Width/2, Const.PALLET_HEIGHT));
-				e.Graphics.FillRectangle (new SolidBrush (color), rectangle);
+				e.Graphics.FillRectangle (new SolidBrush (BackColor), rectangle);
 			}
 		}
 
-		public void AddExpression(VBaseElement expr){
+		public void AddExpression(DraggableControl expr){
 			expr.Parent = this;
 			expr.EParent = this;
 
@@ -112,15 +114,15 @@ namespace VisualPracticalLanguage
 				new ArgumentPlaceholder(this).With(_ => {
 				_.Parent = this;
 			}));
-			UpdateRecSize ();
+			this.UpdateRecSize ();
 		}
 		
-		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
+		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			return el is VExpression;
+			return el is DraggableControl;
 		}
 
-		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
+		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
 			var pos = placeholders.IndexOf (p);
 			
@@ -142,9 +144,9 @@ namespace VisualPracticalLanguage
 		}
 
 		
-		public override void OnChildDisconnect (DraggableControl c){
+		public void OnChildDisconnect (DraggableControl c){
 			Logger.Log ("disconnect " + c);
-			var pos = expressions.IndexOf ((VBaseElement)c);
+			var pos = expressions.IndexOf (c);
 			expressions.RemoveAt (pos);
 			placeholders.RemoveAt (pos);
 		}

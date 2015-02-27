@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public class VStringConst : VExpression
+	public class VStringConst : DraggableControl
 	{
 		private string str;
 
@@ -12,9 +12,9 @@ namespace VisualPracticalLanguage
 		{
 			this.str = str;
 			
-			color = Color.Orange;
+			BackColor = Color.Orange;
 			Size = new Size (100, Const.HEADER_SIZE);
-			var lbl = new CustomLabel (str, color);
+			var lbl = new CustomLabel (str, BackColor);
 
 			Controls.Add (lbl);
 		}
@@ -23,25 +23,8 @@ namespace VisualPracticalLanguage
 		{
 			{
 				var rectangle = new RectangleF (new PointF (0, 0), new SizeF (Size.Width, Const.EXPR_HEIGHT));
-				e.Graphics.FillRectangle (new SolidBrush (color), rectangle);
+				e.Graphics.FillRectangle (new SolidBrush (BackColor), rectangle);
 			}
-		}
-		
-		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
-		{
-			return false;
-		}
-
-		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
-		{
-			return false;
-		}
-		
-		public override void OnChildDisconnect (DraggableControl c){
-		}
-
-		public override void UpdateSize ()
-		{
 		}
 	}
 }

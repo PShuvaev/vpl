@@ -4,13 +4,13 @@ using System.Drawing;
 
 namespace VisualPracticalLanguage
 {
-	public class VSetVariable : VExpression
+	public class VSetVariable : DraggableControl, IPlaceholderContainer
 	{
 		private CustomLabel name;
 		private CustomLabel eqLabel;
 
 		
-		private VExpression arg;
+		private DraggableControl arg;
 
 		private ArgumentPlaceholder argPlaceHolder;
 
@@ -24,14 +24,14 @@ namespace VisualPracticalLanguage
 		public VSetVariable (string vname)
 		{
 			BackColor = Color.Yellow;
-			color = Color.Yellow;
+			BackColor = Color.Yellow;
 			Size = new Size (100, Const.EXPR_HEIGHT);
-			name = new CustomLabel (vname, color);
+			name = new CustomLabel (vname, BackColor);
 			
 			argPlaceHolder = new ArgumentPlaceholder (this);
 			argPlaceHolder.Parent = this;
 			Controls.Add (name);
-			eqLabel = new CustomLabel (" = ", color);
+			eqLabel = new CustomLabel (" = ", BackColor);
 			Controls.Add (eqLabel);
 			name.TextChanged += delegate {
 				var nameLoc = name.Location;
@@ -41,9 +41,9 @@ namespace VisualPracticalLanguage
 			UpdateSize ();
 		}
 
-		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
+		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			if (!(el is VExpression))
+			if (!(el is DraggableControl))
 				return false;
 
 			if (p == argPlaceHolder && arg == null) {
@@ -53,10 +53,10 @@ namespace VisualPracticalLanguage
 			return false;
 		}
 
-		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
+		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
 			if (p == argPlaceHolder && arg == null) {
-				arg = (VExpression)el;
+				arg = el;
 				arg.Parent = this;
 				((DraggableControl)arg).EParent = this;
 
@@ -67,13 +67,13 @@ namespace VisualPracticalLanguage
 			return false;
 		}
 		
-		public override void OnChildDisconnect (DraggableControl c){
+		public void OnChildDisconnect (DraggableControl c){
 			if (arg == c) {
 				arg = null;
 			}
 		}
 		
-		public override void UpdateSize (){
+		public void UpdateSize (){
 			Control fArg = (Control)arg ?? argPlaceHolder;
 
 			var argHeight = fArg.With(_ => _.Height, 0);

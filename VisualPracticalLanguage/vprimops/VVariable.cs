@@ -1,40 +1,68 @@
 using System;
 using System.Drawing;
+using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace VisualPracticalLanguage
 {
-	public class VVariable : VExpression
+	public class VVariable : CustomLabel
 	{
-		public VVariable ()
+		public VFunction ParentFunc { get; set; }
+		public string VarName { get; set; }
+
+		private IList<VVariableRef> VariableRefs;
+
+		private VVariableRef currentRef;
+
+		public VVariable (string name, VFunction parentFunc):base(name, Color.Red)
 		{
-			this.str = str;
+			VarName = name;
+			ParentFunc = parentFunc;
 
-			color = Color.Orange;
-			Size = new Size (100, Const.HEADER_SIZE);
-			var lbl = new CustomLabel (str, color);
+			BackColor = Color.Orange;
+			Size = new Size (20, 20);
 
-			Controls.Add (lbl);
+			VariableRefs = new List<VVariableRef> ();
+
+			MouseDoubleClick += (object sender, MouseEventArgs e) => {
+				var newName = ShowDialog("Введите имя переменной", "Переименование");
+				this.Text = newName;
+				foreach(var varRef in VariableRefs){
+					varRef.UpdateName(newName);
+				}
+			};
+			
+			MouseDown += (object sender, MouseEventArgs e) => {
+				CreateVVariableRef();
+			};
 		}
 
-		
-		private string str;
-
-
-		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
-		{
-			return false;
+		public void CreateVVariableRef(){
+			var v = new VVariableRef ();
+			VariableRefs.Add(v);
+			v.SetDragged ();
 		}
 
-		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
+		private static string ShowDialog(string text, string caption)
 		{
-			return false;
-		}
+			Form prompt = new Form {
+				Width = 500,
+				Height = 150,
+				FormBorderStyle = FormBorderStyle.FixedDialog,
+				Text = caption,
+				StartPosition = FormStartPosition.CenterScreen
+			};
 
-		public override void OnChildDisconnect (DraggableControl c){
-		}
-
-		public override void UpdateSize ()
-		{
+			Label textLabel = new Label() { Left = 50, Top=20, Text=text };
+			TextBox textBox = new TextBox() { Left = 50, Top=50, Width=400 };
+			Button confirmation = new Button() { Text = "Ok", Left=350, Width=100, Top=70 };
+			confirmation.Click += (sender, e) => { prompt.Close(); };
+			prompt.Controls.Add(textBox);
+			prompt.Controls.Add(confirmation);
+			prompt.Controls.Add(textLabel);
+			prompt.AcceptButton = confirmation;
+			prompt.ShowDialog();
+			return textBox.Text;
 		}
 	}
 }

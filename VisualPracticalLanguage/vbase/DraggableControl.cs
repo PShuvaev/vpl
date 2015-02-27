@@ -9,7 +9,7 @@ namespace VisualPracticalLanguage
 	{
 		
 		private bool isDragging = false;
-		public DraggableControl EParent{ get; set; }
+		public IPlaceholderContainer EParent{ get; set; }
 
 		private Label markLabel = new Label ()
 		{
@@ -27,34 +27,12 @@ namespace VisualPracticalLanguage
 
 		private void OnMouseDown(object sender, MouseEventArgs e) 
 		{
-			isDragging = true;
-
-
-			if (EParent != null) {
-				EParent.OnChildDisconnect (this);
-				EParent.UpdateSize ();
-			}
-			EParent = null;
-
-			var absPos = this.AbsolutePoint ();
-
-			this.Parent = App.Form.workPanel;
-
-			this.Location = absPos;
-
-			BringToFront ();
-
-
-			Controls.Add (markLabel);
-			markLabel.BringToFront ();
-
-
-			oldPos = Cursor.Position;
+			SetDragged ();
 		}
 
 		private Point oldPos;
 
-		ArgumentPlaceholder lastControl;
+		private ArgumentPlaceholder lastControl;
 
 		private void OnMouseMove(object sender, MouseEventArgs e) 
 		{
@@ -83,7 +61,7 @@ namespace VisualPracticalLanguage
 
 			var placeholder = targetControl as ArgumentPlaceholder;
 			if (placeholder != null) {
-				var result = placeholder.OnDrop ((VBaseElement)this);
+				var result = placeholder.OnDrop (this);
 				if (result) {
 					placeholder.parent.UpdateRecSize ();
 				}
@@ -103,15 +81,28 @@ namespace VisualPracticalLanguage
 			h.Location = new Point (-100, -100);
 		}
 
-		public abstract void OnChildDisconnect (DraggableControl c);
-		
-		public abstract void UpdateSize ();
-
-		public void UpdateRecSize (){
-			UpdateSize ();
+		private void DisconnectFromParent(){
 			if (EParent != null) {
-				EParent.UpdateRecSize ();
+				EParent.OnChildDisconnect (this);
+				EParent.UpdateSize ();
 			}
+			EParent = null;
+		}
+
+		public void SetDragged(){
+			isDragging = true;
+
+			DisconnectFromParent ();
+
+			this.Parent = App.Form.workPanel;
+			this.Location = this.AbsolutePoint ();
+
+			BringToFront ();
+
+			Controls.Add (markLabel);
+			markLabel.BringToFront ();
+
+			oldPos = Cursor.Position;
 		}
 	}
 }

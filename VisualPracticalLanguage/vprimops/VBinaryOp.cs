@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public class VBinaryOp : VExpression
+	public class VBinaryOp : DraggableControl, IPlaceholderContainer
 	{
 		public static readonly VBinaryOp PLUS = new VBinaryOp ("+");
 		public static readonly VBinaryOp MINUS = new VBinaryOp ("-");
@@ -21,8 +21,8 @@ namespace VisualPracticalLanguage
 		// промежуток между операцией и аргументом
 		private const int OpArgPadding = 5;
 
-		private VExpression firstArg;
-		private VExpression secondArg;
+		private DraggableControl firstArg;
+		private DraggableControl secondArg;
 
 		private ArgumentPlaceholder firstArgPlaceHolder;
 		private ArgumentPlaceholder secondArgPlaceHolder;
@@ -31,7 +31,7 @@ namespace VisualPracticalLanguage
 		{
 			this.symbol = symbol;
 			
-			color = Color.GreenYellow;
+			BackColor = Color.GreenYellow;
 			
 			firstArgPlaceHolder = new ArgumentPlaceholder (this);
 			secondArgPlaceHolder = new ArgumentPlaceholder (this);
@@ -39,7 +39,7 @@ namespace VisualPracticalLanguage
 			firstArgPlaceHolder.Parent = this;
 			secondArgPlaceHolder.Parent = this;
 
-			OpSymbol = new CustomLabel (symbol, color);
+			OpSymbol = new CustomLabel (symbol, BackColor);
 			OpSymbol.Parent = this;
 
 			UpdateSize ();
@@ -47,7 +47,7 @@ namespace VisualPracticalLanguage
 			BackColor = Color.Green;
 		}
 
-		public override void UpdateSize(){
+		public void UpdateSize(){
 			Control fArg = (Control)firstArg ?? firstArgPlaceHolder;
 			Control sArg = (Control)secondArg ?? secondArgPlaceHolder;
 
@@ -65,9 +65,9 @@ namespace VisualPracticalLanguage
 		}
 
 		
-		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
+		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			if (!(el is VExpression))
+			if (!(el is DraggableControl))
 				return false;
 
 			if (p == firstArgPlaceHolder && firstArg == null) {
@@ -84,13 +84,13 @@ namespace VisualPracticalLanguage
 		/// <summary>
 		/// Вызывается плейсхолдером p при попытке заменить плейсходер выражением el
 		/// </summary>
-		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
+		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			if (!(el is VExpression))
+			if (!(el is DraggableControl))
 				return false;
 			
 			if (p == firstArgPlaceHolder && firstArg == null) {
-				firstArg = (VExpression)el;
+				firstArg = el;
 				firstArg.Parent = this;
 				((DraggableControl)firstArg).EParent = this;
 
@@ -99,7 +99,7 @@ namespace VisualPracticalLanguage
 			}
 			
 			if (p == secondArgPlaceHolder && secondArg == null) {
-				secondArg = (VExpression)el;
+				secondArg = el;
 				secondArg.Parent = this;
 				((DraggableControl)secondArg).EParent = this;
 
@@ -111,7 +111,7 @@ namespace VisualPracticalLanguage
 		}
 
 		
-		public override void OnChildDisconnect (DraggableControl c){
+		public void OnChildDisconnect (DraggableControl c){
 			if (firstArg == c) {
 				firstArg = null;
 			}

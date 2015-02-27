@@ -6,12 +6,12 @@ using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public class VFunCall : VExpression
+	public class VFunCall : DraggableControl, IPlaceholderContainer
 	{
 		
 		private string name;
 		private IList<ArgumentPlaceholder> placeholders;
-		private IList<VBaseElement> arguments;
+		private IList<DraggableControl> arguments;
 		private CustomLabel funName;
 
 
@@ -25,11 +25,11 @@ namespace VisualPracticalLanguage
 		{
 			this.name = name;
 
-			funName = new CustomLabel (name, color);
+			funName = new CustomLabel (name, BackColor);
 			funName.Parent = this;
 
 			Size = new Size (200, 200);
-			arguments = new List<VBaseElement> ();
+			arguments = new List<DraggableControl> ();
 			placeholders = new List<ArgumentPlaceholder> ();
 
 			for (int i = 0; i < argsCount; i++) {
@@ -45,7 +45,7 @@ namespace VisualPracticalLanguage
 			UpdateSize ();
 		}
 
-		public override void UpdateSize(){
+		public void UpdateSize(){
 			var width = BorderPadding + funName.Size.Width + OpArgPadding;
 
 			var controls = arguments.Zip<Control,Control,Control> (placeholders, (arg, pl) => (Control)arg ?? (Control)pl).ToList();
@@ -66,12 +66,12 @@ namespace VisualPracticalLanguage
 		}
 
 
-		public override bool CanPutElement (ArgumentPlaceholder p, VBaseElement el)
+		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			return el is VExpression;
+			return el is DraggableControl;
 		}
 
-		public override bool PutElement (ArgumentPlaceholder p, VBaseElement el)
+		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
 			var pos = placeholders.IndexOf (p);
 
@@ -86,8 +86,8 @@ namespace VisualPracticalLanguage
 		}
 
 
-		public override void OnChildDisconnect (DraggableControl c){
-			var pos = arguments.IndexOf ((VBaseElement)c);
+		public void OnChildDisconnect (DraggableControl c){
+			var pos = arguments.IndexOf (c);
 			arguments[pos] = null;
 		}
 
