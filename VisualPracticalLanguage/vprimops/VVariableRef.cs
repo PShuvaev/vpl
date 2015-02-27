@@ -5,16 +5,26 @@ namespace VisualPracticalLanguage
 {
 	public class VVariableRef : DraggableControl
 	{
-		public VVariable Variable { get; set; }
+		private VVariable Variable { get; set; }
+		private CustomLabel nameLabel;
 
-		public VVariableRef ()
+		public VVariableRef (VVariable variable)
 		{
-			Size = new Size (20, 20);
-			BackColor = Color.Black;
+			Variable = variable;
+			BackColor = Color.PapayaWhip;
+			nameLabel = new CustomLabel (Variable.VarName, Color.Azure);
+			nameLabel.Parent = this;
+			nameLabel.Location = new Point (5, 5);
+			UpdateName ();
 		}
 
-		public void UpdateName(string name){
+		public void UpdateName(){
+			nameLabel.Text = Variable.VarName;
+			UpdateSize ();
+		}
 
+		private void UpdateSize(){
+			Size = new Size (nameLabel.Size.Width + 10, nameLabel.Size.Height + 10);
 		}
 	}
 }

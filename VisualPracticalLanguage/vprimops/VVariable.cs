@@ -12,8 +12,6 @@ namespace VisualPracticalLanguage
 
 		private IList<VVariableRef> VariableRefs;
 
-		private VVariableRef currentRef;
-
 		public VVariable (string name, VFunction parentFunc):base(name, Color.Red)
 		{
 			VarName = name;
@@ -26,22 +24,25 @@ namespace VisualPracticalLanguage
 
 			MouseDoubleClick += (object sender, MouseEventArgs e) => {
 				var newName = ShowDialog("Введите имя переменной", "Переименование");
+				if(newName.Trim().Length == 0) return;
+
 				this.Text = newName;
 				foreach(var varRef in VariableRefs){
-					varRef.UpdateName(newName);
+					varRef.UpdateName();
 				}
 			};
 			
-			MouseDown += (object sender, MouseEventArgs e) => {
+			MouseClick += (object sender, MouseEventArgs e) => {
 				CreateVVariableRef();
 			};
 		}
 
 		public void CreateVVariableRef(){
-			var v = new VVariableRef ();
+			var v = new VVariableRef (this);
 			VariableRefs.Add(v);
-			v.SetDragged ();
-			v.Location = this.AbsolutePoint ();
+
+			v.Parent = App.Form.workPanel;
+			v.BringToFront ();
 		}
 
 		private static string ShowDialog(string text, string caption)

@@ -54,19 +54,7 @@ namespace VisualPracticalLanguage
 
 		private void OnMouseUp(object sender, MouseEventArgs e) 
 		{
-			isDragging = false;
-			Controls.Remove (markLabel);
-
-			var targetControl = GetTargetControl ();
-
-			var placeholder = targetControl as ArgumentPlaceholder;
-			if (placeholder != null) {
-				var result = placeholder.OnDrop (this);
-				if (result) {
-					placeholder.parent.UpdateRecSize ();
-				}
-			}
-
+			Release ();
 		}
 
 		private Control GetTargetControl(){
@@ -88,16 +76,17 @@ namespace VisualPracticalLanguage
 				EParent.UpdateSize ();
 			}
 			EParent = null;
-		}
-
-		public void SetDragged(){
-			isDragging = true;
-
-			DisconnectFromParent ();
 			
+			// сохраняем абсолютную позицию, ибо она изменится при отсоединении от родителя
 			var absPos = this.AbsolutePoint ();
 			this.Parent = App.Form.workPanel;
 			this.Location = absPos;
+		}
+
+		private void SetDragged(){
+			isDragging = true;
+
+			DisconnectFromParent ();
 
 			BringToFront ();
 
@@ -105,6 +94,21 @@ namespace VisualPracticalLanguage
 			markLabel.BringToFront ();
 
 			oldPos = Cursor.Position;
+		}
+
+		private void Release(){
+			isDragging = false;
+			Controls.Remove (markLabel);
+
+			var targetControl = GetTargetControl ();
+
+			var placeholder = targetControl as ArgumentPlaceholder;
+			if (placeholder != null) {
+				var result = placeholder.OnDrop (this);
+				if (result) {
+					placeholder.parent.UpdateRecSize ();
+				}
+			}
 		}
 	}
 }
