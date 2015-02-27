@@ -26,6 +26,7 @@ namespace VisualPracticalLanguage
 				var newName = ShowDialog("Введите имя переменной", "Переименование");
 				if(newName.Trim().Length == 0) return;
 
+				VarName = newName;
 				this.Text = newName;
 				foreach(var varRef in VariableRefs){
 					varRef.UpdateName();
@@ -33,6 +34,7 @@ namespace VisualPracticalLanguage
 			};
 			
 			MouseClick += (object sender, MouseEventArgs e) => {
+				if (Control.ModifierKeys != Keys.Control) return;
 				CreateVVariableRef();
 			};
 		}
