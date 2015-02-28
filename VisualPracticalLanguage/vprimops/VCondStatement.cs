@@ -6,15 +6,14 @@ using System.Linq;
 
 namespace VisualPracticalLanguage
 {
-	public class VFunction : DraggableControl, IPlaceholderContainer
+	public class VCondStatement : DraggableControl, IPlaceholderContainer
 	{
-		private string name;
+		private DraggableControl condArg;
+		private ArgumentPlaceholder condPlaceholder;
 		private IList<DraggableControl> expressions;
 		private IList<ArgumentPlaceholder> placeholders;
-		private IList<VVariable> arguments;
-		private CustomLabel funName;
 
-		
+		private CustomLabel condTypeLabel;
 
 		// отступ от границ компонента
 		private const int BorderPadding = 10;
@@ -22,51 +21,40 @@ namespace VisualPracticalLanguage
 		// промежуток между операцией и аргументом
 		private const int OpArgPadding = 5;
 
-		public VFunction (string name)
+
+
+		public VCondStatement (string condType)
 		{
-			this.name = name;
+			condTypeLabel = new CustomLabel (condType, Color.Black){
+				Parent = this,
+				Location = new Point(5, 5)
+			};
 
-			BackColor = Color.LightBlue;
-
-			funName = new CustomLabel (name, Color.Black);
-			funName.Parent = this;
 
 			expressions = new List<DraggableControl> ();
-			arguments = new List<VVariable> ();
 			placeholders = new List<ArgumentPlaceholder> { 
 				new ArgumentPlaceholder(this).With(_ => {
 					_.Parent = this;
 				})
 			};
 
+			condPlaceholder = new ArgumentPlaceholder (this) {
+				Parent = this,
+				Location = new Point(25, 5)
+			};
+
 			UpdateSize ();
 		}
 
-		public void AddArgument(string arg)
-		{
-			var label = new VVariable (arg, this);
-
-			if (!arguments.Any ()) {
-				label.Location = new Point (funName.Location.X + funName.Size.Width + 10, 0);
-			} else {
-				var lastArg = arguments.Last ();
-				label.Location = new Point (lastArg.Location.X + lastArg.Size.Width + 10, 0);
-			}
-
-			arguments.Add (label);
-
-			Controls.Add (label);
-		}
-
-
 		public void UpdateSize(){
-			var declwidth = funName.Size.Width + arguments.Sum (x => x.Size.Width) + OpArgPadding * (arguments.Count - 1);
+			var condControl = (Control)condArg ?? condPlaceholder;;
+			var declwidth = condTypeLabel.Size.Width + 2*OpArgPadding +condControl.Width;
 			var bodyexprWidth = expressions.Aggregate (0, (acc, e) => Math.Max (acc, e.Size.Width));
 			var width = 2 * BorderPadding + declwidth + bodyexprWidth;
 
-			var declHeight = funName.Size.Height;
+			condControl.Location = new Point (condTypeLabel.Size.Width + 2*OpArgPadding, 5);
 
-			var height = 2 * BorderPadding + funName.Size.Height;
+			var height = BorderPadding + Math.Max(condTypeLabel.Size.Height, condControl.Height);
 
 			foreach (var el in placeholders.Intercalate<Control>(expressions)) {
 				el.Location = new Point(el.Location.X, height);
@@ -83,7 +71,7 @@ namespace VisualPracticalLanguage
 			{
 				var rectangle = new RectangleF (new PointF (0, 0), new SizeF (Size.Width, Const.HEADER_SIZE));
 				e.Graphics.FillRectangle (new SolidBrush (BackColor), rectangle);
-				
+
 			}
 			{
 				var rectangle = new RectangleF (new PointF (0, Const.HEADER_SIZE), new SizeF (Const.TAB_SIZE, Size.Height-Const.PALLET_HEIGHT));
@@ -106,7 +94,7 @@ namespace VisualPracticalLanguage
 				var lastExpr = expressions.Last ();
 				expr.Location = new Point (Const.TAB_SIZE, lastExpr.Location.Y + lastExpr.Size.Height + 2);
 			}
-			
+
 			expressions.Add (expr);
 			placeholders.Add (
 				new ArgumentPlaceholder(this).With(_ => {
@@ -114,7 +102,7 @@ namespace VisualPracticalLanguage
 			}));
 			this.UpdateRecSize ();
 		}
-		
+
 		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
 			return el is DraggableControl;
@@ -122,8 +110,16 @@ namespace VisualPracticalLanguage
 
 		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
+			if (p == condPlaceholder) {
+				condArg = el;
+				condArg.Parent = this;
+				condArg.EParent = this;
+
+				Hide (condPlaceholder);
+				return true;
+			}
+
 			var pos = placeholders.IndexOf (p);
-			
 			expressions.Insert (pos, el);
 
 			el.Parent = this;
@@ -136,15 +132,19 @@ namespace VisualPracticalLanguage
 			return true;
 		}
 
-		
-		public void OnChildDisconnect (DraggableControl c){
-			var pos = expressions.IndexOf (c);
-			Controls.Remove (expressions [pos]);
-			Controls.Remove (placeholders [pos]);
-			expressions.RemoveAt (pos);
-			placeholders.RemoveAt (pos);
-		}
 
+		public void OnChildDisconnect (DraggableControl c){
+			if (condArg == c) {
+				condArg = null;
+			} else {
+				var pos = expressions.IndexOf (c);
+				Controls.Remove (placeholders [pos]);
+				expressions.RemoveAt (pos);
+				placeholders.RemoveAt (pos);
+			}
+
+			Controls.Remove (c);
+		}
 	}
 }
 

@@ -70,6 +70,7 @@ namespace VisualPracticalLanguage
 		public void OnChildDisconnect (DraggableControl c){
 			if (arg == c) {
 				arg = null;
+				Controls.Remove (c);
 			}
 		}
 		

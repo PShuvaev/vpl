@@ -92,7 +92,7 @@ namespace VisualPracticalLanguage
 			if (p == firstArgPlaceHolder && firstArg == null) {
 				firstArg = el;
 				firstArg.Parent = this;
-				((DraggableControl)firstArg).EParent = this;
+				firstArg.EParent = this;
 
 				Hide (firstArgPlaceHolder);
 				return true;
@@ -101,7 +101,7 @@ namespace VisualPracticalLanguage
 			if (p == secondArgPlaceHolder && secondArg == null) {
 				secondArg = el;
 				secondArg.Parent = this;
-				((DraggableControl)secondArg).EParent = this;
+				secondArg.EParent = this;
 
 				Hide (secondArgPlaceHolder);
 				return true;
@@ -118,6 +118,8 @@ namespace VisualPracticalLanguage
 			if (secondArg == c) {
 				secondArg = null;
 			}
+			
+			Controls.Remove (c);
 			UpdateSize ();
 		}
 

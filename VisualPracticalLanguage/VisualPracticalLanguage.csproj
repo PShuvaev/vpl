@@ -65,6 +65,9 @@
     <Compile Include="vprimops\VSetVariable.cs" />
     <Compile Include="vprimops\VVariableRef.cs" />
     <Compile Include="vprimops\IPlaceholderContainer.cs" />
+    <Compile Include="vprimops\VIfStatement.cs" />
+    <Compile Include="vprimops\VWhileStatement.cs" />
+    <Compile Include="vprimops\VCondStatement.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />

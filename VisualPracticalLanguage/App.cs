@@ -27,10 +27,11 @@ namespace VisualPracticalLanguage
 			var f = new VFunction ("fibbs");
 			f.AddExpression (new VSetVariable("a"));
 			f.AddExpression (new VFunCall(".Substring", 2));
-			f.AddExpression (VBinaryOp.PLUS);
 			f.AddExpression (VBinaryOp.MINUS);
 			f.AddExpression (new VStringConst("somes"));
 			f.AddExpression (new VNumberConst(100009));
+			f.AddExpression (new VIfStatement());
+			f.AddExpression (new VWhileStatement());
 			f.Parent = workPanel;
 			
 			f.AddArgument ("key");
