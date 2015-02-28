@@ -53,8 +53,6 @@
     <Compile Include="lang\FunCallStatement.cs" />
     <Compile Include="lang\ReturnStatement.cs" />
     <Compile Include="lang\ConstExpression.cs" />
-    <Compile Include="lang\Expression.cs" />
-    <Compile Include="lang\IStatement.cs" />
     <Compile Include="lang\WhileStatement.cs" />
     <Compile Include="lang\FunctionDeclaration.cs" />
     <Compile Include="codegen\BinGenerator.cs" />
@@ -68,6 +66,18 @@
     <Compile Include="vprimops\VIfStatement.cs" />
     <Compile Include="vprimops\VWhileStatement.cs" />
     <Compile Include="vprimops\VCondStatement.cs" />
+    <Compile Include="lang\Interface\IExpression.cs" />
+    <Compile Include="lang\Interface\IFunCallStatement.cs" />
+    <Compile Include="lang\Interface\IFunctionCall.cs" />
+    <Compile Include="lang\Interface\IFunctionDeclaration.cs" />
+    <Compile Include="lang\Interface\IFunctionDefinition.cs" />
+    <Compile Include="lang\Interface\IIfStatement.cs" />
+    <Compile Include="lang\Interface\IStatement.cs" />
+    <Compile Include="lang\Interface\IReturnStatement.cs" />
+    <Compile Include="lang\Interface\ISetVariableStatement.cs" />
+    <Compile Include="lang\Interface\IVariable.cs" />
+    <Compile Include="lang\Interface\IWhileStatement.cs" />
+    <Compile Include="lang\Interface\IConstExpression.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
@@ -85,5 +95,6 @@
     <Folder Include="lang\test\" />
     <Folder Include="codegen\" />
     <Folder Include="New Folder\" />
+    <Folder Include="lang\Interface\" />
   </ItemGroup>
 </Project>

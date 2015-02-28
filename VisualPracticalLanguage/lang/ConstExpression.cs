@@ -1,10 +1,11 @@
 using System;
+using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class ConstExpression : IExpression
+	public class ConstExpression : IConstExpression
 	{
-		public string value { get; set; }
+		public string constValue { get; set; }
 
 		public ConstExpression ()
 		{

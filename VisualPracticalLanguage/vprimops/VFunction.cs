@@ -13,7 +13,7 @@ namespace VisualPracticalLanguage
 		private IList<ArgumentPlaceholder> placeholders;
 		private IList<VVariable> arguments;
 		private CustomLabel funName;
-
+		private Button addArgBtn;
 		
 
 		// отступ от границ компонента
@@ -28,15 +28,27 @@ namespace VisualPracticalLanguage
 
 			BackColor = Color.LightBlue;
 
-			funName = new CustomLabel (name, Color.Black);
-			funName.Parent = this;
+			funName = new CustomLabel (name, Color.Black){
+				Parent = this,
+				Location = new Point (BorderPadding, BorderPadding)
+			};
 
 			expressions = new List<DraggableControl> ();
 			arguments = new List<VVariable> ();
 			placeholders = new List<ArgumentPlaceholder> { 
-				new ArgumentPlaceholder(this).With(_ => {
-					_.Parent = this;
-				})
+				new ArgumentPlaceholder(this){
+					Parent = this
+				}
+			};
+
+			addArgBtn = new Button {
+				Text = "+",
+				Parent = this,
+				Size = new Size(20, 20)
+			};
+			addArgBtn.Click += (object sender, EventArgs e) => {
+				var argName = "arg" + arguments.Count;
+				AddArgument(argName);
 			};
 
 			UpdateSize ();
@@ -45,24 +57,40 @@ namespace VisualPracticalLanguage
 		public void AddArgument(string arg)
 		{
 			var label = new VVariable (arg, this);
-
-			if (!arguments.Any ()) {
-				label.Location = new Point (funName.Location.X + funName.Size.Width + 10, 0);
-			} else {
-				var lastArg = arguments.Last ();
-				label.Location = new Point (lastArg.Location.X + lastArg.Size.Width + 10, 0);
-			}
-
 			arguments.Add (label);
 
 			Controls.Add (label);
+			UpdateSize ();
+		}
+
+		public void RemoveArgument(VVariable arg)
+		{
+			if (arg.VariableRefs.Count == 0) {
+				arguments.Remove (arg);
+				Controls.Remove (arg);
+				UpdateSize ();
+			}
 		}
 
 
 		public void UpdateSize(){
-			var declwidth = funName.Size.Width + arguments.Sum (x => x.Size.Width) + OpArgPadding * (arguments.Count - 1);
-			var bodyexprWidth = expressions.Aggregate (0, (acc, e) => Math.Max (acc, e.Size.Width));
-			var width = 2 * BorderPadding + declwidth + bodyexprWidth;
+			var argumentsWidth = arguments.Sum (x => x.Size.Width) + OpArgPadding * (arguments.Count-1);
+
+			{ // расположение аргументов + кнопки добавления аргумента
+				var startArgsX = BorderPadding + funName.Size.Width + OpArgPadding;
+				foreach (var arg in arguments) {
+					arg.Location = new Point (startArgsX, BorderPadding);
+					startArgsX += arg.Size.Width + OpArgPadding;
+				}
+
+				addArgBtn.Location = new Point (startArgsX, BorderPadding);
+			}
+
+
+			var funDeclWidth = 2 * BorderPadding + funName.Size.Width + OpArgPadding + argumentsWidth + OpArgPadding + addArgBtn.Width;
+
+			var bodyExprsWidth = expressions.Aggregate (0, (acc, e) => Math.Max (acc, e.Size.Width));
+			var width = 2 * BorderPadding + funDeclWidth + bodyExprsWidth;
 
 			var declHeight = funName.Size.Height;
 

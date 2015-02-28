@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
@@ -14,10 +15,10 @@ namespace VisualPracticalLanguage
 			this.output = output;
 		}
 		
-		public void Generate(FunctionCall call)
+		public void Generate(IFunctionCall call)
 		{
 			// если функция - бинарная операция
-			if (call.function.IsBinOperation) {
+			if (call.function.isBinOperation) {
 				output.Write ("(");
 				Generate(call.arguments.First());
 				output.Write (call.function.name);
@@ -36,17 +37,17 @@ namespace VisualPracticalLanguage
 			output.Write (")");
 		}
 
-		public void Generate(ConstExpression expression)
+		public void Generate(IConstExpression expression)
 		{
-			output.Write (expression.value);
+			output.Write (expression.constValue);
 		}
 
-		public void Generate(Variable variable)
+		public void Generate(IVariable variable)
 		{
-			output.Write (variable.name);
+			output.Write (variable.varName);
 		}
 
-		public void Generate(IfStatement statement)
+		public void Generate(IIfStatement statement)
 		{
 			output.Write ("if(");
 			Generate (statement.condition);
@@ -57,7 +58,7 @@ namespace VisualPracticalLanguage
 			output.Write ("}");
 		}
 
-		public void Generate(WhileStatement statement)
+		public void Generate(IWhileStatement statement)
 		{
 			output.Write ("while(");
 			Generate (statement.condition);
@@ -68,32 +69,32 @@ namespace VisualPracticalLanguage
 			output.Write ("}");
 		}
 
-		public void Generate(SetVariableStatement statement)
+		public void Generate(ISetVariableStatement statement)
 		{
-			output.Write (statement.variable.name);
+			output.Write (statement.variable.varName);
 			output.Write ("=");
 			Generate (statement.expression);
 			output.Write (";");
 		}
 		
-		public void Generate(FunCallStatement statement)
+		public void Generate(IFunCallStatement statement)
 		{
 			Generate (statement.functionCall);
 			output.Write (";");
 		}
 
-		public void Generate(ReturnStatement statement)
+		public void Generate(IReturnStatement statement)
 		{
 			output.Write ("return ");
 			Generate (statement.expression);
 			output.Write (";");
 		}
 
-		public void Generate(FunctionDefinition definition)
+		public void Generate(IFunctionDefinition definition)
 		{
 			// сигнатура метода
 			output.Write ("public ");
-			if (definition.ReturnVoid) {
+			if (definition.isReturnVoid) {
 				output.Write ("void");
 			} else {
 				output.Write ("dynamic");
@@ -103,7 +104,7 @@ namespace VisualPracticalLanguage
 			output.Write ("(");
 			definition.arguments.IterSep (@variable => {
 				output.Write ("dynamic ");
-				output.Write (@variable.name);
+				output.Write (@variable.varName);
 			}, _ => {output.Write (", ");});
 			output.Write ("){");
 
@@ -111,7 +112,7 @@ namespace VisualPracticalLanguage
 			if (!definition.variables.Empty ()) {
 				output.Write ("dynamic ");
 				definition.variables.IterSep (@variable => {
-					output.Write (@variable.name);
+					output.Write (@variable.varName);
 				}, _ => {output.Write (", ");});
 				output.Write (";");
 			}
@@ -129,15 +130,16 @@ namespace VisualPracticalLanguage
 		/// </summary>
 		public void Generate(IStatement statement)
 		{
-			var @switch = new Dictionary<Type, Action> {
-				{ typeof(IfStatement), () => {Generate(statement as IfStatement);}},
-				{ typeof(WhileStatement), () => {Generate(statement as WhileStatement);}},
-				{ typeof(SetVariableStatement), () => {Generate(statement as SetVariableStatement);} },
-				{ typeof(ReturnStatement), () => {Generate(statement as ReturnStatement);} },
-				{ typeof(FunCallStatement), () => {Generate(statement as FunCallStatement);} },
-			};
-
-			@switch[statement.GetType()]();
+			if (statement is IIfStatement)
+				Generate (statement as IIfStatement);
+			if (statement is IWhileStatement)
+				Generate (statement as IWhileStatement);
+			if (statement is ISetVariableStatement)
+				Generate (statement as ISetVariableStatement);
+			if (statement is IReturnStatement)
+				Generate (statement as IReturnStatement);
+			if (statement is IFunCallStatement)
+				Generate (statement as IFunCallStatement);
 		}
 
 		/// <summary>
@@ -145,13 +147,12 @@ namespace VisualPracticalLanguage
 		/// </summary>
 		public void Generate(IExpression expression)
 		{
-			var @switch = new Dictionary<Type, Action> {
-				{ typeof(Variable), () => {Generate(expression as Variable);}},
-				{ typeof(ConstExpression), () => {Generate(expression as ConstExpression);} },
-				{ typeof(FunctionCall), () => {Generate(expression as FunctionCall);} },
-			};
-
-			@switch[expression.GetType()]();
+			if (expression is IVariable)
+				Generate (expression as IVariable);
+			if (expression is IConstExpression)
+				Generate (expression as IConstExpression);
+			if (expression is IFunctionCall)
+				Generate (expression as IFunctionCall);
 		}
 	}
 
@@ -180,21 +181,21 @@ namespace VisualPracticalLanguage
 			var cVar = fibbFunc.AddVariable("c");
 			fibbFunc.AddStatement (new SetVariableStatement {
 				variable = aVar,
-				expression = new ConstExpression { value = "0" }
+				expression = new ConstExpression { constValue = "0" }
 			});
 			fibbFunc.AddStatement (new SetVariableStatement {
 				variable = bVar,
-				expression = new ConstExpression { value = "1" }
+				expression = new ConstExpression { constValue = "1" }
 			});
 			fibbFunc.AddStatement (new WhileStatement {
 				condition = new FunctionCall {
 					function = new FunctionDeclaration {
 						name = ">",
-						IsBinOperation = true,
-						ReturnVoid = false
+						isBinOperation = true,
+						isReturnVoid = false
 					},
 					arguments = new List<IExpression>{
-						nVar, new ConstExpression{value = "0"}
+						nVar, new ConstExpression{constValue = "0"}
 					}
 				},
 				statements = new List<IStatement>{
@@ -211,8 +212,8 @@ namespace VisualPracticalLanguage
 						expression = new FunctionCall {
 							function = new FunctionDeclaration {
 								name = "+",
-								IsBinOperation = true,
-								ReturnVoid = true
+								isBinOperation = true,
+								isReturnVoid = true
 							},
 							arguments = new List<IExpression> {
 								cVar, bVar
@@ -224,12 +225,12 @@ namespace VisualPracticalLanguage
 						expression = new FunctionCall {
 							function = new FunctionDeclaration {
 								name = "-",
-								IsBinOperation = true,
-								ReturnVoid = true
+								isBinOperation = true,
+								isReturnVoid = true
 							},
 							arguments = new List<IExpression> {
 								nVar, new ConstExpression {
-									value = "1"
+									constValue = "1"
 								}
 							}
 						}

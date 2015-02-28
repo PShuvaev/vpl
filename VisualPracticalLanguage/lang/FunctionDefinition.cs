@@ -1,24 +1,25 @@
 using System;
 using System.Collections.Generic;
+using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class FunctionDefinition : FunctionDeclaration
+	public class FunctionDefinition : FunctionDeclaration, IFunctionDefinition
 	{
-		public IList<Variable> arguments { get; private set;}
-		public IList<Variable> variables { get; private set;}
-		public IList<IStatement> statements { get; private set;}
+		public IList<IVariable> arguments { get; set;}
+		public IList<IVariable> variables { get; set;}
+		public IList<IStatement> statements { get; set;}
 
 		public FunctionDefinition ()
 		{
-			arguments = new List<Variable> ();
-			variables = new List<Variable> ();
+			arguments = new List<IVariable> ();
+			variables = new List<IVariable> ();
 			statements = new List<IStatement> ();
 		}
 		
-		public Variable AddArgument(string name)
+		public IVariable AddArgument(string name)
 		{
-			var v = new Variable { name = name };
+			var v = new Variable { varName = name };
 			arguments.Add (v);
 			return v;
 		}
@@ -27,9 +28,9 @@ namespace VisualPracticalLanguage
 		{
 		}
 
-		public Variable AddVariable(string name)
+		public IVariable AddVariable(string name)
 		{
-			var v = new Variable { name = name };
+			var v = new Variable { varName = name };
 			variables.Add (v);
 			return v;
 		}

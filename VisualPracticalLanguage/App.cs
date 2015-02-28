@@ -12,6 +12,8 @@ namespace VisualPracticalLanguage
 		public MForm() {
 			Size = new Size (600, 400);
 
+			new GeneratorTest ().Test ();
+
 			var expPanel = new FlowLayoutPanel ();
 			expPanel.Parent = this;
 			expPanel.Width = 100;

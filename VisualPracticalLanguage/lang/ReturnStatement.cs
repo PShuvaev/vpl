@@ -1,8 +1,9 @@
 using System;
+using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class ReturnStatement
+	public class ReturnStatement : IReturnStatement
 	{
 		public IExpression expression { get; set; }
 

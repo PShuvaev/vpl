@@ -1,4 +1,5 @@
 using System;
+using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
@@ -6,9 +7,9 @@ namespace VisualPracticalLanguage
 	/// Выражение - вызов функции.
 	/// e.g. "print(42);"
 	/// </summary>
-	public class FunCallStatement
+	public class FunCallStatement : IFunCallStatement
 	{
-		public FunctionCall functionCall { get; set; }
+		public IFunctionCall functionCall { get; set; }
 
 		public FunCallStatement ()
 		{

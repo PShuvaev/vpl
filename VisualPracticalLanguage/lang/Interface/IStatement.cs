@@ -1,6 +1,6 @@
 using System;
 
-namespace VisualPracticalLanguage
+namespace VisualPracticalLanguage.Interface
 {
 	public interface IStatement
 	{

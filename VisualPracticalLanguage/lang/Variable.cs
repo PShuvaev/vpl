@@ -1,10 +1,11 @@
 using System;
+using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class Variable : IExpression
+	public class Variable : IVariable
 	{
-		public string name { get; set; }
+		public string varName { get; set; }
 
 		public Variable ()
 		{

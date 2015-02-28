@@ -10,7 +10,7 @@ namespace VisualPracticalLanguage
 		public VFunction ParentFunc { get; set; }
 		public string VarName { get; set; }
 
-		private IList<VVariableRef> VariableRefs;
+		public IList<VVariableRef> VariableRefs { get; set; }
 
 		public VVariable (string name, VFunction parentFunc):base(name, Color.Red)
 		{
@@ -34,8 +34,12 @@ namespace VisualPracticalLanguage
 			};
 			
 			MouseClick += (object sender, MouseEventArgs e) => {
-				if (Control.ModifierKeys != Keys.Control) return;
-				CreateVVariableRef();
+				if (Control.ModifierKeys == Keys.Control) {
+					CreateVVariableRef();
+				}
+				if (Control.ModifierKeys == Keys.Shift) {
+					ParentFunc.RemoveArgument(this);
+				}
 			};
 		}
 
@@ -45,6 +49,12 @@ namespace VisualPracticalLanguage
 
 			v.Parent = App.Form.workPanel;
 			v.BringToFront ();
+		}
+
+		public void Remove(){
+			if (VariableRefs.Count == 0) {
+				ParentFunc.Controls.Remove (this);
+			}
 		}
 
 		private static string ShowDialog(string text, string caption)
