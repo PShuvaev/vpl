@@ -71,14 +71,15 @@ namespace VisualPracticalLanguage
 		}
 
 		private void DisconnectFromParent(){
+			// сохраняем абсолютную позицию, ибо она изменится при отсоединении от родителя
+			var absPos = this.AbsolutePoint ();
+
 			if (EParent != null) {
 				EParent.OnChildDisconnect (this);
 				EParent.UpdateSize ();
 			}
 			EParent = null;
-			
-			// сохраняем абсолютную позицию, ибо она изменится при отсоединении от родителя
-			var absPos = this.AbsolutePoint ();
+
 			this.Parent = App.Form.workPanel;
 			this.Location = absPos;
 		}

@@ -145,8 +145,9 @@ namespace VisualPracticalLanguage
 
 		
 		public void OnChildDisconnect (DraggableControl c){
-			Logger.Log ("disconnect " + c);
 			var pos = expressions.IndexOf (c);
+			Controls.Remove (expressions [pos]);
+			Controls.Remove (placeholders [pos]);
 			expressions.RemoveAt (pos);
 			placeholders.RemoveAt (pos);
 		}
