@@ -14,17 +14,15 @@ namespace VisualPracticalLanguage
 
 			new GeneratorTest ().Test ();
 
-			var expPanel = new FlowLayoutPanel ();
-			expPanel.Parent = this;
-			expPanel.Width = 100;
-			expPanel.Dock = DockStyle.Right;
-			expPanel.BackColor = Color.MintCream;
-			expPanel.BorderStyle = BorderStyle.FixedSingle;
 
 			workPanel = new Panel ();
 			workPanel.Parent = this;
 			workPanel.Dock = DockStyle.Fill;
 			workPanel.BackColor = Color.White;
+
+			
+			var expPanel = new ElementPanel (workPanel);
+			expPanel.Parent = this;
 
 			var f = new VFunction ("fibbs");
 			f.AddExpression (new VNumberConst(100009));

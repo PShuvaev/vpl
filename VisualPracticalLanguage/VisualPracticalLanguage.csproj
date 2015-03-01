@@ -79,6 +79,7 @@
     <Compile Include="lang\Interface\IWhileStatement.cs" />
     <Compile Include="lang\Interface\IConstExpression.cs" />
     <Compile Include="lang\Interface\ICondStatement.cs" />
+    <Compile Include="ElementPanel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
