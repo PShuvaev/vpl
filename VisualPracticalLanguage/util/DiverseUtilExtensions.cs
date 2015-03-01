@@ -33,6 +33,29 @@ namespace VisualPracticalLanguage
 			}
 			return p;
 		}
+
+		
+		public static string ShowDialog(string text, string caption)
+		{
+			Form prompt = new Form {
+				Width = 500,
+				Height = 150,
+				FormBorderStyle = FormBorderStyle.FixedDialog,
+				Text = caption,
+				StartPosition = FormStartPosition.CenterScreen
+			};
+			prompt.Controls.Add(new Label { Left = 50, Top = 20, Text = text, AutoSize = true });
+
+			TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
+			prompt.Controls.Add(textBox);
+
+			Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 80};
+			confirmation.Click += (sender, e) => { prompt.Close(); };
+			prompt.Controls.Add(confirmation);
+			prompt.AcceptButton = confirmation;
+			prompt.ShowDialog();
+			return textBox.Text;
+		}
 	}
 }
 

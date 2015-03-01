@@ -9,7 +9,7 @@ namespace VisualPracticalLanguage
 	public class VIfStatement : VCondStatement
 	{
 
-		public VIfStatement () : base("if")
+		public VIfStatement () : base("если")
 		{
 			BackColor = Color.LightGray;
 		}

@@ -6,7 +6,7 @@ namespace VisualPracticalLanguage
 {
 	public class VWhileStatement : VCondStatement, IWhileStatement
 	{
-		public VWhileStatement () : base("while")
+		public VWhileStatement () : base("выполнять пока")
 		{
 			BackColor = Color.Bisque;
 		}

@@ -8,17 +8,34 @@ namespace VisualPracticalLanguage
 	public class ElementPanel : FlowLayoutPanel
 	{
 		private static Dictionary<string, Func<Control>> elements = new Dictionary<string, Func<Control>>(){
-			{"+", () => new VBinaryOp(new FunctionDeclaration{name = "+", isBinOperation = true})},
-			{"-", () => new VBinaryOp(new FunctionDeclaration{name = "-", isBinOperation = true})},
-			{"/", () => new VBinaryOp(new FunctionDeclaration{name = "-", isBinOperation = true})},
-			{"*", () => new VBinaryOp(new FunctionDeclaration{name = "-", isBinOperation = true})},
-			{"if", () => new VIfStatement()},
-			{"while", () => new VWhileStatement()},
+			{"+", () => MakeBinaryOp("+")},
+			{"-", () => MakeBinaryOp("-")},
+			{"/", () => MakeBinaryOp("/")},
+			{"*", () => MakeBinaryOp("*")},
+			{"=", () => MakeBinaryOp("==")},
+			{">", () => MakeBinaryOp(">")},
+			{"<", () => MakeBinaryOp("<")},
+			{"!=", () => MakeBinaryOp("!=")},
+			{"если", () => new VIfStatement()},
+			{"пока", () => new VWhileStatement()},
+			{"константа", () => {
+					var val = DiverseUtilExtensions.ShowDialog("Новая константа", "Введите значение");
+					if(val.StartsWith("\"")) return new VStringConst(val);
+
+					decimal x;
+					if(decimal.TryParse(val, out x)) return new VNumberConst(x);
+
+					return null;
+				}},
+			{"функция", () => {
+					var name = DiverseUtilExtensions.ShowDialog("Новая функция", "Введите имя");
+					return new VFunction(name);
+				}}
 		};
 
 		public ElementPanel (Control workPanel)
 		{
-			Width = 100;
+			Width = 180;
 			Dock = DockStyle.Right;
 			BackColor = Color.MintCream;
 			BorderStyle = BorderStyle.FixedSingle;
@@ -28,11 +45,17 @@ namespace VisualPracticalLanguage
 				var btn = new Button { Text = control.Key };
 				btn.Click += delegate {
 					var c = control.Value();
-					workPanel.Controls.Add(c);
-					c.BringToFront();
+					if(c != null){ 
+						workPanel.Controls.Add(c);
+						c.BringToFront();
+					}
 				};
 				Controls.Add (btn);
 			}
+		}
+
+		private static VBinaryOp MakeBinaryOp(string symbol){
+			return new VBinaryOp (new FunctionDeclaration { name = symbol, isBinOperation = true });
 		}
 	}
 }

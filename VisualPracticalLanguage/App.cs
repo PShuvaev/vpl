@@ -25,30 +25,12 @@ namespace VisualPracticalLanguage
 			expPanel.Parent = this;
 
 			var f = new VFunction ("fibbs");
-			f.AddExpression (new VNumberConst(100009));
 			f.AddExpression (new VSetVariable("a"));
-			f.AddExpression (new VFunCall(new FunctionDeclaration{ name = "Substring", isBinOperation = false, argumentsCount = 2 }));
-			//f.AddExpression (new VBinaryOp(new FunctionDeclaration{ name = "+", isBinOperation = true, argumentsCount = 2 }));
-			f.AddExpression (new VStringConst("somes"));
-			//f.AddExpression (new VIfStatement());
-			//f.AddExpression (new VWhileStatement());
 			f.Parent = workPanel;
 			
 			f.AddArgument ("key");
 			f.AddArgument ("state");
 
-			
-			var btn = new Button {
-				Text = "add fun"
-			};
-
-			int fin = 0;
-			btn.Click += (object sender, EventArgs e) => {
-				Control control = null;
-				workPanel.Controls.Add(control = new VFunction ("fun " + fin++));
-				control.BringToFront();
-			};
-			expPanel.Controls.Add (btn);
 
 			var btn2 = new Button {
 				Text = "generate code"
