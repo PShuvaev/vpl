@@ -1,25 +1,30 @@
 using System;
 using System.Drawing;
+using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VVariableRef : DraggableControl
+	public class VVariableRef : DraggableControl, IVariable
 	{
-		private VVariable Variable { get; set; }
+		private VVariable variable { get; set; }
 		private CustomLabel nameLabel;
 
 		public VVariableRef (VVariable variable)
 		{
-			Variable = variable;
+			this.variable = variable;
 			BackColor = Color.PapayaWhip;
-			nameLabel = new CustomLabel (Variable.VarName, Color.Azure);
+			nameLabel = new CustomLabel (variable.varName, Color.Azure);
 			nameLabel.Parent = this;
 			nameLabel.Location = new Point (5, 5);
 			UpdateName ();
 		}
 
+		public string varName {
+			get { return variable.varName; }
+		}
+
 		public void UpdateName(){
-			nameLabel.Text = Variable.VarName;
+			nameLabel.Text = variable.varName;
 			UpdateSize ();
 		}
 

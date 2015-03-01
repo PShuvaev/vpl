@@ -1,10 +1,11 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
+using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VSetVariable : DraggableControl, IPlaceholderContainer
+	public class VSetVariable : DraggableControl, IPlaceholderContainer, ISetVariableStatement
 	{
 		private CustomLabel name;
 		private CustomLabel eqLabel;
@@ -41,30 +42,30 @@ namespace VisualPracticalLanguage
 			UpdateSize ();
 		}
 
+		public IVariable variable {
+			get { return new Variable { varName = name.Text }; }
+		}
+
+		public IExpression expression {
+			get { return arg as IExpression; }
+		}
+
 		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			if (!(el is DraggableControl))
-				return false;
-
-			if (p == argPlaceHolder && arg == null) {
-				return true;
-			}
-
-			return false;
+			return p == argPlaceHolder && el is IExpression;
 		}
 
 		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			if (p == argPlaceHolder && arg == null) {
-				arg = el;
-				arg.Parent = this;
-				((DraggableControl)arg).EParent = this;
+			if (!CanPutElement (p, el))
+				return false;
 
-				Hide (argPlaceHolder);
-				return true;
-			}
+			arg = el;
+			arg.Parent = this;
+			arg.EParent = this;
 
-			return false;
+			Hide (argPlaceHolder);
+			return true;
 		}
 		
 		public void OnChildDisconnect (DraggableControl c){

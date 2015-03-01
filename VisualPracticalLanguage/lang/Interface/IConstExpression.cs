@@ -4,7 +4,7 @@ namespace VisualPracticalLanguage.Interface
 {
 	public interface IConstExpression : IExpression
 	{
-		string constValue { get; set; }
+		string constValue { get; }
 	}
 }
 

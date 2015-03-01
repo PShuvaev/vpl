@@ -27,13 +27,13 @@ namespace VisualPracticalLanguage
 			workPanel.BackColor = Color.White;
 
 			var f = new VFunction ("fibbs");
-			f.AddExpression (new VSetVariable("a"));
-			f.AddExpression (new VFunCall(".Substring", 2));
-			f.AddExpression (VBinaryOp.MINUS);
-			f.AddExpression (new VStringConst("somes"));
 			f.AddExpression (new VNumberConst(100009));
-			f.AddExpression (new VIfStatement());
-			f.AddExpression (new VWhileStatement());
+			f.AddExpression (new VSetVariable("a"));
+			f.AddExpression (new VFunCall(new FunctionDeclaration{ name = "Substring", isBinOperation = false, argumentsCount = 2 }));
+			//f.AddExpression (new VBinaryOp(new FunctionDeclaration{ name = "+", isBinOperation = true, argumentsCount = 2 }));
+			f.AddExpression (new VStringConst("somes"));
+			//f.AddExpression (new VIfStatement());
+			//f.AddExpression (new VWhileStatement());
 			f.Parent = workPanel;
 			
 			f.AddArgument ("key");
@@ -53,7 +53,13 @@ namespace VisualPracticalLanguage
 			expPanel.Controls.Add (btn);
 
 			var btn2 = new Button {
-				Text = "add op"
+				Text = "generate code"
+			};
+			btn2.Click += (object sender, EventArgs e) => {
+				var writer = new StringWriter ();
+				var generator = new Generator (writer);
+				generator.Generate(f);
+				Logger.Log(writer.ToString());
 			};
 			expPanel.Controls.Add (btn2);
 

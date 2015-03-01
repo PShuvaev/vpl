@@ -5,7 +5,7 @@ namespace VisualPracticalLanguage.Interface
 {
 	public interface IFunctionCall : IExpression
 	{
-		IFunctionDeclaration function { get; set; }
-		IList<IExpression> arguments { get; set; }
+		IFunctionDeclaration function { get; }
+		IList<IExpression> arguments { get; }
 	}
 }

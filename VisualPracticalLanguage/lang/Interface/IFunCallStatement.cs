@@ -8,7 +8,7 @@ namespace VisualPracticalLanguage.Interface
 	/// </summary>
 	public interface IFunCallStatement
 	{
-		IFunctionCall functionCall { get; set; }
+		IFunctionCall functionCall { get; }
 	}
 }
 

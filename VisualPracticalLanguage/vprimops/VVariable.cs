@@ -2,20 +2,21 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VVariable : CustomLabel
+	public class VVariable : CustomLabel, IVariable
 	{
-		public VFunction ParentFunc { get; set; }
-		public string VarName { get; set; }
+		public VFunction parentFunc { get; set; }
+		public string varName { get; set; }
 
 		public IList<VVariableRef> VariableRefs { get; set; }
 
 		public VVariable (string name, VFunction parentFunc):base(name, Color.Red)
 		{
-			VarName = name;
-			ParentFunc = parentFunc;
+			varName = name;
+			this.parentFunc = parentFunc;
 
 			BackColor = Color.Orange;
 			Size = new Size (20, 20);
@@ -26,7 +27,7 @@ namespace VisualPracticalLanguage
 				var newName = ShowDialog("Введите имя переменной", "Переименование");
 				if(newName.Trim().Length == 0) return;
 
-				VarName = newName;
+				varName = newName;
 				this.Text = newName;
 				foreach(var varRef in VariableRefs){
 					varRef.UpdateName();
@@ -38,7 +39,7 @@ namespace VisualPracticalLanguage
 					CreateVVariableRef();
 				}
 				if (Control.ModifierKeys == Keys.Shift) {
-					ParentFunc.RemoveArgument(this);
+					parentFunc.RemoveArgument(this);
 				}
 			};
 		}
@@ -53,7 +54,7 @@ namespace VisualPracticalLanguage
 
 		public void Remove(){
 			if (VariableRefs.Count == 0) {
-				ParentFunc.Controls.Remove (this);
+				parentFunc.Controls.Remove (this);
 			}
 		}
 

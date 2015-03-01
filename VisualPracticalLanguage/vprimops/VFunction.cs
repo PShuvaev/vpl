@@ -3,15 +3,25 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
+using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VFunction : DraggableControl, IPlaceholderContainer
+	public class VFunction : DraggableControl, IPlaceholderContainer, IFunctionDefinition
 	{
-		private string name;
-		private IList<DraggableControl> expressions;
+		public string fnamespace { get; set; }
+		public string fclass { get; set; }
+		public string name { get; set; }
+
+		public bool isBinOperation { get; set;}
+		public bool isReturnVoid { get; set;}
+
+
+
+
+		private IList<DraggableControl> controlStatements;
 		private IList<ArgumentPlaceholder> placeholders;
-		private IList<VVariable> arguments;
+		public IList<VVariable> controlArguments { get; set; }
 		private CustomLabel funName;
 		private Button addArgBtn;
 		
@@ -33,8 +43,8 @@ namespace VisualPracticalLanguage
 				Location = new Point (BorderPadding, BorderPadding)
 			};
 
-			expressions = new List<DraggableControl> ();
-			arguments = new List<VVariable> ();
+			controlStatements = new List<DraggableControl> ();
+			controlArguments = new List<VVariable> ();
 			placeholders = new List<ArgumentPlaceholder> { 
 				new ArgumentPlaceholder(this){
 					Parent = this
@@ -47,17 +57,37 @@ namespace VisualPracticalLanguage
 				Size = new Size(20, 20)
 			};
 			addArgBtn.Click += (object sender, EventArgs e) => {
-				var argName = "arg" + arguments.Count;
+				var argName = "arg" + controlArguments.Count;
 				AddArgument(argName);
 			};
 
 			UpdateSize ();
 		}
 
+
+		public IList<IVariable> variables { 
+			get {
+				return new List<IVariable> ();
+			}
+		}
+		public IList<IStatement> statements { 
+			get {return controlStatements.Cast<IStatement> ().ToList ();}
+		}
+
+		public IList<IVariable> arguments {
+			get {
+				return controlArguments.Cast<IVariable> ().ToList ();
+			}
+		}
+
+		public int argumentsCount {
+			get { return controlArguments.Count; }
+		}
+
 		public void AddArgument(string arg)
 		{
 			var label = new VVariable (arg, this);
-			arguments.Add (label);
+			controlArguments.Add (label);
 
 			Controls.Add (label);
 			UpdateSize ();
@@ -66,19 +96,18 @@ namespace VisualPracticalLanguage
 		public void RemoveArgument(VVariable arg)
 		{
 			if (arg.VariableRefs.Count == 0) {
-				arguments.Remove (arg);
+				controlArguments.Remove (arg);
 				Controls.Remove (arg);
 				UpdateSize ();
 			}
 		}
 
-
 		public void UpdateSize(){
-			var argumentsWidth = arguments.Sum (x => x.Size.Width) + OpArgPadding * (arguments.Count-1);
+			var argumentsWidth = controlArguments.Sum (x => x.Size.Width) + OpArgPadding * (arguments.Count-1);
 
 			{ // расположение аргументов + кнопки добавления аргумента
 				var startArgsX = BorderPadding + funName.Size.Width + OpArgPadding;
-				foreach (var arg in arguments) {
+				foreach (var arg in controlArguments) {
 					arg.Location = new Point (startArgsX, BorderPadding);
 					startArgsX += arg.Size.Width + OpArgPadding;
 				}
@@ -89,14 +118,14 @@ namespace VisualPracticalLanguage
 
 			var funDeclWidth = 2 * BorderPadding + funName.Size.Width + OpArgPadding + argumentsWidth + OpArgPadding + addArgBtn.Width;
 
-			var bodyExprsWidth = expressions.Aggregate (0, (acc, e) => Math.Max (acc, e.Size.Width));
+			var bodyExprsWidth = controlStatements.Aggregate (0, (acc, e) => Math.Max (acc, e.Size.Width));
 			var width = 2 * BorderPadding + funDeclWidth + bodyExprsWidth;
 
 			var declHeight = funName.Size.Height;
 
 			var height = 2 * BorderPadding + funName.Size.Height;
 
-			foreach (var el in placeholders.Intercalate<Control>(expressions)) {
+			foreach (var el in placeholders.Intercalate<Control>(controlStatements)) {
 				el.Location = new Point(el.Location.X, height);
 				height += el.Size.Height;
 			}
@@ -128,14 +157,14 @@ namespace VisualPracticalLanguage
 			expr.Parent = this;
 			expr.EParent = this;
 
-			if (!expressions.Any ()) {
+			if (!controlStatements.Any ()) {
 				expr.Location = new Point (Const.TAB_SIZE, Const.HEADER_SIZE);
 			} else {
-				var lastExpr = expressions.Last ();
+				var lastExpr = controlStatements.Last ();
 				expr.Location = new Point (Const.TAB_SIZE, lastExpr.Location.Y + lastExpr.Size.Height + 2);
 			}
 			
-			expressions.Add (expr);
+			controlStatements.Add (expr);
 			placeholders.Add (
 				new ArgumentPlaceholder(this).With(_ => {
 				_.Parent = this;
@@ -145,14 +174,17 @@ namespace VisualPracticalLanguage
 		
 		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			return el is DraggableControl;
+			return el is IStatement && placeholders.Contains(p);
 		}
 
 		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
+			if (!CanPutElement (p, el))
+				return false;
+
 			var pos = placeholders.IndexOf (p);
 			
-			expressions.Insert (pos, el);
+			controlStatements.Insert (pos, el);
 
 			el.Parent = this;
 			el.EParent = this;
@@ -166,10 +198,10 @@ namespace VisualPracticalLanguage
 
 		
 		public void OnChildDisconnect (DraggableControl c){
-			var pos = expressions.IndexOf (c);
-			Controls.Remove (expressions [pos]);
+			var pos = controlStatements.IndexOf (c);
+			Controls.Remove (controlStatements [pos]);
 			Controls.Remove (placeholders [pos]);
-			expressions.RemoveAt (pos);
+			controlStatements.RemoveAt (pos);
 			placeholders.RemoveAt (pos);
 		}
 

@@ -4,12 +4,12 @@ namespace VisualPracticalLanguage.Interface
 {
 	public interface IFunctionDeclaration
 	{
-		string fnamespace { get; set; }
-		string fclass { get; set; }
-		string name { get; set; }
+		string fnamespace { get; }
+		string fclass { get; }
+		string name { get; }
+		int argumentsCount { get; }
 
-		bool isBinOperation { get; set;}
-		bool isReturnVoid { get; set;}
+		bool isBinOperation { get; }
+		bool isReturnVoid { get; }
 	}
 }
-

@@ -1,10 +1,11 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VStringConst : DraggableControl
+	public class VStringConst : DraggableControl, IConstExpression
 	{
 		private string str;
 
@@ -18,13 +19,9 @@ namespace VisualPracticalLanguage
 
 			Controls.Add (lbl);
 		}
-		
-		protected override void OnPaint (PaintEventArgs e)
-		{
-			{
-				var rectangle = new RectangleF (new PointF (0, 0), new SizeF (Size.Width, Const.EXPR_HEIGHT));
-				e.Graphics.FillRectangle (new SolidBrush (BackColor), rectangle);
-			}
+
+		public string constValue {
+			get { return "@\"" + str + "\""; }
 		}
 	}
 }

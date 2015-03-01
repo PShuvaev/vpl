@@ -78,6 +78,7 @@
     <Compile Include="lang\Interface\IVariable.cs" />
     <Compile Include="lang\Interface\IWhileStatement.cs" />
     <Compile Include="lang\Interface\IConstExpression.cs" />
+    <Compile Include="lang\Interface\ICondStatement.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />

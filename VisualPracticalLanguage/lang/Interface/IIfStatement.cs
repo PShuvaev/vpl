@@ -3,9 +3,7 @@ using System.Collections.Generic;
 
 namespace VisualPracticalLanguage.Interface
 {
-	public interface IIfStatement : IStatement
+	public interface IIfStatement : ICondStatement
 	{
-		IExpression condition { get; set; }
-		IList<IStatement> statements { get; set; }
 	}
 }

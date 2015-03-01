@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace VisualPracticalLanguage.Interface
 {
-	public interface IWhileStatement : IStatement
+	public interface IWhileStatement : ICondStatement
 	{
-		IExpression condition { get; set; }
-		IList<IStatement> statements { get; set; }
 	}
 }
 

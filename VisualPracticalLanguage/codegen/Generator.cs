@@ -29,11 +29,18 @@ namespace VisualPracticalLanguage
 
 			output.Write (call.function.name);
 			output.Write ("(");
-			call.arguments.EmptyIfNull ().Aggregate (0, (_, expression) => {
-				Generate(expression);
-				output.Write (", ");
-				return 0;
-			});
+
+			var args = call.arguments.EmptyIfNull ();
+			var firstArg = args.FirstOrDefault ();
+
+			if (firstArg != null) {
+				Generate (firstArg);
+
+				foreach (var arg in args.Skip (1)) {
+					output.Write (", ");
+					Generate (arg);
+				}
+			}
 			output.Write (")");
 		}
 
@@ -155,6 +162,7 @@ namespace VisualPracticalLanguage
 				Generate (expression as IFunctionCall);
 		}
 	}
+
 
 	public class GeneratorTest{
 		

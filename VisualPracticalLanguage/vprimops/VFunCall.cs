@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VFunCall : DraggableControl, IPlaceholderContainer
+	public class VFunCall : DraggableControl, IPlaceholderContainer, IFunctionCall
 	{
 		
 		private string name;
 		private IList<ArgumentPlaceholder> placeholders;
-		private IList<DraggableControl> arguments;
+		private IList<DraggableControl> controlArguments;
 		private CustomLabel funName;
 
+		private IFunctionDeclaration functionDeclaration;
 
 		// отступ от границ компонента
 		private const int BorderPadding = 10;
@@ -21,23 +23,24 @@ namespace VisualPracticalLanguage
 		// промежуток между операцией и аргументом
 		private const int OpArgPadding = 5;
 
-		public VFunCall (string name, int argsCount)
+		public VFunCall (IFunctionDeclaration decl)
 		{
-			this.name = name;
+			this.functionDeclaration = decl;
+			this.name = decl.name;
 
 			funName = new CustomLabel (name, BackColor);
 			funName.Parent = this;
 
 			Size = new Size (200, 200);
-			arguments = new List<DraggableControl> ();
+			controlArguments = new List<DraggableControl> ();
 			placeholders = new List<ArgumentPlaceholder> ();
 
-			for (int i = 0; i < argsCount; i++) {
-				arguments.Add (null);
+			for (int i = 0; i < decl.argumentsCount; i++) {
+				controlArguments.Add (null);
 				placeholders.Add (
-					new ArgumentPlaceholder (this).With (_ => {
-					_.Parent = this;
-				}));
+					new ArgumentPlaceholder (this){
+					Parent = this
+				});
 			}
 
 			BackColor = Color.Green;
@@ -45,10 +48,18 @@ namespace VisualPracticalLanguage
 			UpdateSize ();
 		}
 
+		public IFunctionDeclaration function {
+			get { return functionDeclaration; }
+		}
+
+		public IList<IExpression> arguments {
+			get { return controlArguments.Cast<IExpression> ().ToList (); }
+		}
+
 		public void UpdateSize(){
 			var width = BorderPadding + funName.Size.Width + OpArgPadding;
 
-			var controls = arguments.Zip<Control,Control,Control> (placeholders, (arg, pl) => (Control)arg ?? (Control)pl).ToList();
+			var controls = controlArguments.Zip<Control,Control,Control> (placeholders, (arg, pl) => (Control)arg ?? (Control)pl).ToList();
 
 			var height = controls.Max (c => c.Height) + 2*BorderPadding;
 
@@ -68,14 +79,17 @@ namespace VisualPracticalLanguage
 
 		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			return el is DraggableControl;
+			return el is IExpression;
 		}
 
 		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
+			if (!CanPutElement (p, el))
+				return false;
+			
 			var pos = placeholders.IndexOf (p);
 
-			arguments[pos] = el;
+			controlArguments[pos] = el;
 
 			el.Parent = this;
 			el.EParent = this;
@@ -87,8 +101,8 @@ namespace VisualPracticalLanguage
 
 
 		public void OnChildDisconnect (DraggableControl c){
-			var pos = arguments.IndexOf (c);
-			arguments[pos] = null;
+			var pos = controlArguments.IndexOf (c);
+			controlArguments[pos] = null;
 		}
 
 	}

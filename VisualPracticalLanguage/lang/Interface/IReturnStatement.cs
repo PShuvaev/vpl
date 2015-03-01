@@ -4,7 +4,7 @@ namespace VisualPracticalLanguage.Interface
 {
 	public interface IReturnStatement
 	{
-		IExpression expression { get; set; }
+		IExpression expression { get; }
 	}
 }
 

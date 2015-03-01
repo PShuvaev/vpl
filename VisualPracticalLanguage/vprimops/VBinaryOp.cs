@@ -1,15 +1,13 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using VisualPracticalLanguage.Interface;
+using System.Collections.Generic;
 
 namespace VisualPracticalLanguage
 {
-	public class VBinaryOp : DraggableControl, IPlaceholderContainer
+	public class VBinaryOp : DraggableControl, IPlaceholderContainer, IFunctionCall
 	{
-		public static readonly VBinaryOp PLUS = new VBinaryOp ("+");
-		public static readonly VBinaryOp MINUS = new VBinaryOp ("-");
-		public static readonly VBinaryOp MULTIPLE = new VBinaryOp ("*");
-		public static readonly VBinaryOp DIVIDE = new VBinaryOp ("/");
 
 		private string symbol;
 
@@ -27,9 +25,12 @@ namespace VisualPracticalLanguage
 		private ArgumentPlaceholder firstArgPlaceHolder;
 		private ArgumentPlaceholder secondArgPlaceHolder;
 
-		public VBinaryOp (string symbol) : base()
+		private IFunctionDeclaration functionDeclaration;
+
+		public VBinaryOp (IFunctionDeclaration functionDeclaration) : base()
 		{
-			this.symbol = symbol;
+			this.functionDeclaration = functionDeclaration;
+			this.symbol = functionDeclaration.name;
 			
 			BackColor = Color.GreenYellow;
 			
@@ -45,6 +46,14 @@ namespace VisualPracticalLanguage
 			UpdateSize ();
 
 			BackColor = Color.Green;
+		}
+
+		public IFunctionDeclaration function {
+			get { return functionDeclaration; }
+		}
+
+		public IList<IExpression> arguments {
+			get { return new List<IExpression> { firstArg as IExpression, secondArg as IExpression }; }
 		}
 
 		public void UpdateSize(){
@@ -67,7 +76,7 @@ namespace VisualPracticalLanguage
 		
 		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			if (!(el is DraggableControl))
+			if (!(el is IExpression))
 				return false;
 
 			if (p == firstArgPlaceHolder && firstArg == null) {
@@ -86,7 +95,7 @@ namespace VisualPracticalLanguage
 		/// </summary>
 		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			if (!(el is DraggableControl))
+			if (!CanPutElement(p, el))
 				return false;
 			
 			if (p == firstArgPlaceHolder && firstArg == null) {

@@ -5,10 +5,11 @@ namespace VisualPracticalLanguage.Interface
 {
 	public interface IFunctionDefinition : IFunctionDeclaration
 	{
-		IList<IVariable> arguments { get; set;}
-		IList<IVariable> variables { get; set;}
-		IList<IStatement> statements { get; set;}
+		IList<IVariable> arguments { get; }
+		IList<IVariable> variables { get; }
+		IList<IStatement> statements { get; }
 
+		/*
 		IVariable AddArgument (string name);
 
 		void RemoveArgument (string name);
@@ -21,7 +22,7 @@ namespace VisualPracticalLanguage.Interface
 
 		void InsertStatement (int position, IStatement statement);
 
-		void RemoveStatement (IStatement statement);
+		void RemoveStatement (IStatement statement);*/
 	}
 }
 
