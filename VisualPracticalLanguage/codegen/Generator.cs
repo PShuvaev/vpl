@@ -160,6 +160,8 @@ namespace VisualPracticalLanguage
 				Generate (expression as IConstExpression);
 			if (expression is IFunctionCall)
 				Generate (expression as IFunctionCall);
+			if (expression is IReturnStatement)
+				Generate (expression as IReturnStatement);
 		}
 	}
 

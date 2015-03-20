@@ -18,6 +18,7 @@ namespace VisualPracticalLanguage
 			{"!=", () => MakeBinaryOp("!=")},
 			{"если", () => new VIfStatement()},
 			{"пока", () => new VWhileStatement()},
+			{"вернуть ", () => new VReturnStatement()},
 			{"константа", () => {
 					var val = DiverseUtilExtensions.ShowDialog("Новая константа", "Введите значение");
 					if(val.StartsWith("\"")) return new VStringConst(val);

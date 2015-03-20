@@ -5,43 +5,33 @@ using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VSetVariable : DraggableControl, IPlaceholderContainer, ISetVariableStatement
+	public class VReturnStatement : DraggableControl, IPlaceholderContainer, IReturnStatement
 	{
-		private CustomLabel eqLabel;
+		private CustomLabel retLabel;
 
-		
 		private DraggableControl arg;
-		private VVariableRef varRef;
-		
-		private ArgumentPlaceholder argPlaceHolder;
-		private ArgumentPlaceholder varPlaceHolder;
 
-		
+		private ArgumentPlaceholder argPlaceHolder;
+
+
 		// отступ от границ компонента
 		private const int BorderPadding = 10;
 
 		// промежуток между операцией и аргументом
 		private const int OpArgPadding = 5;
 
-		public VSetVariable (string vname)
+		public VReturnStatement ()
 		{
 			BackColor = Color.Yellow;
 			BackColor = Color.Yellow;
 			Size = new Size (100, Const.EXPR_HEIGHT);
-			
+
 			argPlaceHolder = new ArgumentPlaceholder (this);
 			argPlaceHolder.Parent = this;
-			varPlaceHolder = new ArgumentPlaceholder (this);
-			varPlaceHolder.Parent = this;
-
-			eqLabel = new CustomLabel (" = ", BackColor);
-			Controls.Add (eqLabel);
+			retLabel = new CustomLabel ("return ", BackColor);
+			Controls.Add (retLabel);
 
 			UpdateSize ();
-		}
-
-		public IVariable variable {
-			get { return new Variable { varName = varRef.varName }; }
 		}
 
 		public IExpression expression {
@@ -50,8 +40,7 @@ namespace VisualPracticalLanguage
 
 		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			return p == argPlaceHolder && el is IExpression 
-				|| p == varPlaceHolder && el is VVariableRef;
+			return p == argPlaceHolder && el is IExpression;
 		}
 
 		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
@@ -59,43 +48,35 @@ namespace VisualPracticalLanguage
 			if (!CanPutElement (p, el))
 				return false;
 
-			if (p == argPlaceHolder) {
-				arg = el;
-				arg.Parent = this;
-				arg.EParent = this;
-			} else {
-				varRef = (VVariableRef)el;
-				varRef.Parent = this;
-				varRef.EParent = this;
-			}
+			arg = el;
+			arg.Parent = this;
+			arg.EParent = this;
 
-			Hide (p);
+			Hide (argPlaceHolder);
 			return true;
 		}
-		
+
 		public void OnChildDisconnect (DraggableControl c){
 			if (arg == c) {
 				arg = null;
 				Controls.Remove (c);
 			}
 		}
-		
+
 		public void UpdateSize (){
-			Control vArg = (Control)varRef ?? varPlaceHolder;
 			Control fArg = (Control)arg ?? argPlaceHolder;
 
 			var argHeight = fArg.With(_ => _.Height, 0);
 			var height = 2 * BorderPadding + argHeight;
 
 			var argsWidth = fArg.With(_ => _.Width, 0) ;
-			var width = 2 * BorderPadding + 2 * OpArgPadding + argsWidth + vArg.Width + eqLabel.Size.Width;
+			var width = 2 * BorderPadding + 2*OpArgPadding + argsWidth +retLabel.Size.Width;
 
 			Size = new Size (width, height);
 
-			vArg.Location = new Point (BorderPadding, (height - vArg.Height) / 2);
-			eqLabel.Location = new Point (vArg.Location.X + vArg.Size.Width + OpArgPadding, (height - eqLabel.Height) / 2);
+			retLabel.Location = new Point (BorderPadding, BorderPadding);
 
-			fArg.Location = new Point (eqLabel.Location.X + eqLabel.Size.Width + OpArgPadding, BorderPadding);
+			fArg.Location = new Point (retLabel.Location.X + retLabel.Size.Width + OpArgPadding, BorderPadding);
 		}
 	}
 }

@@ -68,9 +68,9 @@ namespace VisualPracticalLanguage
 
 			Size = new Size (width, height);
 			
-			fArg.Location = new Point (BorderPadding, BorderPadding);
-			OpSymbol.Location = new Point (fArg.Location.X + fArg.Width + OpArgPadding, (Size.Height-OpSymbol.Height) / 2);
-			sArg.Location = new Point (Size.Width - BorderPadding - sArg.Width, BorderPadding);
+			fArg.Location = new Point (BorderPadding, (height - fArg.Height) / 2);
+			OpSymbol.Location = new Point (fArg.Location.X + fArg.Width + OpArgPadding, (height-OpSymbol.Height) / 2);
+			sArg.Location = new Point (Size.Width - BorderPadding - sArg.Width, (height - sArg.Height) / 2);
 		}
 
 		

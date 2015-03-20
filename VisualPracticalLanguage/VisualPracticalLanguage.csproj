@@ -80,6 +80,7 @@
     <Compile Include="lang\Interface\IConstExpression.cs" />
     <Compile Include="lang\Interface\ICondStatement.cs" />
     <Compile Include="ElementPanel.cs" />
+    <Compile Include="vprimops\VReturnStatement.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
