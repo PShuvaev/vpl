@@ -81,6 +81,8 @@
     <Compile Include="lang\Interface\ICondStatement.cs" />
     <Compile Include="ElementPanel.cs" />
     <Compile Include="vprimops\VReturnStatement.cs" />
+    <Compile Include="lang\Interface\INamespace.cs" />
+    <Compile Include="lang\Namespace.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
@@ -94,8 +96,6 @@
     <Folder Include="vbase\" />
     <Folder Include="util\" />
     <Folder Include="lang\" />
-    <Folder Include="lang\functions\" />
-    <Folder Include="lang\test\" />
     <Folder Include="codegen\" />
     <Folder Include="New Folder\" />
     <Folder Include="lang\Interface\" />

@@ -14,21 +14,38 @@ namespace VisualPracticalLanguage
 		{
 			this.output = output;
 		}
-		
+
+		private void Spit(params object[] values) {
+			foreach(var val in values){
+				output.Write (" ");
+				output.Write (val ?? "null");
+				output.Write (" ");
+			}
+		}
+
+		public void Generate(INamespace @namespace)
+		{
+			Spit ("namespace", @namespace.namespaceName, "{");
+				Spit ("public class", @namespace.namespaceName, "{");
+					foreach (var fun in @namespace.functions)
+						Generate (fun);
+				Spit ("}");
+			Spit ("}");
+		}
+
 		public void Generate(IFunctionCall call)
 		{
 			// если функция - бинарная операция
 			if (call.function.isBinOperation) {
-				output.Write ("(");
+				Spit ("(");
 				Generate(call.arguments.First());
-				output.Write (call.function.name);
+				Spit (call.function.name);
 				Generate(call.arguments[1]);
-				output.Write (")");
+				Spit (")");
 				return;
 			}
 
-			output.Write (call.function.name);
-			output.Write ("(");
+			Spit (call.function.name, "(");
 
 			var args = call.arguments.EmptyIfNull ();
 			var firstArg = args.FirstOrDefault ();
@@ -37,99 +54,89 @@ namespace VisualPracticalLanguage
 				Generate (firstArg);
 
 				foreach (var arg in args.Skip (1)) {
-					output.Write (", ");
+					Spit (",");
 					Generate (arg);
 				}
 			}
-			output.Write (")");
+			Spit (")");
 		}
 
 		public void Generate(IConstExpression expression)
 		{
-			output.Write (expression.constValue);
+			Spit (expression.constValue);
 		}
 
 		public void Generate(IVariable variable)
 		{
-			output.Write (variable.varName);
+			Spit (variable.varName);
 		}
 
 		public void Generate(IIfStatement statement)
 		{
-			output.Write ("if(");
+			Spit ("if(");
 			Generate (statement.condition);
-			output.Write ("){");
+			Spit ("){");
 			foreach (var st in statement.statements.EmptyIfNull()) {
 				Generate (st);
 			}
-			output.Write ("}");
+			Spit ("}");
 		}
 
 		public void Generate(IWhileStatement statement)
 		{
-			output.Write ("while(");
+			Spit ("while(");
 			Generate (statement.condition);
-			output.Write ("){");
+			Spit ("){");
 			foreach (var st in statement.statements.EmptyIfNull()) {
 				Generate (st);
 			}
-			output.Write ("}");
+			Spit ("}");
 		}
 
 		public void Generate(ISetVariableStatement statement)
 		{
-			output.Write (statement.variable.varName);
-			output.Write ("=");
+			Spit (statement.variable.varName, "=");
 			Generate (statement.expression);
-			output.Write (";");
+			Spit (";");
 		}
 		
 		public void Generate(IFunCallStatement statement)
 		{
 			Generate (statement.functionCall);
-			output.Write (";");
+			Spit (";");
 		}
 
 		public void Generate(IReturnStatement statement)
 		{
-			output.Write ("return ");
+			Spit ("return");
 			Generate (statement.expression);
-			output.Write (";");
+			Spit (";");
 		}
 
-		public void Generate(IFunctionDefinition definition)
+		public void Generate(IFunctionDefinition funDef)
 		{
 			// сигнатура метода
-			output.Write ("public ");
-			if (definition.isReturnVoid) {
-				output.Write ("void");
-			} else {
-				output.Write ("dynamic");
-			}
-			output.Write (" ");
-			output.Write (definition.name);
-			output.Write ("(");
-			definition.arguments.IterSep (@variable => {
-				output.Write ("dynamic ");
-				output.Write (@variable.varName);
-			}, _ => {output.Write (", ");});
-			output.Write ("){");
+			Spit ("public", (funDef.isReturnVoid ? "void" : "dynamic"), funDef.name, "(");
+			funDef.arguments.IterSep (@variable => {
+				Spit ("dynamic", @variable.varName);
+			}, _ => {Spit (",");});
+			Spit ("){");
 
 			// блок переменных
-			if (!definition.variables.Empty ()) {
-				output.Write ("dynamic ");
-				definition.variables.IterSep (@variable => {
-					output.Write (@variable.varName);
-				}, _ => {output.Write (", ");});
-				output.Write (";");
+			if (!funDef.variables.Empty ()) {
+				Spit ("dynamic");
+				funDef.variables.IterSep (@variable => {
+					Spit (@variable.varName, " = null");
+				}, _ => {Spit (",");});
+				Spit (";");
 			}
 
 			// тело функции
-			foreach (var statement in definition.statements) {
+			foreach (var statement in funDef.statements) {
 				Generate (statement);
 			}
 			
-			output.Write ("}");
+			Spit ("}");
 		}
 		
 		/// <summary>
@@ -137,16 +144,30 @@ namespace VisualPracticalLanguage
 		/// </summary>
 		public void Generate(IStatement statement)
 		{
-			if (statement is IIfStatement)
+			if (statement == null) {
+				Spit ("/*error! statement is null*/");
+				return;
+			}
+			if (statement is IIfStatement){
 				Generate (statement as IIfStatement);
-			if (statement is IWhileStatement)
+				return;
+			}
+			if (statement is IWhileStatement){
 				Generate (statement as IWhileStatement);
-			if (statement is ISetVariableStatement)
+				return;
+			}
+			if (statement is ISetVariableStatement){
 				Generate (statement as ISetVariableStatement);
-			if (statement is IReturnStatement)
+				return;
+			}
+			if (statement is IReturnStatement){
 				Generate (statement as IReturnStatement);
-			if (statement is IFunCallStatement)
+				return;
+			}
+			if (statement is IFunCallStatement){
 				Generate (statement as IFunCallStatement);
+				return;
+			}
 		}
 
 		/// <summary>
@@ -154,14 +175,26 @@ namespace VisualPracticalLanguage
 		/// </summary>
 		public void Generate(IExpression expression)
 		{
-			if (expression is IVariable)
+			if (expression == null) {
+				Spit ("/*warning! expression is null*/", "null");
+				return;
+			}
+			if (expression is IVariable){
 				Generate (expression as IVariable);
-			if (expression is IConstExpression)
+				return;
+			}
+			if (expression is IConstExpression){
 				Generate (expression as IConstExpression);
-			if (expression is IFunctionCall)
+				return;
+			}
+			if (expression is IFunctionCall){
 				Generate (expression as IFunctionCall);
-			if (expression is IReturnStatement)
+				return;
+			}
+			if (expression is IReturnStatement){
 				Generate (expression as IReturnStatement);
+				return;
+			}
 		}
 	}
 
@@ -244,13 +277,18 @@ namespace VisualPracticalLanguage
 								}
 							}
 						}
-					},
+					}
 				}
 			});
+			fibbFunc.AddStatement (new ReturnStatement {
+				expression = cVar
+			});
 
-			generator.Generate (fibbFunc);
+			generator.Generate (new Namespace{
+				namespaceName = "Fibbs",
+				functions = new List<IFunctionDefinition>{fibbFunc}
+			});
 			System.Console.WriteLine (writer.ToString());
 		}
 	}
 }
-
