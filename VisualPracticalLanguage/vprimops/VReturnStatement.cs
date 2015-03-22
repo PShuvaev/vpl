@@ -66,10 +66,10 @@ namespace VisualPracticalLanguage
 		public void UpdateSize (){
 			Control fArg = (Control)arg ?? argPlaceHolder;
 
-			var argHeight = fArg.With(_ => _.Height, 0);
+			var argHeight = fArg.OrDef(_ => _.Height, 0);
 			var height = 2 * BorderPadding + argHeight;
 
-			var argsWidth = fArg.With(_ => _.Width, 0) ;
+			var argsWidth = fArg.OrDef(_ => _.Width, 0) ;
 			var width = 2 * BorderPadding + 2*OpArgPadding + argsWidth +retLabel.Size.Width;
 
 			Size = new Size (width, height);

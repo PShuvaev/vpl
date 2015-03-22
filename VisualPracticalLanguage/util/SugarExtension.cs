@@ -6,7 +6,7 @@ namespace VisualPracticalLanguage
 {
 	public static class SugarExtension
 	{
-		public static B With<T, B>(this T obj, Func<T, B> func, B defaultObj)
+		public static B OrDef<T, B>(this T obj, Func<T, B> func, B defaultObj = default(B))
 			where T : class
 		{
 			if (obj != null) {
@@ -23,8 +23,6 @@ namespace VisualPracticalLanguage
 			}
 			return obj;
 		}
-
-
 
 		public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> list)
 		{

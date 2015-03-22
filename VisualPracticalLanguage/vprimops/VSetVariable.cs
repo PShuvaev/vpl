@@ -23,7 +23,7 @@ namespace VisualPracticalLanguage
 		// промежуток между операцией и аргументом
 		private const int OpArgPadding = 5;
 
-		public VSetVariable (string vname)
+		public VSetVariable ()
 		{
 			BackColor = Color.Yellow;
 			BackColor = Color.Yellow;
@@ -41,7 +41,7 @@ namespace VisualPracticalLanguage
 		}
 
 		public IVariable variable {
-			get { return new Variable { varName = varRef.varName }; }
+			get { return varRef.OrDef(_ => new Variable { varName = _.varName }); }
 		}
 
 		public IExpression expression {
@@ -84,10 +84,10 @@ namespace VisualPracticalLanguage
 			Control vArg = (Control)varRef ?? varPlaceHolder;
 			Control fArg = (Control)arg ?? argPlaceHolder;
 
-			var argHeight = fArg.With(_ => _.Height, 0);
+			var argHeight = fArg.OrDef(_ => _.Height, 0);
 			var height = 2 * BorderPadding + argHeight;
 
-			var argsWidth = fArg.With(_ => _.Width, 0) ;
+			var argsWidth = fArg.OrDef(_ => _.Width, 0) ;
 			var width = 2 * BorderPadding + 2 * OpArgPadding + argsWidth + vArg.Width + eqLabel.Size.Width;
 
 			Size = new Size (width, height);

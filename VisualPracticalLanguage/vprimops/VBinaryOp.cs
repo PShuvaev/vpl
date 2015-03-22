@@ -60,10 +60,10 @@ namespace VisualPracticalLanguage
 			Control fArg = (Control)firstArg ?? firstArgPlaceHolder;
 			Control sArg = (Control)secondArg ?? secondArgPlaceHolder;
 
-			var argHeight = Math.Max (fArg.With(_ => _.Height, 0), sArg.With(_ => _.Height, 0));
+			var argHeight = Math.Max (fArg.OrDef(_ => _.Height, 0), sArg.OrDef(_ => _.Height, 0));
 			var height = 2 * BorderPadding + argHeight;
 
-			var argsWidth = fArg.With(_ => _.Width, 0) + sArg.With(_ => _.Width, 0);
+			var argsWidth = fArg.OrDef(_ => _.Width, 0) + sArg.OrDef(_ => _.Width, 0);
 			var width = 2 * BorderPadding + 2 * OpArgPadding + argsWidth + OpSymbol.Width;
 
 			Size = new Size (width, height);

@@ -14,18 +14,38 @@ namespace VisualPracticalLanguage
 
 			new GeneratorTest ().Test ();
 
+			new MenuStrip ().With (_ => {
+				_.Parent = this;
+				_.Dock = DockStyle.Top;
+				_.Items.Add(new ToolStripMenuItem("&File").With(__ => {
+					__.DropDownItems.Add(new ToolStripMenuItem("&New"));
+					__.DropDownItems.Add(new ToolStripMenuItem("&Save"));
+					__.DropDownItems.Add(new ToolStripMenuItem("Save &as"));
+					__.DropDownItems.Add(new ToolStripMenuItem("E&xit"));
+				}));
+				_.Items.Add(new ToolStripMenuItem("&Build").With(__ => {
+					__.DropDownItems.Add(new ToolStripMenuItem("&Make"));
+					__.DropDownItems.Add(new ToolStripMenuItem("&Execute"));
+				}));
+			});
+
+			var groupPanel = new Panel ();
+			groupPanel.Parent = this;
+			groupPanel.Dock = DockStyle.Fill;
+
+			// http://stackoverflow.com/questions/154543/panel-dock-fill-ignoring-other-panel-dock-setting
+			groupPanel.BringToFront ();
 
 			workPanel = new Panel ();
-			workPanel.Parent = this;
+			workPanel.Parent = groupPanel;
 			workPanel.Dock = DockStyle.Fill;
 			workPanel.BackColor = Color.White;
-
 			
 			var expPanel = new ElementPanel (workPanel);
-			expPanel.Parent = this;
+			expPanel.Parent = groupPanel;
 
 			var f = new VFunction ("fibbs");
-			f.AddExpression (new VSetVariable("a"));
+			f.AddExpression (new VSetVariable());
 			f.Parent = workPanel;
 			
 			f.AddArgument ("key");
@@ -46,7 +66,6 @@ namespace VisualPracticalLanguage
 			CenterToScreen();
 		}
 	}
-
 
 	public static class App
 	{
