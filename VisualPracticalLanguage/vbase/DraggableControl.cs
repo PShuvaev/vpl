@@ -32,13 +32,13 @@ namespace VisualPracticalLanguage
 
 		private Point oldPos;
 
-		private ArgumentPlaceholder lastControl;
+		private IPlaceholder lastControl;
 
 		private void OnMouseMove(object sender, MouseEventArgs e) 
 		{
 			if (isDragging)
 			{
-				var control = GetTargetControl () as ArgumentPlaceholder;
+				var control = GetTargetControl () as IPlaceholder;
 
 				if (lastControl != control && lastControl != null) {
 					lastControl.OnLeave (this);
@@ -103,7 +103,7 @@ namespace VisualPracticalLanguage
 
 			var targetControl = GetTargetControl ();
 
-			var placeholder = targetControl as ArgumentPlaceholder;
+			var placeholder = targetControl as IPlaceholder;
 			if (placeholder != null) {
 				var result = placeholder.OnDrop (this);
 				if (result) {

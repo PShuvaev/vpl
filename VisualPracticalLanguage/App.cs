@@ -40,6 +40,12 @@ namespace VisualPracticalLanguage
 			workPanel.Parent = groupPanel;
 			workPanel.Dock = DockStyle.Fill;
 			workPanel.BackColor = Color.White;
+
+			new Trasher ().With (_ => {
+				_.Parent = workPanel;
+				_.Location = new Point(300, 200);
+				_.BringToFront();
+			});
 			
 			var expPanel = new ElementPanel (workPanel);
 			expPanel.Parent = groupPanel;

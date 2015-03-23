@@ -83,6 +83,8 @@
     <Compile Include="vprimops\VReturnStatement.cs" />
     <Compile Include="lang\Interface\INamespace.cs" />
     <Compile Include="lang\Namespace.cs" />
+    <Compile Include="vprimops\Trasher.cs" />
+    <Compile Include="vprimops\IPlaceholder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
@@ -99,5 +101,14 @@
     <Folder Include="codegen\" />
     <Folder Include="New Folder\" />
     <Folder Include="lang\Interface\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trash_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\open_trash_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

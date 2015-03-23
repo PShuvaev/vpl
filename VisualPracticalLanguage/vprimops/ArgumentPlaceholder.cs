@@ -9,9 +9,9 @@ namespace VisualPracticalLanguage
 	/// Припопытке поместить элемент поверх плейсхолдера, последний вызывает у родителя метод TryPutElement и, если тот возвращает true,
 	/// замещается выражением.
 	/// </summary>
-	public class ArgumentPlaceholder : Control
+	public class ArgumentPlaceholder : Control, IPlaceholder
 	{
-		public IPlaceholderContainer parent;
+		public IPlaceholderContainer parent { get; set; }
 
 		public ArgumentPlaceholder (IPlaceholderContainer parent)
 		{
@@ -31,6 +31,10 @@ namespace VisualPracticalLanguage
 		}
 
 		public void OnLeave (DraggableControl c){
+			ResetColor ();
+		}
+
+		public void ResetColor(){
 			BackColor = Color.WhiteSmoke;
 		}
 	}
