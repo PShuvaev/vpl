@@ -36,10 +36,8 @@ namespace VisualPracticalLanguage
 			// http://stackoverflow.com/questions/154543/panel-dock-fill-ignoring-other-panel-dock-setting
 			groupPanel.BringToFront ();
 
-			workPanel = new Panel ();
+			workPanel = new WorkspacePanel ();
 			workPanel.Parent = groupPanel;
-			workPanel.Dock = DockStyle.Fill;
-			workPanel.BackColor = Color.White;
 
 			new Trasher ().With (_ => {
 				_.Parent = workPanel;

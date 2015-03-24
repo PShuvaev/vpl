@@ -85,6 +85,7 @@
     <Compile Include="lang\Namespace.cs" />
     <Compile Include="vprimops\Trasher.cs" />
     <Compile Include="vprimops\IPlaceholder.cs" />
+    <Compile Include="WorkspacePanel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />

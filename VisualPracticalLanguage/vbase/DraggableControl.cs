@@ -81,7 +81,10 @@ namespace VisualPracticalLanguage
 			EParent = null;
 
 			this.Parent = App.Form.workPanel;
-			this.Location = absPos;
+
+			// уродливое восстановление позиции. todo отрефакторить!
+			var workspaceLocation = App.Form.workPanel.Parent.Location;
+			this.Location = new Point(absPos.X - workspaceLocation.X, absPos.Y - workspaceLocation.Y);
 		}
 
 		private void SetDragged(){
