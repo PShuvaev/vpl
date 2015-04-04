@@ -14,7 +14,6 @@ namespace VisualPracticalLanguage
 		{
 		}
 
-		
 		public void Run()
 		{
 			var csc = new CSharpCodeProvider(new Dictionary<string, string>() { { "CompilerVersion", "v3.5" } });
@@ -29,6 +28,7 @@ namespace VisualPracticalLanguage
 			@"using System.Linq;
 			using System;
             class Program {
+			  public int FooMethod(){return 7;}
               public static void Main(string[] args) {
                 var q = from i in Enumerable.Range(1,100)
                           where i % 2 == 0
@@ -38,6 +38,7 @@ namespace VisualPracticalLanguage
             }");
 
 			results.Errors.Cast<CompilerError>().ToList().ForEach(error => Console.WriteLine(error.ErrorText));
+
 
 			Assembly assembly = results.CompiledAssembly;
 

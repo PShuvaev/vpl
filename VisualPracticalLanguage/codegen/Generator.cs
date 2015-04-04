@@ -126,7 +126,7 @@ namespace VisualPracticalLanguage
 			if (!funDef.variables.Empty ()) {
 				Spit ("dynamic");
 				funDef.variables.IterSep (@variable => {
-					Spit (@variable.varName, " = null");
+					Spit (@variable.varName);
 				}, _ => {Spit (",");});
 				Spit (";");
 			}

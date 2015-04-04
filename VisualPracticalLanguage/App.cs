@@ -2,8 +2,6 @@ using System;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
-using System.Drawing.Drawing2D;
-using System.ComponentModel;
 
 namespace VisualPracticalLanguage
 {
@@ -80,6 +78,7 @@ namespace VisualPracticalLanguage
 			//new GeneratorTest ().Test ();
 			//new BinGenerator ().Run ();
 			Application.Run(Form = new MForm());
+			//Persistence.Load ("/home/ps/projects/VisualPracticalLanguage/Foo.cs");
 		}
 	}
 }

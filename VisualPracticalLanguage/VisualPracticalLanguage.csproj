@@ -86,6 +86,9 @@
     <Compile Include="vprimops\Trasher.cs" />
     <Compile Include="vprimops\IPlaceholder.cs" />
     <Compile Include="WorkspacePanel.cs" />
+    <Compile Include="Persistence.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="ObjectDumper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
@@ -93,6 +96,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Sprache">
+      <HintPath>lib\Sprache.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="vprimops\" />
