@@ -87,8 +87,8 @@
     <Compile Include="vprimops\IPlaceholder.cs" />
     <Compile Include="WorkspacePanel.cs" />
     <Compile Include="Persistence.cs" />
-    <Compile Include="Parser.cs" />
     <Compile Include="ObjectDumper.cs" />
+    <Compile Include="VplSharpParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />

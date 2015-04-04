@@ -79,7 +79,9 @@ namespace VisualPracticalLanguage
 			//new BinGenerator ().Run ();
 			Application.Run(Form = new MForm());
 			//Persistence.Load ("/home/ps/projects/VisualPracticalLanguage/Foo.cs");
+			new VplSharpParser();
 		}
+
 	}
 }
 
