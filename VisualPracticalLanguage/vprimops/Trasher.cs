@@ -32,11 +32,11 @@ namespace VisualPracticalLanguage
 			return true;
 		}
 
-		public void OnChildDisconnect (DraggableControl c){
-		}
+		public void OnChildDisconnect (DraggableControl c){}
+		
+		public IResizable ResizableParent { get{ return EParent; } }
 
-		public void UpdateSize (){
-		}
+		public void UpdateSize (){}
 
 		public IPlaceholderContainer EParent { get; set; }
 

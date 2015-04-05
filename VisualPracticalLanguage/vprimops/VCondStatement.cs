@@ -7,7 +7,7 @@ using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VCondStatement : DraggableControl, IPlaceholderContainer, ICondStatement
+	public class VCondStatement : DraggableControl, ICondStatement, IPlaceholderContainer, IVariableRefsHolder
 	{
 		private DraggableControl condArg;
 		private ArgumentPlaceholder condPlaceholder;
@@ -22,7 +22,16 @@ namespace VisualPracticalLanguage
 		// промежуток между операцией и аргументом
 		private const int OpArgPadding = 5;
 
+		
+		public VCondStatement (string condType, ICondStatement condStatement) : this(condType)
+		{
+			foreach (var statement in condStatement.statements) {
+				AddExpression (VElementBuilder.Create (statement));
+			}
 
+			SetCondElement (VElementBuilder.Create (condStatement.condition));
+			UpdateSize ();
+		}
 
 		public VCondStatement (string condType)
 		{
@@ -30,7 +39,6 @@ namespace VisualPracticalLanguage
 				Parent = this,
 				Location = new Point(5, 5)
 			};
-
 
 			controlStatements = new List<DraggableControl> ();
 			placeholders = new List<ArgumentPlaceholder> { 
@@ -54,6 +62,8 @@ namespace VisualPracticalLanguage
 		public IExpression condition {
 			get { return condArg as IExpression; }
 		}
+		
+		public IResizable ResizableParent { get{ return EParent; } }
 
 		public void UpdateSize(){
 			var condControl = (Control)condArg ?? condPlaceholder;;
@@ -120,17 +130,22 @@ namespace VisualPracticalLanguage
 			return el is IStatement && placeholders.IndexOf (p) >= 0;
 		}
 
+		private void SetCondElement(DraggableControl el){
+			condArg = el;
+			if (el == null)
+				return;
+			condArg.Parent = this;
+			condArg.EParent = this;
+			Hide (condPlaceholder);
+		}
+
 		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
 			if (!CanPutElement (p, el))
 				return false;
 
 			if (p == condPlaceholder) {
-				condArg = el;
-				condArg.Parent = this;
-				condArg.EParent = this;
-
-				Hide (condPlaceholder);
+				SetCondElement (el);
 				return true;
 			}
 
@@ -159,6 +174,15 @@ namespace VisualPracticalLanguage
 			}
 
 			Controls.Remove (c);
+		}
+
+		public IList<VVariableRef> refs {
+			get {
+				var condVars = (condArg as IVariableRefsHolder).OrDef(_ => _.refs).EmptyIfNull();
+				var statementsVars = controlStatements.Select (x => x as IVariableRefsHolder)
+					.Where (x => x != null).SelectMany (x => x.refs);
+				return condVars.Concat (statementsVars).ToList ();
+			}
 		}
 	}
 }

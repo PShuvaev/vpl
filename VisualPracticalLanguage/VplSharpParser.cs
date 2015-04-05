@@ -23,7 +23,7 @@ namespace VisualPracticalLanguage
 			 select txt).Token();
 
 
-		public static Parser<TC> BracketP<TC>(Parser<TC> content){
+		static Parser<TC> BracketP<TC>(Parser<TC> content){
 			return (
 				from _ in TokenP("(")
 				from res in content
@@ -31,7 +31,7 @@ namespace VisualPracticalLanguage
 				select res);
 		}
 
-		static Parser<IFunctionCall> FunCallP = (
+		public static Parser<IFunctionCall> FunCallP = (
 			from funName in IdentP
 			from _ in TokenP("(")
 			from arguments in (
@@ -49,23 +49,27 @@ namespace VisualPracticalLanguage
 				isBinOperation = false
 			}
 		});
-
+		
 		static Parser<IVariable> VariableP = 
 			from varName in IdentP
-				select new Variable { varName = varName };
+		select new Variable { varName = varName };
 
-		static Parser<IConstExpression> ConstP = 
+		static Parser<IVariableRef> VariableRefP = 
+			from varName in IdentP
+				select new VariableRef { varName = varName };
+
+		public static Parser<IConstExpression> ConstP = 
 			(from str in QuotedTextP
 			 select new ConstExpression { constValue = '"' + str + '"' })
 				.Or(from dec in Parse.Decimal.Token()
 				    select new ConstExpression { constValue = dec });
 
-		static Parser<IExpression> ExpressionP = 
+		public static Parser<IExpression> ExpressionP = 
 			from firstExpr in
 				BracketP<IExpression> (Parse.Ref (() => ExpressionP))
 				.Or (Parse.Ref (() => ConstP))
 				.Or (Parse.Ref (() => FunCallP))
-				.Or (Parse.Ref (() => VariableP))
+				.Or (Parse.Ref (() => VariableRefP))
 				from operationPart in Parse.Optional(
 					from ____ in Parse.WhiteSpace.Many()
 					from op in Parse.Chars (new char[] { '+', '-', '*', '/', '>', '<'})
@@ -94,12 +98,12 @@ namespace VisualPracticalLanguage
 		};
 
 		static Parser<ISetVariableStatement> SetStatementP =
-			from variable in VariableP
+			from variable in VariableRefP
 				from _ in TokenP("=")
 				from expr in Parse.Ref(() => ExpressionP)
 				from __ in TokenP(";")
 				select new SetVariableStatement {
-			variable = variable,
+			variableRef = variable,
 			expression = expr
 		};
 
@@ -129,7 +133,7 @@ namespace VisualPracticalLanguage
 					select constructor (expr, statements.ToList ());
 		}
 
-		static Parser<IFunctionDefinition> FunDefP =
+		public static Parser<IFunctionDefinition> FunDefP =
 			from _0 in TokenP ("public ")
 			from _ in TokenP ("dynamic")
 			from funName in IdentP
@@ -155,7 +159,7 @@ namespace VisualPracticalLanguage
 				statements = statements.ToList()
 			};
 
-		static Parser<INamespace> NamespaceP =
+		public static Parser<INamespace> NamespaceP =
 			from _ in TokenP("public")
 				from __ in TokenP("class")
 				from namespaceName in IdentP

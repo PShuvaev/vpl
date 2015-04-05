@@ -5,7 +5,7 @@ namespace VisualPracticalLanguage
 {
 	public class SetVariableStatement : ISetVariableStatement
 	{
-		public IVariable variable { get; set; }
+		public IVariableRef variableRef { get; set; }
 		public IExpression expression { get; set; }
 
 		public SetVariableStatement ()

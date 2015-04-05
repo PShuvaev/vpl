@@ -3,12 +3,12 @@ using System.Drawing;
 using System.Windows.Forms;
 using VisualPracticalLanguage.Interface;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VisualPracticalLanguage
 {
-	public class VBinaryOp : DraggableControl, IPlaceholderContainer, IFunctionCall
+	public class VBinaryOp : DraggableControl, IFunctionCall, IPlaceholderContainer, IVariableRefsHolder
 	{
-
 		private string symbol;
 
 		CustomLabel OpSymbol;
@@ -27,7 +27,16 @@ namespace VisualPracticalLanguage
 
 		private IFunctionDeclaration functionDeclaration;
 
-		public VBinaryOp (IFunctionDeclaration functionDeclaration) : base()
+		public VBinaryOp (IFunctionCall functionCall) : this(functionCall.function)
+		{
+			firstArg = VElementBuilder.Create (functionCall.arguments.FirstOrDefault ());
+			SetFirstArg (firstArg);
+			secondArg = VElementBuilder.Create (functionCall.arguments.Skip(1).FirstOrDefault ());
+			SetSecondArg (secondArg);
+			UpdateSize ();
+		}
+
+		public VBinaryOp (IFunctionDeclaration functionDeclaration)
 		{
 			this.functionDeclaration = functionDeclaration;
 			this.symbol = functionDeclaration.name;
@@ -45,7 +54,7 @@ namespace VisualPracticalLanguage
 
 			UpdateSize ();
 
-			BackColor = Color.Green;
+			BackColor = Color.LightGreen;
 		}
 
 		public IFunctionDeclaration function {
@@ -55,6 +64,8 @@ namespace VisualPracticalLanguage
 		public IList<IExpression> arguments {
 			get { return new List<IExpression> { firstArg as IExpression, secondArg as IExpression }; }
 		}
+		
+		public IResizable ResizableParent { get{ return EParent; } }
 
 		public void UpdateSize(){
 			Control fArg = (Control)firstArg ?? firstArgPlaceHolder;
@@ -90,6 +101,24 @@ namespace VisualPracticalLanguage
 			return false;
 		}
 
+		void SetFirstArg(DraggableControl el){
+			firstArg = el;
+			if (el == null)
+				return;
+			firstArg.Parent = this;
+			firstArg.EParent = this;
+			Hide (firstArgPlaceHolder);
+		}
+
+		void SetSecondArg(DraggableControl el){
+			secondArg = el;
+			if (el == null)
+				return;
+			secondArg.Parent = this;
+			secondArg.EParent = this;
+			Hide (secondArgPlaceHolder);
+		}
+
 		/// <summary>
 		/// Вызывается плейсхолдером p при попытке заменить плейсходер выражением el
 		/// </summary>
@@ -99,20 +128,12 @@ namespace VisualPracticalLanguage
 				return false;
 			
 			if (p == firstArgPlaceHolder && firstArg == null) {
-				firstArg = el;
-				firstArg.Parent = this;
-				firstArg.EParent = this;
-
-				Hide (firstArgPlaceHolder);
+				SetFirstArg (el);
 				return true;
 			}
 			
 			if (p == secondArgPlaceHolder && secondArg == null) {
-				secondArg = el;
-				secondArg.Parent = this;
-				secondArg.EParent = this;
-
-				Hide (secondArgPlaceHolder);
+				SetSecondArg (el);
 				return true;
 			}
 
@@ -131,7 +152,13 @@ namespace VisualPracticalLanguage
 			Controls.Remove (c);
 			UpdateSize ();
 		}
-
+		
+		public IList<VVariableRef> refs {
+			get {
+				return (firstArg as IVariableRefsHolder).OrDef(x => x.refs).EmptyIfNull().Concat
+					((secondArg as IVariableRefsHolder).OrDef(x => x.refs).EmptyIfNull()).ToList();
+			}
+		}
 	}
 }
 

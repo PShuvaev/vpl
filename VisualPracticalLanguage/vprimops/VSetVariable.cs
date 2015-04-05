@@ -2,10 +2,12 @@ using System;
 using System.Windows.Forms;
 using System.Drawing;
 using VisualPracticalLanguage.Interface;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace VisualPracticalLanguage
 {
-	public class VSetVariable : DraggableControl, IPlaceholderContainer, ISetVariableStatement
+	public class VSetVariable : DraggableControl, ISetVariableStatement, IPlaceholderContainer, IVariableRefsHolder
 	{
 		private CustomLabel eqLabel;
 
@@ -22,6 +24,13 @@ namespace VisualPracticalLanguage
 
 		// промежуток между операцией и аргументом
 		private const int OpArgPadding = 5;
+
+		public VSetVariable (ISetVariableStatement setVarStatement) : this()
+		{
+			SetVariableRef (VElementBuilder.Create(setVarStatement.variableRef));
+			SetExpression (VElementBuilder.Create(setVarStatement.expression));
+			UpdateSize ();
+		}
 
 		public VSetVariable ()
 		{
@@ -40,8 +49,8 @@ namespace VisualPracticalLanguage
 			UpdateSize ();
 		}
 
-		public IVariable variable {
-			get { return varRef.OrDef(_ => new Variable { varName = _.varName }); }
+		public IVariableRef variableRef {
+			get { return varRef.OrDef(_ => new VariableRef { varName = _.varName }); }
 		}
 
 		public IExpression expression {
@@ -53,6 +62,24 @@ namespace VisualPracticalLanguage
 			return p == argPlaceHolder && el is IExpression 
 				|| p == varPlaceHolder && el is VVariableRef;
 		}
+		
+		private void SetVariableRef(DraggableControl el){
+			varRef = (VVariableRef)el;
+			if (el == null)
+				return;
+			varRef.Parent = this;
+			varRef.EParent = this;
+			Hide (varPlaceHolder);
+		}
+
+		private void SetExpression(DraggableControl el){
+			arg = el;
+			if (el == null)
+				return;
+			arg.Parent = this;
+			arg.EParent = this;
+			Hide (argPlaceHolder);
+		}
 
 		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
@@ -60,16 +87,10 @@ namespace VisualPracticalLanguage
 				return false;
 
 			if (p == argPlaceHolder) {
-				arg = el;
-				arg.Parent = this;
-				arg.EParent = this;
+				SetExpression (el);
 			} else {
-				varRef = (VVariableRef)el;
-				varRef.Parent = this;
-				varRef.EParent = this;
+				SetVariableRef (el);
 			}
-
-			Hide (p);
 			return true;
 		}
 		
@@ -79,6 +100,8 @@ namespace VisualPracticalLanguage
 				Controls.Remove (c);
 			}
 		}
+		
+		public IResizable ResizableParent { get{ return EParent; } }
 		
 		public void UpdateSize (){
 			Control vArg = (Control)varRef ?? varPlaceHolder;
@@ -96,6 +119,13 @@ namespace VisualPracticalLanguage
 			eqLabel.Location = new Point (vArg.Location.X + vArg.Size.Width + OpArgPadding, (height - eqLabel.Height) / 2);
 
 			fArg.Location = new Point (eqLabel.Location.X + eqLabel.Size.Width + OpArgPadding, BorderPadding);
+		}
+
+		public IList<VVariableRef> refs {
+			get {
+				return varRef.OrDef(x => x.refs).EmptyIfNull().Concat
+					((arg as IVariableRefsHolder).OrDef(x => x.refs).EmptyIfNull()).ToList();
+			}
 		}
 	}
 }

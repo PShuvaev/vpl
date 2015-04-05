@@ -2,10 +2,12 @@ using System;
 using System.Windows.Forms;
 using System.Drawing;
 using VisualPracticalLanguage.Interface;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace VisualPracticalLanguage
 {
-	public class VReturnStatement : DraggableControl, IPlaceholderContainer, IReturnStatement
+	public class VReturnStatement : DraggableControl, IReturnStatement, IPlaceholderContainer, IVariableRefsHolder
 	{
 		private CustomLabel retLabel;
 
@@ -19,6 +21,13 @@ namespace VisualPracticalLanguage
 
 		// промежуток между операцией и аргументом
 		private const int OpArgPadding = 5;
+
+		
+		public VReturnStatement (IReturnStatement returnStatement) : this()
+		{
+			SetRetExpression (VElementBuilder.Create (returnStatement.expression));
+			UpdateSize ();
+		}
 
 		public VReturnStatement ()
 		{
@@ -43,16 +52,20 @@ namespace VisualPracticalLanguage
 			return p == argPlaceHolder && el is IExpression;
 		}
 
+		private void SetRetExpression(DraggableControl el){
+			arg = el;
+			if (el == null)
+				return;
+			arg.Parent = this;
+			arg.EParent = this;
+			Hide (argPlaceHolder);
+		}
+
 		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
 			if (!CanPutElement (p, el))
 				return false;
-
-			arg = el;
-			arg.Parent = this;
-			arg.EParent = this;
-
-			Hide (argPlaceHolder);
+			SetRetExpression (el);
 			return true;
 		}
 
@@ -62,6 +75,8 @@ namespace VisualPracticalLanguage
 				Controls.Remove (c);
 			}
 		}
+		
+		public IResizable ResizableParent { get{ return EParent; } }
 
 		public void UpdateSize (){
 			Control fArg = (Control)arg ?? argPlaceHolder;
@@ -77,6 +92,12 @@ namespace VisualPracticalLanguage
 			retLabel.Location = new Point (BorderPadding, BorderPadding);
 
 			fArg.Location = new Point (retLabel.Location.X + retLabel.Size.Width + OpArgPadding, BorderPadding);
+		}
+		
+		public IList<VVariableRef> refs {
+			get {
+				return (arg as IVariableRefsHolder).OrDef(x => x.refs).EmptyIfNull().ToList();
+			}
 		}
 	}
 }

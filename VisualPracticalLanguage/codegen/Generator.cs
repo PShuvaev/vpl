@@ -66,9 +66,9 @@ namespace VisualPracticalLanguage
 			Spit (expression.constValue);
 		}
 
-		public void Generate(IVariable variable)
+		public void Generate(IVariableRef variableRef)
 		{
-			Spit (variable.varName);
+			Spit (variableRef.varName);
 		}
 
 		public void Generate(IIfStatement statement)
@@ -95,7 +95,7 @@ namespace VisualPracticalLanguage
 
 		public void Generate(ISetVariableStatement statement)
 		{
-			Spit (statement.variable.varName, "=");
+			Spit (statement.variableRef.varName, "=");
 			Generate (statement.expression);
 			Spit (";");
 		}
@@ -179,8 +179,8 @@ namespace VisualPracticalLanguage
 				Spit ("/*warning! expression is null*/", "null");
 				return;
 			}
-			if (expression is IVariable){
-				Generate (expression as IVariable);
+			if (expression is IVariableRef){
+				Generate (expression as IVariableRef);
 				return;
 			}
 			if (expression is IConstExpression){
@@ -223,11 +223,11 @@ namespace VisualPracticalLanguage
 			var bVar = fibbFunc.AddVariable("b");
 			var cVar = fibbFunc.AddVariable("c");
 			fibbFunc.AddStatement (new SetVariableStatement {
-				variable = aVar,
+				variableRef = aVar,
 				expression = new ConstExpression { constValue = "0" }
 			});
 			fibbFunc.AddStatement (new SetVariableStatement {
-				variable = bVar,
+				variableRef = bVar,
 				expression = new ConstExpression { constValue = "1" }
 			});
 			fibbFunc.AddStatement (new WhileStatement {
@@ -243,15 +243,15 @@ namespace VisualPracticalLanguage
 				},
 				statements = new List<IStatement>{
 					new SetVariableStatement {
-						variable = cVar,
+						variableRef = cVar,
 						expression = aVar
 					},
 					new SetVariableStatement {
-						variable = aVar,
+						variableRef = aVar,
 						expression = bVar
 					},
 					new SetVariableStatement {
-						variable = bVar,
+						variableRef = bVar,
 						expression = new FunctionCall {
 							function = new FunctionDeclaration {
 								name = "+",
@@ -264,7 +264,7 @@ namespace VisualPracticalLanguage
 						}
 					},
 					new SetVariableStatement {
-						variable = nVar,
+						variableRef = nVar,
 						expression = new FunctionCall {
 							function = new FunctionDeclaration {
 								name = "-",

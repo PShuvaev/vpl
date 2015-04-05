@@ -7,7 +7,7 @@ using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VFunction : DraggableControl, IPlaceholderContainer, IFunctionDefinition
+	public class VFunction : DraggableControl, IFunctionDefinition, IPlaceholderContainer, IVariableRefsHolder
 	{
 		public string fnamespace { get; set; }
 		public string fclass { get; set; }
@@ -16,21 +16,32 @@ namespace VisualPracticalLanguage
 		public bool isBinOperation { get; set;}
 		public bool isReturnVoid { get; set;}
 
-
-
-
 		private IList<DraggableControl> controlStatements;
 		private IList<ArgumentPlaceholder> placeholders;
 		public IList<VVariable> controlArguments { get; set; }
 		private CustomLabel funName;
 		private Button addArgBtn;
-		
 
 		// отступ от границ компонента
 		private const int BorderPadding = 10;
 
 		// промежуток между операцией и аргументом
 		private const int OpArgPadding = 5;
+
+		public VFunction(IFunctionDefinition funDef) : this(funDef.name){
+			foreach (var arg in funDef.arguments) {
+				AddArgument (arg.varName);
+			}
+			foreach (var statement in funDef.statements) {
+				var velement = VElementBuilder.Create (statement);
+				AddExpression (velement);
+			}
+
+			foreach (var @ref in refs) {
+				var variable = controlArguments.FirstOrDefault(x => x.varName == @ref.markInitVarName);
+				variable.AttachVarRef (@ref);
+			}
+		}
 
 		public VFunction (string name)
 		{
@@ -63,7 +74,6 @@ namespace VisualPracticalLanguage
 
 			UpdateSize ();
 		}
-
 
 		public IList<IVariable> variables { 
 			get {
@@ -101,6 +111,8 @@ namespace VisualPracticalLanguage
 				UpdateSize ();
 			}
 		}
+
+		public IResizable ResizableParent { get{ return EParent; } }
 
 		public void UpdateSize(){
 			var argumentsWidth = controlArguments.Sum (x => x.Size.Width) + OpArgPadding * (arguments.Count-1);
@@ -195,7 +207,6 @@ namespace VisualPracticalLanguage
 
 			return true;
 		}
-
 		
 		public void OnChildDisconnect (DraggableControl c){
 			var pos = controlStatements.IndexOf (c);
@@ -204,7 +215,13 @@ namespace VisualPracticalLanguage
 			controlStatements.RemoveAt (pos);
 			placeholders.RemoveAt (pos);
 		}
-
+		
+		public IList<VVariableRef> refs {
+			get {
+				return controlStatements.Select (x => x as IVariableRefsHolder)
+					.Where (x => x != null).SelectMany (x => x.refs).ToList();
+			}
+		}
 	}
 }
 

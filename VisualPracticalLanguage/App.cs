@@ -2,6 +2,8 @@ using System;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
+using Sprache;
+using System.Collections.Generic;
 
 namespace VisualPracticalLanguage
 {
@@ -9,8 +11,6 @@ namespace VisualPracticalLanguage
 		public Panel workPanel;
 		public MForm() {
 			Size = new Size (600, 400);
-
-			new GeneratorTest ().Test ();
 
 			new MenuStrip ().With (_ => {
 				_.Parent = this;
@@ -46,13 +46,24 @@ namespace VisualPracticalLanguage
 			var expPanel = new ElementPanel (workPanel);
 			expPanel.Parent = groupPanel;
 
-			var f = new VFunction ("fibbs");
-			f.AddExpression (new VSetVariable());
+			var fun = VplSharpParser.FunDefP.Parse (@"
+public dynamic fibb(dynamic n){
+	if(n < 2){
+		return 1;
+	}
+	if(n < 3){
+		return 1;
+	}
+	return fibb(n-1) + fibb(n-2);
+}
+");
+
+			var f = new VFunction (fun);
 			f.Parent = workPanel;
-			
+			/*
 			f.AddArgument ("key");
 			f.AddArgument ("state");
-
+			*/
 
 			var btn2 = new Button {
 				Text = "generate code"
@@ -75,11 +86,7 @@ namespace VisualPracticalLanguage
 
 		static public void Main()
 		{
-			//new GeneratorTest ().Test ();
-			//new BinGenerator ().Run ();
 			Application.Run(Form = new MForm());
-			//Persistence.Load ("/home/ps/projects/VisualPracticalLanguage/Foo.cs");
-			new VplSharpParser();
 		}
 
 	}

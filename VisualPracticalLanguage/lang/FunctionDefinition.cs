@@ -17,22 +17,20 @@ namespace VisualPracticalLanguage
 			statements = new List<IStatement> ();
 		}
 		
-		public IVariable AddArgument(string name)
+		public IVariableRef AddArgument(string name)
 		{
-			var v = new Variable { varName = name };
-			arguments.Add (v);
-			return v;
+			arguments.Add (new Variable { varName = name });
+			return new VariableRef { varName = name };
 		}
 
 		public void RemoveArgument(string name)
 		{
 		}
 
-		public IVariable AddVariable(string name)
+		public IVariableRef AddVariable(string name)
 		{
-			var v = new Variable { varName = name };
-			variables.Add (v);
-			return v;
+			variables.Add (new Variable { varName = name });
+			return new VariableRef { varName = name };
 		}
 
 		public void RemoveVariable(string name)

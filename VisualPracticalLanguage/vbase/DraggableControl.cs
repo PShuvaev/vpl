@@ -9,6 +9,8 @@ namespace VisualPracticalLanguage
 	{
 		
 		private bool isDragging = false;
+
+		//TODO: уточнить семантику поля
 		public IPlaceholderContainer EParent{ get; set; }
 
 		private Label markLabel = new Label ()

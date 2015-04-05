@@ -52,6 +52,11 @@ namespace VisualPracticalLanguage
 			v.BringToFront ();
 		}
 
+		public void AttachVarRef(VVariableRef vRef){
+			VariableRefs.Add(vRef);
+			vRef.SetInitVariable (this);
+		}
+
 		public void Remove(){
 			if (VariableRefs.Count == 0) {
 				parentFunc.Controls.Remove (this);

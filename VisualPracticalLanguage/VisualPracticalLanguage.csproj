@@ -89,6 +89,11 @@
     <Compile Include="Persistence.cs" />
     <Compile Include="ObjectDumper.cs" />
     <Compile Include="VplSharpParser.cs" />
+    <Compile Include="vprimops\VElementBuilder.cs" />
+    <Compile Include="lang\Interface\IVariableRef.cs" />
+    <Compile Include="lang\VariableRef.cs" />
+    <Compile Include="vprimops\IVariableRefsHolder.cs" />
+    <Compile Include="vprimops\IResizable.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />

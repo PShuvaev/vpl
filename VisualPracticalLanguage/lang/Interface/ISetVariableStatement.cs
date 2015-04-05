@@ -4,7 +4,7 @@ namespace VisualPracticalLanguage.Interface
 {
 	public interface ISetVariableStatement : IStatement
 	{
-		IVariable variable { get; }
+		IVariableRef variableRef { get; }
 		IExpression expression { get; }
 	}
 }
