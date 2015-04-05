@@ -69,7 +69,7 @@ namespace VisualPracticalLanguage
 			var condControl = (Control)condArg ?? condPlaceholder;;
 			var declwidth = condTypeLabel.Size.Width + 2*OpArgPadding +condControl.Width;
 			var bodyexprWidth = controlStatements.Aggregate (0, (acc, e) => Math.Max (acc, e.Size.Width));
-			var width = 2 * BorderPadding + declwidth + bodyexprWidth;
+			var width = 2 * BorderPadding + Math.Max(declwidth, bodyexprWidth);
 
 			condControl.Location = new Point (condTypeLabel.Size.Width + 2*OpArgPadding, 5);
 

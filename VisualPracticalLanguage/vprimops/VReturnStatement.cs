@@ -37,7 +37,7 @@ namespace VisualPracticalLanguage
 
 			argPlaceHolder = new ArgumentPlaceholder (this);
 			argPlaceHolder.Parent = this;
-			retLabel = new CustomLabel ("return ", BackColor);
+			retLabel = new CustomLabel ("вернуть ", BackColor);
 			Controls.Add (retLabel);
 
 			UpdateSize ();

@@ -131,7 +131,7 @@ namespace VisualPracticalLanguage
 			var funDeclWidth = 2 * BorderPadding + funName.Size.Width + OpArgPadding + argumentsWidth + OpArgPadding + addArgBtn.Width;
 
 			var bodyExprsWidth = controlStatements.Aggregate (0, (acc, e) => Math.Max (acc, e.Size.Width));
-			var width = 2 * BorderPadding + funDeclWidth + bodyExprsWidth;
+			var width = 2 * BorderPadding + Math.Max(funDeclWidth, bodyExprsWidth);
 
 			var declHeight = funName.Size.Height;
 

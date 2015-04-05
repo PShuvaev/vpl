@@ -25,6 +25,9 @@ namespace VisualPracticalLanguage
 					__.DropDownItems.Add(new ToolStripMenuItem("&Make"));
 					__.DropDownItems.Add(new ToolStripMenuItem("&Execute"));
 				}));
+				_.Items.Add(new ToolStripMenuItem("&Libraries").With(__ => {
+					__.DropDownItems.Add(new ToolStripMenuItem("&Add"));
+				}));
 			});
 
 			var groupPanel = new Panel ();
