@@ -10,7 +10,8 @@ namespace VisualPracticalLanguage
 	public class MForm : Form {
 		public Panel workPanel;
 		public MForm() {
-			Size = new Size (600, 400);
+			Size = new Size (800, 600);
+			//WindowState = FormWindowState.Maximized;
 
 			new MenuStrip ().With (_ => {
 				_.Parent = this;
@@ -40,11 +41,6 @@ namespace VisualPracticalLanguage
 			workPanel = new WorkspacePanel ();
 			workPanel.Parent = groupPanel;
 
-			new Trasher ().With (_ => {
-				_.Parent = workPanel;
-				_.Location = new Point(300, 200);
-				_.BringToFront();
-			});
 			
 			var expPanel = new ElementPanel (workPanel);
 			expPanel.Parent = groupPanel;
