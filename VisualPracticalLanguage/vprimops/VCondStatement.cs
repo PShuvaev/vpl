@@ -85,24 +85,6 @@ namespace VisualPracticalLanguage
 			Size = new Size (width, height);
 		}
 
-		protected override void OnPaint (PaintEventArgs e)
-		{
-			{
-				var rectangle = new RectangleF (new PointF (0, 0), new SizeF (Size.Width, Const.HEADER_SIZE));
-				e.Graphics.FillRectangle (new SolidBrush (BackColor), rectangle);
-
-			}
-			{
-				var rectangle = new RectangleF (new PointF (0, Const.HEADER_SIZE), new SizeF (Const.TAB_SIZE, Size.Height-Const.PALLET_HEIGHT));
-				e.Graphics.FillRectangle (new SolidBrush (BackColor), rectangle);
-			}
-
-			{
-				var rectangle = new RectangleF (new PointF (0, Size.Height-Const.PALLET_HEIGHT), new SizeF (Size.Width/2, Const.PALLET_HEIGHT));
-				e.Graphics.FillRectangle (new SolidBrush (BackColor), rectangle);
-			}
-		}
-
 		public void AddExpression(DraggableControl expr){
 			expr.Parent = this;
 			expr.EParent = this;
@@ -161,7 +143,6 @@ namespace VisualPracticalLanguage
 
 			return true;
 		}
-
 
 		public void OnChildDisconnect (DraggableControl c){
 			if (condArg == c) {

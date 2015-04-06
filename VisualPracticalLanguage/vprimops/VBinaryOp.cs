@@ -140,7 +140,6 @@ namespace VisualPracticalLanguage
 			return false;
 		}
 
-		
 		public void OnChildDisconnect (DraggableControl c){
 			if (firstArg == c) {
 				firstArg = null;
@@ -150,7 +149,6 @@ namespace VisualPracticalLanguage
 			}
 			
 			Controls.Remove (c);
-			UpdateSize ();
 		}
 		
 		public IList<VVariableRef> refs {

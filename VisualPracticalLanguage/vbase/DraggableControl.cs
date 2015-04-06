@@ -78,7 +78,7 @@ namespace VisualPracticalLanguage
 
 			if (EParent != null) {
 				EParent.OnChildDisconnect (this);
-				EParent.UpdateSize ();
+				EParent.UpdateRecSize ();
 			}
 			EParent = null;
 
