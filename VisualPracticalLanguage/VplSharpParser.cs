@@ -118,8 +118,9 @@ namespace VisualPracticalLanguage
 			condStatementP ("if", (expr, stmts) => new IfStatement {condition = expr, statements = stmts})
 				.Or (condStatementP ("while", (expr, stmts) => new WhileStatement {condition = expr, statements = stmts}))
 				.Or (SetStatementP.Select(x => (IStatement)x))
-				.Or (CallProcStatementP.Select(x => (IStatement)x))
-				.Or (ReturnStatementP);
+				// Внимание! ReturnStatementP должен быть объявлен ранее CallProcStatementP, ибо return(1) воспримется как вызов функции
+				.Or (ReturnStatementP) 
+				.Or (CallProcStatementP.Select(x => (IStatement)x));
 
 		static Parser<ICondStatement> condStatementP(string condType, Func<IExpression, IList<IStatement>, ICondStatement> constructor){ 
 			return
