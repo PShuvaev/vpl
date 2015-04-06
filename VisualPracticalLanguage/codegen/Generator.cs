@@ -25,11 +25,9 @@ namespace VisualPracticalLanguage
 
 		public void Generate(INamespace @namespace)
 		{
-			Spit ("namespace", @namespace.namespaceName, "{");
-				Spit ("public class", @namespace.namespaceName, "{");
-					foreach (var fun in @namespace.functions)
-						Generate (fun);
-				Spit ("}");
+			Spit ("public class", @namespace.namespaceName, "{");
+				foreach (var fun in @namespace.functions)
+					Generate (fun);
 			Spit ("}");
 		}
 

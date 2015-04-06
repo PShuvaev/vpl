@@ -7,7 +7,7 @@ namespace VisualPracticalLanguage
 {
 	public class ElementPanel : FlowLayoutPanel
 	{
-		private static Dictionary<string, Func<Control>> elements = new Dictionary<string, Func<Control>>(){
+		private static Dictionary<string, Func<DraggableControl>> elements = new Dictionary<string, Func<DraggableControl>>(){
 			{"+", () => MakeBinaryOp("+")},
 			{"-", () => MakeBinaryOp("-")},
 			{"/", () => MakeBinaryOp("/")},
@@ -29,12 +29,13 @@ namespace VisualPracticalLanguage
 					return null;
 				}},
 			{"функция", () => {
+					// TODO: если пользователь ничего не вводит, возвращать null
 					var name = DiverseUtilExtensions.ShowDialog("Новая функция", "Введите имя");
 					return new VFunction(name);
 				}}
 		};
 
-		public ElementPanel (Control workPanel)
+		public ElementPanel (Action<DraggableControl> addControl)
 		{
 			Width = 180;
 			Dock = DockStyle.Right;
@@ -47,7 +48,7 @@ namespace VisualPracticalLanguage
 				btn.Click += delegate {
 					var c = control.Value();
 					if(c != null){ 
-						workPanel.Controls.Add(c);
+						addControl(c);
 						c.BringToFront();
 					}
 				};
