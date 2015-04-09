@@ -12,7 +12,10 @@ namespace VisualPracticalLanguage
 	public class MForm : Form {
 		public Panel workPanel;
 		private Panel groupPanel;
-		
+		DllManager dllWindows;
+
+		TabControl funPanelTabs;
+
 		private INamespace currentNamespace;
 		private string currentFile;
 
@@ -41,7 +44,8 @@ namespace VisualPracticalLanguage
 					__.DropDownItems.Add(new ToolStripMenuItem("&Execute"));
 				}));
 				_.Items.Add(new ToolStripMenuItem("&Libraries").With(__ => {
-					__.DropDownItems.Add(new ToolStripMenuItem("&Add"));
+					__.DropDownItems.Add(newItem("&Добавить/удалить", EditDlls));
+					dllWindows = new DllManager (new List<string>{"sprache.dll", "robots.dll"}, __.DropDownItems, () => funPanelTabs, OnAddFunctionToWorkspace);
 				}));
 			});
 
@@ -54,12 +58,19 @@ namespace VisualPracticalLanguage
 
 			
 			NewWorkspace ();
-			new ElementPanel (element => {
-				workPanel.Controls.Add(element);
-				(element as IFunctionDefinition).With(_ => {
-					currentNamespace.functions.Add(_);
-				});
-			}).Parent = groupPanel;
+
+			funPanelTabs = new TabControl {
+				Width = 180,
+				Dock = DockStyle.Right,
+				BackColor = Color.Red
+			};
+			funPanelTabs.Parent = groupPanel;
+
+
+			funPanelTabs.TabPages.Add (new TabPage().With (_ => {
+				_.Text = "standart";
+				_.Controls.Add(new ElementPanel (OnAddFunctionToWorkspace, StandartFuns.Funs));
+			}));
 
 			new Trasher (workPanel, element => {
 				(element as IFunctionDefinition).With(_ => {
@@ -109,6 +120,17 @@ namespace VisualPracticalLanguage
 			var output = new StringWriter ();
 			new Generator (output).Generate (currentNamespace);
 			File.WriteAllText (currentFile, output.ToString());
+		}
+
+		void EditDlls(){
+			dllWindows.ShowDialog ();
+		}
+
+		void OnAddFunctionToWorkspace(DraggableControl element){
+			workPanel.Controls.Add (element);
+			(element as IFunctionDefinition).With (_ => {
+				currentNamespace.functions.Add (_);
+			});
 		}
 	}
 

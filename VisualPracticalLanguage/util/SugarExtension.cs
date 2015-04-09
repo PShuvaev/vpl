@@ -26,11 +26,7 @@ namespace VisualPracticalLanguage
 
 		public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> list)
 		{
-			if (list == null) {
-				return new List<T>();
-			}
-
-			return list;
+			return list ?? Enumerable.Empty<T> ();
 		}
 		
 		public static bool Empty<T>(this IEnumerable<T> list)

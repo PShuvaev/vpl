@@ -94,6 +94,9 @@
     <Compile Include="lang\VariableRef.cs" />
     <Compile Include="vprimops\IVariableRefsHolder.cs" />
     <Compile Include="vprimops\IResizable.cs" />
+    <Compile Include="runtime\IDllInterface.cs" />
+    <Compile Include="DllManager.cs" />
+    <Compile Include="StandartFuns.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
@@ -111,9 +114,9 @@
     <Folder Include="util\" />
     <Folder Include="lang\" />
     <Folder Include="codegen\" />
-    <Folder Include="New Folder\" />
     <Folder Include="lang\Interface\" />
     <Folder Include="Resources\" />
+    <Folder Include="runtime\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\trash_icon.png">
