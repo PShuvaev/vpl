@@ -9,24 +9,28 @@ using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
+	/// <summary>
+	/// Загрузка dll может производится только из текущей директории.
+	/// dll должна содержать единственный класс с одноименным с файлом названием
+	/// </summary>
 	public class DllManager : Form
 	{
 		IList<DllRow> dlls;
 		ToolStripItemCollection menuItems;
 
-		public DllManager (IEnumerable<string> pathList, ToolStripItemCollection menuItems, Func<TabControl> getFunPanelTabs, Action<DraggableControl> onAddFunctionToWorkspace) : base()
+		//TODO: ugly getting tabcontrol, ugly!
+		Func<TabControl> getFunPanelTabs;
+		Action<DraggableControl> onAddFunctionToWorkspace;
+
+		public DllManager (ToolStripItemCollection menuItems, Func<TabControl> getFunPanelTabs, Action<DraggableControl> onAddFunctionToWorkspace) : base()
 		{
+			this.onAddFunctionToWorkspace = onAddFunctionToWorkspace;
+			this.getFunPanelTabs = getFunPanelTabs;
 			Text = "Подключенные модули";
 			StartPosition = FormStartPosition.CenterScreen;
 			Size = new Size (500, 300);
 			
 			this.menuItems = menuItems;
-			pathList = pathList ?? Enumerable.Empty<string>();
-
-
-			foreach(var path in pathList){
-				menuItems.Add(NewItem(path, () => {}));
-			}
 
 			var window = this;
 			new FlowLayoutPanel ().With (panel => {
@@ -40,27 +44,17 @@ namespace VisualPracticalLanguage
 					var newLibPath = AskFilePath();
 					if(string.IsNullOrEmpty(newLibPath)) return;
 
-					var dllRow = new DllRow (menuItems, newLibPath);
-					dlls.Add (dllRow);
-					dllRow.Parent = window;
-
-					menuItems.Add(NewItem(newLibPath, () => {}));
-
-					var funDic = new Dictionary<string, Func<DraggableControl>>();
-					foreach(var fun in GetFunsFromAssembly(newLibPath)){
-						funDic[fun.Name] = () => MakeFunCall(fun);
-					}
-					getFunPanelTabs().Controls.Add(new TabPage().With(_ => {
-						_.Text = newLibPath;
-						new ElementPanel(onAddFunctionToWorkspace, funDic).Parent = _;
-					}));
+					addDll(newLibPath);
 				};
 				addDllBtn.Parent = panel;
 			});
 
-			dlls = pathList.EmptyIfNull ().Select (p => new DllRow(menuItems, p)).ToList();
 		}
 
+		public IList<string> getDlls ()
+		{
+			return dlls.EmptyIfNull ().Select (x => x.getDllName ()).ToList ();
+		}
 		
 		ToolStripMenuItem NewItem (string name, Action action){
 			return new ToolStripMenuItem(name).With(item => {
@@ -95,12 +89,44 @@ namespace VisualPracticalLanguage
 			return null;
 		}
 
-		public static String MakeRelativePath(String path)
+		static String MakeRelativePath(String path)
 		{
 			return new Uri(AppDomain.CurrentDomain.BaseDirectory)
 				.MakeRelativeUri(new Uri(path)).ToString();
 		}
-		
+
+		public void SetImportDlls(IEnumerable<string> pathList){
+			//TODO: correct menu cleanup
+			for (int i = 1; i < menuItems.Count; i++) {
+				menuItems.RemoveAt (i);
+			}
+
+			pathList = pathList ?? Enumerable.Empty<string>();
+
+			foreach(var path in pathList){
+				addDll (path);
+			}
+			
+			dlls = pathList.Select (p => new DllRow(menuItems, p)).ToList();
+		}
+
+		private void addDll(string dll){
+			var dllRow = new DllRow (menuItems, dll);
+			dlls.Add (dllRow);
+			dllRow.Parent = this;
+
+			menuItems.Add(NewItem(dll, () => {}));
+
+			var funDic = new Dictionary<string, Func<DraggableControl>>();
+			foreach(var fun in GetFunsFromAssembly(dll+".dll")){
+				funDic[fun.Name] = () => MakeFunCall(fun);
+			}
+			getFunPanelTabs().Controls.Add(new TabPage().With(_ => {
+				_.Text = dll;
+				new ElementPanel(onAddFunctionToWorkspace, funDic).Parent = _;
+			}));
+		}
+
 		class DllRow : FlowLayoutPanel {
 			Label pathLabel;
 			Button selectDllBtn, removeDllBtn;
@@ -134,11 +160,16 @@ namespace VisualPracticalLanguage
 				selectDllBtn.Click += (object sender, EventArgs e) => {
 					var newLibPath = AskFilePath();
 					if(string.IsNullOrEmpty(newLibPath)) return;
-
-					pathLabel.Text = newLibPath;
+					
+					//TODO: ugly, ugly!
+					pathLabel.Text = newLibPath.Split('.')[0];
 				};
 				Controls.Add(selectDllBtn);
 				selectDllBtn.BringToFront ();
+			}
+
+			public string getDllName(){
+				return pathLabel.Text;
 			}
 		}
 	}

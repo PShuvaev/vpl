@@ -25,6 +25,8 @@ namespace VisualPracticalLanguage
 
 		public void Generate(INamespace @namespace)
 		{
+			foreach (var ns in @namespace.importedDlls.EmptyIfNull())
+				Spit ("using", ns, ";");
 			Spit ("public class", @namespace.namespaceName, "{");
 				foreach (var fun in @namespace.functions)
 					Generate (fun);

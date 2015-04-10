@@ -161,6 +161,11 @@ namespace VisualPracticalLanguage
 			};
 
 		public static Parser<INamespace> NamespaceP =
+			from usingNamespaces in Parse.Many(
+				from _ in TokenP("using")
+				from name in IdentP
+				from __ in TokenP(";")
+				select name)
 			from _ in TokenP("public")
 				from __ in TokenP("class")
 				from namespaceName in IdentP
@@ -169,6 +174,7 @@ namespace VisualPracticalLanguage
 				from ____ in TokenP("}")
 				select new Namespace {
 					namespaceName = namespaceName,
+					importedDlls = usingNamespaces.ToList(),
 					functions = funs.ToList()
 				};
 

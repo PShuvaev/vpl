@@ -12,7 +12,7 @@ namespace VisualPracticalLanguage
 	public class MForm : Form {
 		public Panel workPanel;
 		private Panel groupPanel;
-		DllManager dllWindows;
+		DllManager dllManager;
 
 		TabControl funPanelTabs;
 
@@ -45,7 +45,7 @@ namespace VisualPracticalLanguage
 				}));
 				_.Items.Add(new ToolStripMenuItem("&Libraries").With(__ => {
 					__.DropDownItems.Add(newItem("&Добавить/удалить", EditDlls));
-					dllWindows = new DllManager (new List<string>{"sprache.dll", "robots.dll"}, __.DropDownItems, () => funPanelTabs, OnAddFunctionToWorkspace);
+					dllManager = new DllManager (__.DropDownItems, () => funPanelTabs, OnAddFunctionToWorkspace);
 				}));
 			});
 
@@ -92,6 +92,7 @@ namespace VisualPracticalLanguage
 					workPanel.Controls.Add (new VFunction(currentNamespace.functions.First()));
 				}
 				Text = currentNamespace.namespaceName;
+				dllManager.SetImportDlls (currentNamespace.importedDlls);
 			}
 		}
 
@@ -102,6 +103,7 @@ namespace VisualPracticalLanguage
 				functions = new List<IFunctionDefinition>()
 			};
 			Text = currentNamespace.namespaceName;
+			dllManager.SetImportDlls (currentNamespace.importedDlls);
 		}
 
 		void SaveToNewFile(){
@@ -118,12 +120,14 @@ namespace VisualPracticalLanguage
 			if (currentFile == null)
 				SaveToNewFile ();
 			var output = new StringWriter ();
+			// TODO: fix hack
+			((Namespace)currentNamespace).importedDlls = dllManager.getDlls ();
 			new Generator (output).Generate (currentNamespace);
 			File.WriteAllText (currentFile, output.ToString());
 		}
 
 		void EditDlls(){
-			dllWindows.ShowDialog ();
+			dllManager.ShowDialog ();
 		}
 
 		void OnAddFunctionToWorkspace(DraggableControl element){

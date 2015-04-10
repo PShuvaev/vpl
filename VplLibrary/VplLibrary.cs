@@ -3,14 +3,10 @@ using System.Windows.Forms;
 
 namespace VplLibrary
 {
-	public class MainInterface
+	public class VplLibrary
 	{
 		public static void Сообщение(object obj){
 			MessageBox.Show(obj.ToString());
-		}
-
-		public static void Main(){
-			Сообщение ("Привет!");
 		}
 	}
 }
