@@ -67,6 +67,7 @@ namespace VisualPracticalLanguage
 				.GetExportedTypes ()
 				.Where(x => x.IsClass)
 				.SelectMany (x => x.GetMethods ())
+				.Where(x => !new []{"Equals", "GetType", "ToString", "GetHashCode"}.Contains(x.Name))
 				.ToList();
 		}
 
