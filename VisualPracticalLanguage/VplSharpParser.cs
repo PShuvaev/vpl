@@ -10,7 +10,7 @@ namespace VisualPracticalLanguage
 	// TODO: приоритет операций в выражениях определяется исключительно скобками 
 	public class VplSharpParser
 	{
-		static Parser<string> IdentP = Parse.Letter.AtLeastOnce().Text().Token();
+		static Parser<string> IdentP = Parse.Identifier(Parse.Letter, Parse.LetterOrDigit).Text().Token();
 
 		static Parser<string> TokenP(string s){
 			return Parse.String (s).Text().Token();

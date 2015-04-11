@@ -88,8 +88,19 @@ namespace VisualPracticalLanguage
 				currentFile = dialog.FileName;
 				var src = File.ReadAllText (currentFile);
 				currentNamespace = VplSharpParser.NamespaceP.Parse (src);
+
+				Logger.Log(ObjectDumper.Dump (currentNamespace));
+
+				foreach (var c in workPanel.Controls) {
+					if (c is VFunction)
+						workPanel.Controls.Remove ((Control)c);
+				}
+
 				if (!currentNamespace.functions.Empty()) {
-					workPanel.Controls.Add (new VFunction(currentNamespace.functions.First()));
+					// TODO: fix first, make functions arrangement
+					var vfun = new VFunction (currentNamespace.functions.First ());
+					currentNamespace.functions [0] = vfun;
+					workPanel.Controls.Add (vfun);
 				}
 				Text = currentNamespace.namespaceName;
 				dllManager.SetImportDlls (currentNamespace.importedDlls);
@@ -120,7 +131,8 @@ namespace VisualPracticalLanguage
 			if (currentFile == null)
 				SaveToNewFile ();
 			var output = new StringWriter ();
-			// TODO: fix hack
+
+			// TODO: fix casting hack
 			((Namespace)currentNamespace).importedDlls = dllManager.getDlls ();
 			new Generator (output).Generate (currentNamespace);
 			File.WriteAllText (currentFile, output.ToString());

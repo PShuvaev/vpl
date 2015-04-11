@@ -7,7 +7,7 @@ using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VFunCall : DraggableControl, IFunctionCall, IPlaceholderContainer, IVariableRefsHolder
+	public class VFunCall : DraggableControl, IFunctionCall, IStatement, IPlaceholderContainer, IVariableRefsHolder
 	{
 		
 		private string name;
