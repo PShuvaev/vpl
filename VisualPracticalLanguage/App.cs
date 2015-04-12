@@ -57,9 +57,6 @@ namespace VisualPracticalLanguage
 			// http://stackoverflow.com/questions/154543/panel-dock-fill-ignoring-other-panel-dock-setting
 			groupPanel.BringToFront ();
 
-			
-			NewWorkspace ();
-
 			funPanelTabs = new TabControl {
 				Width = Const.ELEMENT_PANEL_WIDTH,
 				Dock = DockStyle.Right,
@@ -77,6 +74,9 @@ namespace VisualPracticalLanguage
 				_.Text = "Созданные";
 				_.Controls.Add (createdFunsPanel = new ElementPanel (OnAddFunctionToWorkspace, createdFuns));
 			}));
+
+			
+			NewWorkspace ();
 
 			new Trasher (workPanel, element => {
 				(element as IFunctionDefinition).With(_ => {
@@ -101,12 +101,12 @@ namespace VisualPracticalLanguage
 				var src = File.ReadAllText (currentFile);
 				currentNamespace = VplSharpParser.NamespaceP.Parse (src);
 
-				Logger.Log(ObjectDumper.Dump (currentNamespace));
-
 				foreach (var c in workPanel.Controls) {
 					if (c is VFunction)
 						workPanel.Controls.Remove ((Control)c);
 				}
+
+				CleanCustomFunPanel ();
 
 				int funPosX = 10;
 				currentNamespace.functions = currentNamespace.functions.EmptyIfNull ()
@@ -114,19 +114,40 @@ namespace VisualPracticalLanguage
 						_.Location = new Point(funPosX, 10);
 						_.Parent = workPanel;
 						funPosX += _.Width + 10;
+						createdFunsPanel.AddFunBtn(_);
 					})).ToList();
 
 				Text = currentNamespace.namespaceName;
 				dllManager.SetImportDlls (currentNamespace.importedDlls);
 			}
 		}
+		
+		/// <summary>
+		/// Удаление кнопок создания функции с панели кастомных функций
+		/// </summary>
+		void CleanCustomFunPanel(){
+			createdFunsPanel.Controls.Cast<Control> ()
+				.Select (x => (x as Button).With (btn => {
+					btn.Parent = null;
+				})).DoAll ();
+		}
 
 		static int newNamespaceNameNumber = 0;
 		void NewWorkspace(){
+			CleanCustomFunPanel ();
+
 			(workPanel = new WorkspacePanel ()).Parent = groupPanel;
 			currentNamespace = new Namespace {
 				namespaceName = "New" + newNamespaceNameNumber++, 
-				functions = new List<IFunctionDefinition>()
+				functions = new List<IFunctionDefinition>{
+					new VFunction(new FunctionDefinition{
+						name = "Старт",
+						isReturnVoid = true
+					}).With(_ => {
+						workPanel.Controls.Add (_);
+						createdFunsPanel.AddFunBtn(_);
+					})
+				}
 			};
 			Text = currentNamespace.namespaceName;
 			dllManager.SetImportDlls (currentNamespace.importedDlls);

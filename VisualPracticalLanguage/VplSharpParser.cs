@@ -11,9 +11,18 @@ namespace VisualPracticalLanguage
 	public class VplSharpParser
 	{
 		static Parser<string> IdentP = Parse.Identifier(Parse.Letter, Parse.LetterOrDigit).Text().Token();
-
+		
 		static Parser<string> TokenP(string s){
 			return Parse.String (s).Text().Token();
+		}
+
+		static Parser<string> TokensP(IEnumerable<string> ss){
+			if (ss.Empty ())
+				throw new Exception ("Sequence must contain at least one string!");
+			var p = TokenP (ss.First());
+			foreach (var np in ss.Skip(1))
+				p = p.Or (TokenP (np));
+			return p;
 		}
 
 		static Parser<string> QuotedTextP =
@@ -64,10 +73,12 @@ namespace VisualPracticalLanguage
 				select new VariableRef { varName = varName };
 
 		public static Parser<IConstExpression> ConstP = 
-			(from str in QuotedTextP
-			 select new ConstExpression { constValue = str })
-				.Or(from dec in Parse.Decimal.Token()
-				    select new ConstExpression { constValue = dec });
+			(from _ in TokenP("null")
+				select new ConstExpression { constValue = null })
+			.Or(from str in QuotedTextP
+			    select new ConstExpression { constValue = str })
+			.Or(from dec in Parse.Decimal.Token()
+			    select new ConstExpression { constValue = dec });
 
 		public static Parser<IExpression> ExpressionP = 
 			from firstExpr in
@@ -77,7 +88,7 @@ namespace VisualPracticalLanguage
 				.Or (Parse.Ref (() => VariableRefP))
 				from operationPart in Parse.Optional(
 					from ____ in Parse.WhiteSpace.Many()
-					from op in Parse.Chars (new char[] { '+', '-', '*', '/', '>', '<'})
+					from op in TokensP(new string[] { "+", "-", "*", "/", ">", "<", "==", "!=", ">=", "<="})
 					from v2 in Parse.Ref(() => ExpressionP)
 					select new FunctionCall {
 					arguments = new List<IExpression> {v2},
