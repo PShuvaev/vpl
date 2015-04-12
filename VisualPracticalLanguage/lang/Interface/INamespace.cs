@@ -7,7 +7,7 @@ namespace VisualPracticalLanguage.Interface
 	{
 		string namespaceName { get; set; }
 		IList<string> importedDlls { get; set; }
-		IList<IFunctionDefinition> functions { get; }
+		IList<IFunctionDefinition> functions { get; set; }
 	}
 }
 

@@ -96,12 +96,14 @@ namespace VisualPracticalLanguage
 						workPanel.Controls.Remove ((Control)c);
 				}
 
-				if (!currentNamespace.functions.Empty()) {
-					// TODO: fix first, make functions arrangement
-					var vfun = new VFunction (currentNamespace.functions.First ());
-					currentNamespace.functions [0] = vfun;
-					workPanel.Controls.Add (vfun);
-				}
+				int funPosX = 10;
+				currentNamespace.functions = currentNamespace.functions.EmptyIfNull ()
+					.Select (f => (IFunctionDefinition)new VFunction (f).With (_ => {
+						_.Location = new Point(funPosX, 10);
+						_.Parent = workPanel;
+						funPosX += _.Width + 10;
+					})).ToList();
+
 				Text = currentNamespace.namespaceName;
 				dllManager.SetImportDlls (currentNamespace.importedDlls);
 			}
