@@ -26,18 +26,22 @@ namespace VisualPracticalLanguage
 		}
 
 		void SetLocation(Panel workPanel){
-			Location = new Point(workPanel.Width - Width - 10, workPanel.Height - Height - 10);
+			Location = new Point(10, workPanel.Height - Height - 10);
 		}
 
-		private void SetImage(Image img){
+		void SetImage(Image img){
 			Image = img;
 			Width = img.Width;
 			Height = img.Height;
 		}
 
+		bool IsMainFun(DraggableControl el){
+			return (el is VFunction) && (el as VFunction).name == Const.MainFunName;
+		}
+
 		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
 		{
-			return true;
+			return !IsMainFun (el);
 		}
 
 		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
@@ -55,6 +59,9 @@ namespace VisualPracticalLanguage
 
 		public bool OnDrop (DraggableControl el)
 		{
+			// не давем удалять главную функцию
+			if (IsMainFun (el))
+				return false;
 			onElementRemove (el);
 			el.Parent = null;
 			ResetColor ();
@@ -63,6 +70,9 @@ namespace VisualPracticalLanguage
 
 		public void OnOver (DraggableControl c)
 		{
+			// не давем удалять главную функцию
+			if (IsMainFun (c))
+				return;
 			SetImage (openTrash);
 		}
 

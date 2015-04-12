@@ -141,7 +141,7 @@ namespace VisualPracticalLanguage
 				namespaceName = "New" + newNamespaceNameNumber++, 
 				functions = new List<IFunctionDefinition>{
 					new VFunction(new FunctionDefinition{
-						name = "Старт",
+						name = Const.MainFunName,
 						isReturnVoid = true
 					}).With(_ => {
 						workPanel.Controls.Add (_);

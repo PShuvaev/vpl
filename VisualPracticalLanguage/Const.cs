@@ -11,6 +11,8 @@ namespace VisualPracticalLanguage
 		public static readonly int EXPR_HEIGHT = 40;
 		public static readonly int ELEMENT_PANEL_WIDTH = 250;
 		public static readonly SizeF ArgSize = new SizeF (11, 11);
+
+		public static readonly string MainFunName = "Старт";
 	}
 }
 

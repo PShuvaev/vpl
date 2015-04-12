@@ -66,6 +66,10 @@ namespace VisualPracticalLanguage
 				Size = new Size(20, 20)
 			};
 			addArgBtn.Click += (object sender, EventArgs e) => {
+				if(name == Const.MainFunName){
+					MessageBox.Show("Главная подпрограмма не принимает аргументов.");
+					return;
+				}
 				var argName = "arg" + controlArguments.Count;
 				AddArgument(argName);
 			};

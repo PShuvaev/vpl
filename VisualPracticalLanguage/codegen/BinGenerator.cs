@@ -26,10 +26,9 @@ namespace VisualPracticalLanguage
 				importedDlls = ns.importedDlls,
 				namespaceName = ns.namespaceName,
 				functions = ns.functions.EmptyIfNull().ToList().With(_ => {
-					if(_.Select(x => x.name).Contains("Старт")){
-						_.Add(new JustCode(@"
-							public static void Main(string[] args){new $ClassName$().Старт();}
-						".Replace("$ClassName$", ns.namespaceName)));
+					if(_.Select(x => x.name).Contains(Const.MainFunName)){
+						_.Add(new JustCode("public static void Main(string[] args)"+
+						                   string.Format("{{new {0}().{1}();}}", ns.namespaceName, Const.MainFunName)));
 					}
 				})
 			};
