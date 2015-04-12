@@ -65,7 +65,7 @@ namespace VisualPracticalLanguage
 
 		public static Parser<IConstExpression> ConstP = 
 			(from str in QuotedTextP
-			 select new ConstExpression { constValue = '"' + str + '"' })
+			 select new ConstExpression { constValue = str })
 				.Or(from dec in Parse.Decimal.Token()
 				    select new ConstExpression { constValue = dec });
 

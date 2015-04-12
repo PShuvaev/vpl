@@ -151,7 +151,7 @@ namespace VisualPracticalLanguage
 		public void Generate(IStatement statement)
 		{
 			if (statement == null) {
-				Spit ("/*error! statement is null*/");
+				Spit ("null");
 				return;
 			}
 			if (statement is IIfStatement){
@@ -182,7 +182,7 @@ namespace VisualPracticalLanguage
 		public void Generate(IExpression expression)
 		{
 			if (expression == null) {
-				Spit ("/*warning! expression is null*/", "null");
+				Spit ("null");
 				return;
 			}
 			if (expression is IVariableRef){
@@ -230,11 +230,11 @@ namespace VisualPracticalLanguage
 			var cVar = fibbFunc.AddVariable("c");
 			fibbFunc.AddStatement (new SetVariableStatement {
 				variableRef = aVar,
-				expression = new ConstExpression { constValue = "0" }
+				expression = new ConstExpression { constValue = 0 }
 			});
 			fibbFunc.AddStatement (new SetVariableStatement {
 				variableRef = bVar,
-				expression = new ConstExpression { constValue = "1" }
+				expression = new ConstExpression { constValue = 1 }
 			});
 			fibbFunc.AddStatement (new WhileStatement {
 				condition = new FunctionCall {
@@ -244,7 +244,7 @@ namespace VisualPracticalLanguage
 						isReturnVoid = false
 					},
 					arguments = new List<IExpression>{
-						nVar, new ConstExpression{constValue = "0"}
+						nVar, new ConstExpression{constValue = 0}
 					}
 				},
 				statements = new List<IStatement>{
@@ -279,7 +279,7 @@ namespace VisualPracticalLanguage
 							},
 							arguments = new List<IExpression> {
 								nVar, new ConstExpression {
-									constValue = "1"
+									constValue = 1
 								}
 							}
 						}

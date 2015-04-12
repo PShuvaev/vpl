@@ -10,21 +10,21 @@ namespace VisualPracticalLanguage
 			{"-", () => MakeBinaryOp("-")},
 			{"/", () => MakeBinaryOp("/")},
 			{"*", () => MakeBinaryOp("*")},
-			{"=", () => MakeBinaryOp("==")},
+			{"равно", () => MakeBinaryOp("==")},
 			{">", () => MakeBinaryOp(">")},
 			{"<", () => MakeBinaryOp("<")},
-			{"!=", () => MakeBinaryOp("!=")},
+			{"не равно", () => MakeBinaryOp("!=")},
 			{"если", () => new VIfStatement()},
 			{"пока", () => new VWhileStatement()},
 			{"вернуть ", () => new VReturnStatement()},
-			{"константа", () => {
-					var val = DiverseUtilExtensions.ShowDialog("Новая константа", "Введите значение");
-					if(val.StartsWith("\"")) return new VStringConst(val);
-
+			{"число", () => {
+					var val = DiverseUtilExtensions.ShowDialog("Число", "Введите значение");
 					decimal x;
-					if(decimal.TryParse(val, out x)) return new VNumberConst(x);
-
-					return null;
+					return decimal.TryParse(val, out x) ? new VNumberConst(x) : null;
+				}},
+			{"строка", () => {
+					var val = DiverseUtilExtensions.ShowDialog("Строка", "Введите значение");
+					return new VStringConst(val);
 				}},
 			{"функция", () => {
 					// TODO: если пользователь ничего не вводит, возвращать null

@@ -5,7 +5,7 @@ namespace VisualPracticalLanguage
 {
 	public class ConstExpression : IConstExpression
 	{
-		public string constValue { get; set; }
+		public object constValue { get; set; }
 
 		public ConstExpression ()
 		{

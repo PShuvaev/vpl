@@ -65,7 +65,7 @@ namespace VisualPracticalLanguage
 
 			var controls = controlArguments.Zip<Control,Control,Control> (placeholders, (arg, pl) => (Control)arg ?? (Control)pl).ToList();
 
-			var height = controls.Max (c => c.Height) + 2*BorderPadding;
+			var height = 2*BorderPadding + (controls.Empty() ? 0 : controls.Max (c => c.Height));
 
 			foreach (var control in controls) {
 				var cHeight = (height - control.Height) / 2;

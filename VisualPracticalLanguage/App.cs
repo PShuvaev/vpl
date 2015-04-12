@@ -15,6 +15,7 @@ namespace VisualPracticalLanguage
 		DllManager dllManager;
 
 		TabControl funPanelTabs;
+		ElementPanel createdFunsPanel;
 
 		private INamespace currentNamespace;
 		private string currentFile;
@@ -60,21 +61,32 @@ namespace VisualPracticalLanguage
 			NewWorkspace ();
 
 			funPanelTabs = new TabControl {
-				Width = 180,
+				Width = Const.ELEMENT_PANEL_WIDTH,
 				Dock = DockStyle.Right,
 				BackColor = Color.Red
 			};
 			funPanelTabs.Parent = groupPanel;
-
-
+			
 			funPanelTabs.TabPages.Add (new TabPage().With (_ => {
-				_.Text = "standart";
+				_.Text = "Базовые";
 				_.Controls.Add(new ElementPanel (OnAddFunctionToWorkspace, StandartFuns.Funs));
+			}));
+
+			var createdFuns = new Dictionary<string, Func<DraggableControl>> ();
+			funPanelTabs.TabPages.Add (new TabPage ().With (_ => {
+				_.Text = "Созданные";
+				_.Controls.Add (createdFunsPanel = new ElementPanel (OnAddFunctionToWorkspace, createdFuns));
 			}));
 
 			new Trasher (workPanel, element => {
 				(element as IFunctionDefinition).With(_ => {
+					//удаление функции из текущего неймспейса
 					currentNamespace.functions.Remove(_);
+
+					//удаление кнопки создания функции с панели кастомных функций
+					createdFunsPanel.Controls.Cast<Control>()
+						.SingleOrDefault(x => x.Text == _.name)
+						.With(btn => {btn.Parent = null;});
 				});
 			});
 
@@ -149,6 +161,7 @@ namespace VisualPracticalLanguage
 			workPanel.Controls.Add (element);
 			(element as IFunctionDefinition).With (_ => {
 				currentNamespace.functions.Add (_);
+				createdFunsPanel.AddFunBtn(_);
 			});
 		}
 

@@ -7,7 +7,9 @@ namespace VisualPracticalLanguage
 {
 	public abstract class DraggableControl : Control
 	{
-		
+		// отступ от границ компонента
+		protected const int BorderPadding = 10;
+
 		private bool isDragging = false;
 
 		//TODO: уточнить семантику поля

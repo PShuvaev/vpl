@@ -9,7 +9,7 @@ namespace VisualPracticalLanguage
 		private decimal number;
 
 		public VNumberConst (IConstExpression constExpression) : 
-			this(decimal.Parse(constExpression.constValue))
+			this(/*decimal.Parse(constExpression.constValue)*/0)
 		{
 		}
 
@@ -24,7 +24,7 @@ namespace VisualPracticalLanguage
 			Controls.Add (lbl);
 		}
 
-		public string constValue {
+		public object constValue {
 			get { return number.ToString (); }
 			set { throw new NotImplementedException (); }
 		}

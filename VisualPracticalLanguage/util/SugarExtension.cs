@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace VisualPracticalLanguage
 {
@@ -32,6 +33,11 @@ namespace VisualPracticalLanguage
 		public static bool Empty<T>(this IEnumerable<T> list)
 		{
 			return list == null || !list.Any ();
+		}
+
+		public static void DoAll(this IEnumerable list)
+		{
+			foreach (var _ in list) {}
 		}
 
 		public static void IterSep<T>(this IEnumerable<T> list, Action<T> action, Action<T> separatorAction)

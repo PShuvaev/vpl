@@ -86,7 +86,6 @@
     <Compile Include="vprimops\Trasher.cs" />
     <Compile Include="vprimops\IPlaceholder.cs" />
     <Compile Include="WorkspacePanel.cs" />
-    <Compile Include="Persistence.cs" />
     <Compile Include="ObjectDumper.cs" />
     <Compile Include="VplSharpParser.cs" />
     <Compile Include="vprimops\VElementBuilder.cs" />

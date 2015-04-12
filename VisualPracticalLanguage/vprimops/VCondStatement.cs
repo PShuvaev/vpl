@@ -68,15 +68,18 @@ namespace VisualPracticalLanguage
 		public void UpdateSize(){
 			var condControl = (Control)condArg ?? condPlaceholder;;
 			var declwidth = condTypeLabel.Size.Width + 2*OpArgPadding +condControl.Width;
-			var bodyexprWidth = controlStatements.Aggregate (0, (acc, e) => Math.Max (acc, e.Size.Width));
+			var bodyexprWidth = Const.TAB_SIZE + controlStatements.Aggregate (0, (acc, e) => Math.Max (acc, e.Size.Width));
 			var width = 2 * BorderPadding + Math.Max(declwidth, bodyexprWidth);
 
 			condControl.Location = new Point (condTypeLabel.Size.Width + 2*OpArgPadding, 5);
 
 			var height = BorderPadding + Math.Max(condTypeLabel.Size.Height, condControl.Height);
-
+			
+			bool isPlaceholder = true;
 			foreach (var el in placeholders.Intercalate<Control>(controlStatements)) {
-				el.Location = new Point(el.Location.X, height);
+				var xlocation = isPlaceholder ? Const.TAB_SIZE : 2 * Const.TAB_SIZE;
+				isPlaceholder = !isPlaceholder;
+				el.Location = new Point(xlocation, height);
 				height += el.Size.Height;
 			}
 

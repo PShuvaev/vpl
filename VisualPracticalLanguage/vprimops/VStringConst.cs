@@ -1,6 +1,4 @@
-using System;
 using System.Drawing;
-using System.Windows.Forms;
 using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
@@ -14,14 +12,15 @@ namespace VisualPracticalLanguage
 			this.str = str;
 			
 			BackColor = Color.Orange;
-			Size = new Size (100, Const.HEADER_SIZE);
 			var lbl = new CustomLabel (str, BackColor);
-
 			Controls.Add (lbl);
+			//TODO: TAB_SIZE -> PaddingSize
+			Size = new Size (lbl.Size.Width + BorderPadding, lbl.Size.Height + BorderPadding);
+			lbl.Location = new Point (BorderPadding/2, BorderPadding/2);
 		}
 
-		public string constValue {
-			get { return "@\"" + str + "\""; }
+		public object constValue {
+			get { return '\"' + str + '"'; }
 		}
 	}
 }
