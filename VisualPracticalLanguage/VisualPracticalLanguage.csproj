@@ -97,6 +97,7 @@
     <Compile Include="runtime\IDllInterface.cs" />
     <Compile Include="DllManager.cs" />
     <Compile Include="StandartFuns.cs" />
+    <Compile Include="lang\JustCode.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />

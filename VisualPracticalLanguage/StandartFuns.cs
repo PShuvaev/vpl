@@ -28,7 +28,7 @@ namespace VisualPracticalLanguage
 				}},
 			{"функция", () => {
 					// TODO: если пользователь ничего не вводит, возвращать null
-					var name = DiverseUtilExtensions.ShowDialog("Новая функция", "Введите имя");
+					var name = DiverseUtilExtensions.ShowDialog("Введите имя функции", "Новая функция");
 					return new VFunction(name);
 				}}
 		};

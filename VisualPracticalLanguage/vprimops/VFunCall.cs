@@ -7,7 +7,7 @@ using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VFunCall : DraggableControl, IFunctionCall, IStatement, IPlaceholderContainer, IVariableRefsHolder
+	public class VFunCall : DraggableControl, IFunctionCall, IFunCallStatement, IPlaceholderContainer, IVariableRefsHolder
 	{
 		
 		private string name;
@@ -52,6 +52,10 @@ namespace VisualPracticalLanguage
 
 		public IList<IExpression> arguments {
 			get { return controlArguments.Cast<IExpression> ().ToList (); }
+		}
+
+		public IFunctionCall functionCall {
+			get {return new FunctionCall { function = function, arguments = arguments }; }
 		}
 
 		public IResizable ResizableParent { get{ return EParent; } }

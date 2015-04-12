@@ -41,7 +41,7 @@ namespace VisualPracticalLanguage
 				}));
 				_.Items.Add(new ToolStripMenuItem("&Build").With(__ => {
 					__.DropDownItems.Add(new ToolStripMenuItem("&Make"));
-					__.DropDownItems.Add(new ToolStripMenuItem("&Execute"));
+					__.DropDownItems.Add(newItem("&Execute", Execute));
 				}));
 				_.Items.Add(new ToolStripMenuItem("&Libraries").With(__ => {
 					__.DropDownItems.Add(newItem("&Добавить/удалить", EditDlls));
@@ -107,10 +107,11 @@ namespace VisualPracticalLanguage
 			}
 		}
 
+		static int newNamespaceNameNumber = 0;
 		void NewWorkspace(){
 			(workPanel = new WorkspacePanel ()).Parent = groupPanel;
 			currentNamespace = new Namespace {
-				namespaceName = "New", 
+				namespaceName = "New" + newNamespaceNameNumber++, 
 				functions = new List<IFunctionDefinition>()
 			};
 			Text = currentNamespace.namespaceName;
@@ -123,6 +124,7 @@ namespace VisualPracticalLanguage
 			if (dialog.ShowDialog() == DialogResult.OK && dialog.CheckPathExists)
 			{
 				currentFile = dialog.FileName;
+				currentNamespace.namespaceName = Path.GetFileNameWithoutExtension (dialog.FileName);
 				SaveToCurrentFile ();
 			}
 		}
@@ -132,8 +134,7 @@ namespace VisualPracticalLanguage
 				SaveToNewFile ();
 			var output = new StringWriter ();
 
-			// TODO: fix casting hack
-			((Namespace)currentNamespace).importedDlls = dllManager.getDlls ();
+			currentNamespace.importedDlls = dllManager.getDlls ();
 			new Generator (output).Generate (currentNamespace);
 			File.WriteAllText (currentFile, output.ToString());
 		}
@@ -148,17 +149,22 @@ namespace VisualPracticalLanguage
 				currentNamespace.functions.Add (_);
 			});
 		}
+
+		void Execute(){
+			currentNamespace.importedDlls = dllManager.getDlls ();
+			new BinGenerator (currentNamespace).Execute();
+		}
 	}
 
 	public static class App
 	{
 		public static MForm Form;
 
+		[STAThread]
 		static public void Main()
 		{
 			Application.Run(Form = new MForm());
 		}
-
 	}
 }
 

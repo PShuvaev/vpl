@@ -5,8 +5,8 @@ namespace VisualPracticalLanguage.Interface
 {
 	public interface INamespace
 	{
-		string namespaceName { get; }
-		IList<string> importedDlls { get; }
+		string namespaceName { get; set; }
+		IList<string> importedDlls { get; set; }
 		IList<IFunctionDefinition> functions { get; }
 	}
 }

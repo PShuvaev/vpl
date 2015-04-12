@@ -6,6 +6,7 @@ using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
+	// TODO: Разместить методы Generate по каждому классу?
 	public class Generator
 	{
 		private TextWriter output;
@@ -115,6 +116,11 @@ namespace VisualPracticalLanguage
 
 		public void Generate(IFunctionDefinition funDef)
 		{
+			if(funDef is JustCode){
+				Spit ((funDef as JustCode).code);
+				return;
+			}
+
 			// сигнатура метода
 			Spit ("public", (funDef.isReturnVoid ? "void" : "dynamic"), funDef.name, "(");
 			funDef.arguments.IterSep (@variable => {

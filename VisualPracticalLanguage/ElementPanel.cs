@@ -16,6 +16,7 @@ namespace VisualPracticalLanguage
 
 			foreach (var control in elements) {
 				var btn = new Button { Text = control.Key };
+				btn.AutoSize = true;
 				btn.Click += delegate {
 					var c = control.Value();
 					if(c != null){ 

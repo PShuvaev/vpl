@@ -32,7 +32,12 @@ namespace VisualPracticalLanguage
 		}
 
 		public static Parser<IFunctionCall> FunCallP = (
-			from funName in IdentP
+			from funName in (
+				from library in IdentP
+				from _ in Parse.Char('.')
+				from fname in IdentP
+				select library + '.' + fname
+			).Or(IdentP)
 			from _ in TokenP("(")
 			from arguments in (
 			from __ in TokenP(")")

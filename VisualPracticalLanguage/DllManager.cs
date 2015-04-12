@@ -44,7 +44,7 @@ namespace VisualPracticalLanguage
 					var newLibPath = AskFilePath();
 					if(string.IsNullOrEmpty(newLibPath)) return;
 
-					addDll(newLibPath);
+					addDll(Path.GetFileNameWithoutExtension(newLibPath));
 				};
 				addDllBtn.Parent = panel;
 			});
@@ -74,7 +74,7 @@ namespace VisualPracticalLanguage
 		VFunCall MakeFunCall(MethodInfo info){
 			return new VFunCall (new FunctionCall{
 				function = new FunctionDeclaration{
-					name = info.Name,
+					name = info.DeclaringType.Name + '.' + info.Name,
 					argumentsCount = info.GetParameters().Count()
 				},
 				arguments = info.GetParameters().Select<ParameterInfo, IExpression>(x => null).ToList()
@@ -96,34 +96,34 @@ namespace VisualPracticalLanguage
 				.MakeRelativeUri(new Uri(path)).ToString();
 		}
 
-		public void SetImportDlls(IEnumerable<string> pathList){
+		public void SetImportDlls(IEnumerable<string> dllNames){
 			//TODO: correct menu cleanup
 			for (int i = 1; i < menuItems.Count; i++) {
 				menuItems.RemoveAt (i);
 			}
 
-			pathList = pathList ?? Enumerable.Empty<string>();
+			dllNames = dllNames ?? Enumerable.Empty<string>();
 
-			foreach(var path in pathList){
-				addDll (path);
+			foreach(var dllName in dllNames){
+				addDll (dllName);
 			}
 			
-			dlls = pathList.Select (p => new DllRow(menuItems, p)).ToList();
+			dlls = dllNames.Select (p => new DllRow(menuItems, p)).ToList();
 		}
 
-		private void addDll(string dll){
-			var dllRow = new DllRow (menuItems, dll);
+		private void addDll(string dllName){
+			var dllRow = new DllRow (menuItems, dllName);
 			dlls.Add (dllRow);
 			dllRow.Parent = this;
 
-			menuItems.Add(NewItem(dll, () => {}));
+			menuItems.Add(NewItem(dllName, () => {}));
 
 			var funDic = new Dictionary<string, Func<DraggableControl>>();
-			foreach(var fun in GetFunsFromAssembly(dll+".dll")){
+			foreach(var fun in GetFunsFromAssembly(dllName+".dll")){
 				funDic[fun.Name] = () => MakeFunCall(fun);
 			}
 			getFunPanelTabs().Controls.Add(new TabPage().With(_ => {
-				_.Text = dll;
+				_.Text = dllName;
 				new ElementPanel(onAddFunctionToWorkspace, funDic).Parent = _;
 			}));
 		}
@@ -161,19 +161,16 @@ namespace VisualPracticalLanguage
 				selectDllBtn.Click += (object sender, EventArgs e) => {
 					var newLibPath = AskFilePath();
 					if(string.IsNullOrEmpty(newLibPath)) return;
-					
-					//TODO: ugly, ugly!
-					pathLabel.Text = newLibPath.Split('.')[0];
+					pathLabel.Text = newLibPath;
 				};
 				Controls.Add(selectDllBtn);
 				selectDllBtn.BringToFront ();
 			}
 
 			public string getDllName(){
-				return pathLabel.Text;
+				return Path.GetFileNameWithoutExtension(pathLabel.Text);
 			}
 		}
 	}
-
 }
 
