@@ -20,18 +20,32 @@ namespace VisualPracticalLanguage
 			this.ns = ns;
 		}
 
+		static IEnumerable<IFunctionDefinition> AddReturnNullToFuns(IEnumerable<IFunctionDefinition> funs){
+			var copyFuns = funs.Select (x => new FunctionDefinition {
+				name = x.name,
+				arguments = x.arguments.EmptyIfNull().ToList(),
+				isBinOperation = x.isBinOperation,
+				statements = x.statements.EmptyIfNull().ToList()
+			}).ToList();
+			foreach (var fun in copyFuns) {
+				fun.statements.Add (new JustCode("if(0==0){return null;}"));
+			}
+			return copyFuns;
+		}
+
 		string GetSrc(){
 			var output = new StringWriter ();
 			var copyNs = new Namespace {
 				importedDlls = ns.importedDlls,
 				namespaceName = ns.namespaceName,
-				functions = ns.functions.EmptyIfNull().ToList().With(_ => {
+				functions = AddReturnNullToFuns(ns.functions).ToList().With(_ => {
 					if(_.Select(x => x.name).Contains(Const.MainFunName)){
 						_.Add(new JustCode("public static void Main(string[] args)"+
 						                   string.Format("{{new {0}().{1}();}}", ns.namespaceName, Const.MainFunName)));
 					}
 				})
 			};
+
 			new Generator (output).Generate (copyNs);
 			return output.ToString ();
 		}
@@ -51,11 +65,12 @@ namespace VisualPracticalLanguage
 				MainClass = "test",
 				CompilerOptions = "/target:winexe"
 			};
-			Logger.Log (GetSrc());
-			CompilerResults results = csc.CompileAssemblyFromSource(parameters, GetSrc());
 
+			var src = GetSrc ();
+			Logger.Log (src);
+
+			var results = csc.CompileAssemblyFromSource(parameters, src);
 			results.Errors.Cast<CompilerError>().ToList().ForEach(error => Console.WriteLine(error.ErrorText));
-
 			return results.CompiledAssembly;
 		}
 

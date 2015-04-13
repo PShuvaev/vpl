@@ -122,7 +122,7 @@ namespace VisualPracticalLanguage
 			}
 
 			// сигнатура метода
-			Spit ("public", (funDef.isReturnVoid ? "void" : "dynamic"), funDef.name, "(");
+			Spit ("public", "dynamic", funDef.name, "(");
 			funDef.arguments.IterSep (@variable => {
 				Spit ("dynamic", @variable.varName);
 			}, _ => {Spit (",");});
@@ -152,6 +152,10 @@ namespace VisualPracticalLanguage
 		{
 			if (statement == null) {
 				Spit ("null");
+				return;
+			}
+			if (statement is JustCode) {
+				Spit ((statement as JustCode).code);
 				return;
 			}
 			if (statement is IIfStatement){
