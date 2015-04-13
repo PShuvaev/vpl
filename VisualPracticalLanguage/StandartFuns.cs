@@ -14,6 +14,7 @@ namespace VisualPracticalLanguage
 			{">", () => MakeBinaryOp(">")},
 			{"<", () => MakeBinaryOp("<")},
 			{"не равно", () => MakeBinaryOp("!=")},
+			{"присвоить", () => new VSetVariable()},
 			{"если", () => new VIfStatement()},
 			{"пока", () => new VWhileStatement()},
 			{"вернуть ", () => new VReturnStatement()},

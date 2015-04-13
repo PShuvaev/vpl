@@ -24,6 +24,7 @@ namespace VisualPracticalLanguage
 			var copyFuns = funs.Select (x => new FunctionDefinition {
 				name = x.name,
 				arguments = x.arguments.EmptyIfNull().ToList(),
+				variables = x.variables.EmptyIfNull().ToList(),
 				isBinOperation = x.isBinOperation,
 				statements = x.statements.EmptyIfNull().ToList()
 			}).ToList();
