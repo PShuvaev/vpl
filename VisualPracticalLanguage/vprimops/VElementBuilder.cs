@@ -21,7 +21,7 @@ namespace VisualPracticalLanguage
 			// TODO VStringConst & VNumConst
 				(expression as IConstExpression).OrDef (_ => _.constValue is string 
 				                                        ? (DraggableControl)new VStringConst (_.constValue.ToString()) 
-				                                        : (DraggableControl)new VNumberConst (_)) ??
+				                                        : (DraggableControl)new VNumberConst ((decimal)_.constValue)) ??
 					(expression as IFunctionCall).OrDef (_ => _.function.isBinOperation 
 					                                     ? (DraggableControl)new VBinaryOp (_) 
 					                                     : (DraggableControl)new VFunCall (_)) ??

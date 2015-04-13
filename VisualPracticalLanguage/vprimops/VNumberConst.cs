@@ -6,12 +6,7 @@ namespace VisualPracticalLanguage
 {
 	public class VNumberConst : DraggableControl, IConstExpression
 	{
-		private decimal number;
-
-		public VNumberConst (IConstExpression constExpression) : 
-			this(/*decimal.Parse(constExpression.constValue)*/0)
-		{
-		}
+		decimal number;
 
 		public VNumberConst (decimal number)
 		{
@@ -25,8 +20,7 @@ namespace VisualPracticalLanguage
 		}
 
 		public object constValue {
-			get { return number.ToString (); }
-			set { throw new NotImplementedException (); }
+			get { return number; }
 		}
 	}
 }

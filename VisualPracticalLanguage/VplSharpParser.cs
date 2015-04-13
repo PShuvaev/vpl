@@ -78,7 +78,7 @@ namespace VisualPracticalLanguage
 			.Or(from str in QuotedTextP
 			    select new ConstExpression { constValue = str })
 			.Or(from dec in Parse.Decimal.Token()
-			    select new ConstExpression { constValue = dec });
+			    select new ConstExpression { constValue = decimal.Parse(dec) });
 
 		public static Parser<IExpression> ExpressionP = 
 			from firstExpr in

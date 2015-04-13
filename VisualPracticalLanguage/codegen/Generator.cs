@@ -64,7 +64,12 @@ namespace VisualPracticalLanguage
 
 		public void Generate(IConstExpression expression)
 		{
-			Spit (expression.constValue);
+			if (expression == null || expression.constValue == null) {
+				Spit ("null");
+			} else {
+				var val = expression.constValue;
+				Spit (val is string ? '"' + val.ToString () + '"' : val.ToString ());
+			}
 		}
 
 		public void Generate(IVariableRef variableRef)
@@ -205,100 +210,6 @@ namespace VisualPracticalLanguage
 				Generate (expression as IReturnStatement);
 				return;
 			}
-		}
-	}
-
-
-	public class GeneratorTest{
-		
-		public dynamic fibb1(dynamic n){
-			dynamic a,b,c;
-			a = 0; b = 1;
-			while (n > 0) {
-				c = a;
-				a = b;
-				b = c + b;
-				n = n - 1;
-			}
-			return a;
-		}
-
-		public void Test(){
-			var writer = new StringWriter ();
-			var generator = new Generator (writer);
-
-			var fibbFunc = new FunctionDefinition {name = "fibb"};
-			var nVar = fibbFunc.AddArgument("n");
-			var aVar = fibbFunc.AddVariable("a");
-			var bVar = fibbFunc.AddVariable("b");
-			var cVar = fibbFunc.AddVariable("c");
-			fibbFunc.AddStatement (new SetVariableStatement {
-				variableRef = aVar,
-				expression = new ConstExpression { constValue = 0 }
-			});
-			fibbFunc.AddStatement (new SetVariableStatement {
-				variableRef = bVar,
-				expression = new ConstExpression { constValue = 1 }
-			});
-			fibbFunc.AddStatement (new WhileStatement {
-				condition = new FunctionCall {
-					function = new FunctionDeclaration {
-						name = ">",
-						isBinOperation = true,
-						isReturnVoid = false
-					},
-					arguments = new List<IExpression>{
-						nVar, new ConstExpression{constValue = 0}
-					}
-				},
-				statements = new List<IStatement>{
-					new SetVariableStatement {
-						variableRef = cVar,
-						expression = aVar
-					},
-					new SetVariableStatement {
-						variableRef = aVar,
-						expression = bVar
-					},
-					new SetVariableStatement {
-						variableRef = bVar,
-						expression = new FunctionCall {
-							function = new FunctionDeclaration {
-								name = "+",
-								isBinOperation = true,
-								isReturnVoid = true
-							},
-							arguments = new List<IExpression> {
-								cVar, bVar
-							}
-						}
-					},
-					new SetVariableStatement {
-						variableRef = nVar,
-						expression = new FunctionCall {
-							function = new FunctionDeclaration {
-								name = "-",
-								isBinOperation = true,
-								isReturnVoid = true
-							},
-							arguments = new List<IExpression> {
-								nVar, new ConstExpression {
-									constValue = 1
-								}
-							}
-						}
-					}
-				}
-			});
-			fibbFunc.AddStatement (new ReturnStatement {
-				expression = cVar
-			});
-
-			generator.Generate (new Namespace{
-				namespaceName = "Fibbs",
-				functions = new List<IFunctionDefinition>{fibbFunc}
-			});
-			System.Console.WriteLine (writer.ToString());
 		}
 	}
 }

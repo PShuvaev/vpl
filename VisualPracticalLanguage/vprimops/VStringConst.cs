@@ -20,7 +20,7 @@ namespace VisualPracticalLanguage
 		}
 
 		public object constValue {
-			get { return '\"' + str + '"'; }
+			get { return str; }
 		}
 	}
 }
