@@ -1,22 +1,40 @@
 using System;
 using System.Drawing;
 using VisualPracticalLanguage.Interface;
+using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
 	public class VNumberConst : DraggableControl, IConstExpression
 	{
 		decimal number;
+		CustomLabel lbl;
 
 		public VNumberConst (decimal number)
 		{
 			this.number = number;
 			
 			BackColor = Color.Blue;
-			Size = new Size (20, Const.HEADER_SIZE);
-			var lbl = new CustomLabel (number.ToString (), BackColor);
+			lbl = new CustomLabel (number.ToString (), BackColor);
+			UpdateSize ();
+			lbl.Location = new Point (Const.TAB_SIZE/2, Const.TAB_SIZE/2);
+
+			lbl.MouseDoubleClick += (object sender, MouseEventArgs e) => {
+				var newName = DiverseUtilExtensions.ShowDialog("Введите новое значение", "Новое значение");
+				newName = newName.Trim();
+				decimal result;
+				if(newName.Length == 0 || !decimal.TryParse(newName, out result)) return;
+
+				number = result;
+				lbl.Text = number.ToString();
+				UpdateSize();
+			};
 
 			Controls.Add (lbl);
+		}
+
+		public void UpdateSize(){
+			Size = new Size (lbl.Width + Const.TAB_SIZE, lbl.Height + Const.TAB_SIZE);
 		}
 
 		public object constValue {

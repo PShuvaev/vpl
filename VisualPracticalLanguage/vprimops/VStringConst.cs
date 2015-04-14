@@ -1,26 +1,37 @@
 using System.Drawing;
 using VisualPracticalLanguage.Interface;
+using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
 	public class VStringConst : DraggableControl, IConstExpression
 	{
 		private string str;
+		CustomLabel lbl;
 
 		public VStringConst (string str)
 		{
 			this.str = str;
 			
 			BackColor = Color.Orange;
-			var lbl = new CustomLabel (str, BackColor);
+			lbl = new CustomLabel (str, BackColor);
 			Controls.Add (lbl);
-			//TODO: TAB_SIZE -> PaddingSize
-			Size = new Size (lbl.Size.Width + BorderPadding, lbl.Size.Height + BorderPadding);
+			UpdateSize ();
 			lbl.Location = new Point (BorderPadding/2, BorderPadding/2);
+
+			lbl.MouseDoubleClick += (object sender, MouseEventArgs e) => {
+				str = DiverseUtilExtensions.ShowDialog("Введите новое значение", "Новое значение");
+				lbl.Text = str;
+				UpdateSize();
+			};
 		}
 
 		public object constValue {
 			get { return str; }
+		}
+
+		public void UpdateSize(){
+			Size = new Size (lbl.Width + Const.TAB_SIZE, lbl.Height + Const.TAB_SIZE);
 		}
 	}
 }
