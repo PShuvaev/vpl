@@ -14,6 +14,7 @@ namespace VisualPracticalLanguage
 	public static class IPlaceholderContainerExtensions{
 		public static void UpdateRecSize (this IResizable container){
 			container.UpdateSize ();
+			((Control)container).Refresh ();
 			if (container.ResizableParent != null) {
 				container.ResizableParent.UpdateRecSize ();
 			}
