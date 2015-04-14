@@ -52,6 +52,10 @@ namespace VisualPracticalLanguage
 		public void UpdateSize(){
 			Size = new Size (nameLabel.Size.Width + 10, nameLabel.Size.Height + 10);
 		}
+
+		public void Destroy(){
+			variable.Disconnect (this);
+		}
 	}
 }
 

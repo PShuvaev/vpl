@@ -86,7 +86,12 @@ namespace VisualPracticalLanguage
 					//удаление кнопки создания функции с панели кастомных функций
 					createdFunsPanel.Controls.Cast<Control>()
 						.SingleOrDefault(x => x.Text == _.name)
-						.With(btn => {btn.Parent = null;});
+							.With(btn => {btn.Parent = null;});
+				});
+				(element as IVariableRefsHolder).With(holder => {
+					foreach(var vRef in holder.refs){
+						vRef.Destroy();
+					}
 				});
 			});
 

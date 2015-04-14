@@ -99,6 +99,10 @@ namespace VisualPracticalLanguage
 				arg = null;
 				Controls.Remove (c);
 			}
+			if (varRef == c) {
+				varRef = null;
+				Controls.Remove (c);
+			}
 		}
 		
 		public IResizable ResizableParent { get{ return EParent; } }

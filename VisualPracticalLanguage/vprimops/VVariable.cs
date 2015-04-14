@@ -62,6 +62,11 @@ namespace VisualPracticalLanguage
 				parentFunc.Controls.Remove (this);
 			}
 		}
+
+		public void Disconnect (VVariableRef vRef)
+		{
+			VariableRefs.Remove(vRef);
+		}
 	}
 }
 
