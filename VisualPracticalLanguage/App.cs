@@ -33,20 +33,27 @@ namespace VisualPracticalLanguage
 						item.Click+= (object sender, EventArgs e) => action();
 					});
 
-				_.Items.Add(new ToolStripMenuItem("&File").With(__ => {
-					__.DropDownItems.Add(newItem("&New", NewWorkspace));
-					__.DropDownItems.Add(newItem("&Open", OpenWorkspace));
-					__.DropDownItems.Add(newItem("&Save", SaveToCurrentFile));
-					__.DropDownItems.Add(newItem("Save &as", SaveToNewFile));
-					__.DropDownItems.Add(new ToolStripMenuItem("E&xit"));
+				_.Items.Add(new ToolStripMenuItem("Файл").With(__ => {
+					__.DropDownItems.Add(newItem("Новый проект", NewWorkspace));
+					__.DropDownItems.Add(newItem("Открыть", OpenWorkspace));
+					__.DropDownItems.Add(newItem("Сохранить", SaveToCurrentFile));
+					__.DropDownItems.Add(newItem("Сохранить как", SaveToNewFile));
+					__.DropDownItems.Add(new ToolStripMenuItem("Выход"));
 				}));
-				_.Items.Add(new ToolStripMenuItem("&Build").With(__ => {
-					__.DropDownItems.Add(new ToolStripMenuItem("&Make"));
-					__.DropDownItems.Add(newItem("&Execute", Execute));
+				_.Items.Add(new ToolStripMenuItem("Сборка").With(__ => {
+					__.DropDownItems.Add(newItem("Собрать", Build));
+					__.DropDownItems.Add(newItem("Выполнить", Execute));
 				}));
-				_.Items.Add(new ToolStripMenuItem("&Libraries").With(__ => {
-					__.DropDownItems.Add(newItem("&Добавить/удалить", EditDlls));
+				_.Items.Add(new ToolStripMenuItem("Библиотеки").With(__ => {
+					__.DropDownItems.Add(newItem("Добавить/удалить", EditDlls));
 					dllManager = new DllManager (__.DropDownItems, () => funPanelTabs, OnAddFunctionToWorkspace);
+				}));
+				_.Items.Add(new ToolStripMenuItem("О программе").With(__ => {
+					__.Click += (object sender, EventArgs e) => {
+						MessageBox.Show("VPL.NET версия 1.0\r\n" +
+										"Copyright @ 2015 Pavel Shuvaev\r\n" +
+										"Email: ipshuvaev@gmail.com", "О программе", MessageBoxButtons.OK);
+					};
 				}));
 			});
 
@@ -192,6 +199,11 @@ namespace VisualPracticalLanguage
 				currentNamespace.functions.Add (_);
 				createdFunsPanel.AddFunBtn(_);
 			});
+		}
+		
+		void Build(){
+			currentNamespace.importedDlls = dllManager.getDlls ();
+			new BinGenerator (currentNamespace).Build();
 		}
 
 		void Execute(){
