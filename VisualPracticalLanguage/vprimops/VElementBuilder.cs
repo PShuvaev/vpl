@@ -18,7 +18,6 @@ namespace VisualPracticalLanguage
 			if (expression is IConstExpression && (expression as IConstExpression).constValue == null)
 				return null;
 			return
-			// TODO VStringConst & VNumConst
 				(expression as IConstExpression).OrDef (_ => _.constValue is string 
 				                                        ? (DraggableControl)new VStringConst (_.constValue.ToString()) 
 				                                        : (DraggableControl)new VNumberConst ((decimal)_.constValue)) ??

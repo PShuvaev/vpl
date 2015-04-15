@@ -161,8 +161,9 @@ namespace VisualPracticalLanguage
 		}
 
 		void SaveToNewFile(){
-			// TODO: устанавливать .cs расширение
-			var dialog = new SaveFileDialog ();
+			var dialog = new SaveFileDialog {
+				Filter = "Проектные файлы (*.cs)|*.cs"
+			};
 			if (dialog.ShowDialog() == DialogResult.OK && dialog.CheckPathExists)
 			{
 				currentFile = dialog.FileName;
