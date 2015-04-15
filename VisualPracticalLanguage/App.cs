@@ -99,7 +99,9 @@ namespace VisualPracticalLanguage
 		}
 
 		void OpenWorkspace(){
-			var dialog = new OpenFileDialog ();
+			var dialog = new OpenFileDialog {
+				Filter = "Проектные файлы (*.cs)|*.cs"
+			};
 			if (dialog.ShowDialog() == DialogResult.OK && dialog.CheckFileExists)
 			{
 				currentFile = dialog.FileName;

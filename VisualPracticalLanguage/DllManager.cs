@@ -82,7 +82,9 @@ namespace VisualPracticalLanguage
 		}
 
 		static string AskFilePath(){
-			var dialog = new OpenFileDialog ();
+			var dialog = new OpenFileDialog {
+				Filter = "Библиотеки (*.dll)|*.dll"
+			};
 			if (dialog.ShowDialog() == DialogResult.OK && dialog.CheckFileExists)
 			{
 				return MakeRelativePath(dialog.FileName);
