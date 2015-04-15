@@ -48,11 +48,10 @@ namespace VisualPracticalLanguage
 
 			Spit (call.function.name, "(");
 
-			var args = call.arguments.EmptyIfNull ();
-			var firstArg = args.FirstOrDefault ();
+			var args = call.arguments.EmptyIfNull ().ToList();
 
-			if (firstArg != null) {
-				Generate (firstArg);
+			if (!args.Empty()) {
+				Generate (args.FirstOrDefault());
 
 				foreach (var arg in args.Skip (1)) {
 					Spit (",");
