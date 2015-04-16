@@ -5,8 +5,8 @@ using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public class VNumberConst : DraggableControl, IConstExpression
-	{
+	public class VNumberConst : DraggableControl, IResizable, IConstExpression
+    {
 		decimal number;
 		CustomLabel lbl;
 
@@ -16,7 +16,7 @@ namespace VisualPracticalLanguage
 			
 			BackColor = Color.Blue;
 			lbl = new CustomLabel (number.ToString (), BackColor);
-			UpdateSize ();
+            lbl.BackColor = Color.Red;
 			lbl.Location = new Point (Const.TAB_SIZE/2, Const.TAB_SIZE/2);
 
 			lbl.MouseDoubleClick += (object sender, MouseEventArgs e) => {
@@ -31,7 +31,8 @@ namespace VisualPracticalLanguage
 			};
 
 			Controls.Add (lbl);
-		}
+            UpdateSize();
+        }
 
 		public void UpdateSize(){
 			Size = new Size (lbl.Width + Const.TAB_SIZE, lbl.Height + Const.TAB_SIZE);
@@ -40,6 +41,11 @@ namespace VisualPracticalLanguage
 		public object constValue {
 			get { return number; }
 		}
-	}
+
+        public IResizable ResizableParent
+        {
+            get { return EParent; }
+        }
+    }
 }
 

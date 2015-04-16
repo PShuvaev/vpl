@@ -17,7 +17,7 @@ namespace VisualPracticalLanguage
 			lbl = new CustomLabel (str, BackColor);
 			Controls.Add (lbl);
 			UpdateSize ();
-			lbl.Location = new Point (BorderPadding/2, BorderPadding/2);
+			lbl.Location = new Point (Const.TAB_SIZE / 2, Const.TAB_SIZE / 2);
 
 			lbl.MouseDoubleClick += (object sender, MouseEventArgs e) => {
 				str = DiverseUtilExtensions.ShowDialog("Введите новое значение", "Новое значение");
@@ -33,6 +33,11 @@ namespace VisualPracticalLanguage
 		public void UpdateSize(){
 			Size = new Size (lbl.Width + Const.TAB_SIZE, lbl.Height + Const.TAB_SIZE);
 		}
-	}
+
+        public IResizable ResizableParent
+        {
+            get { return EParent; }
+        }
+    }
 }
 
