@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -6,7 +6,7 @@
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{30DC0358-52E1-42A3-AD0B-3AB870DDD9DB}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>VisualPracticalLanguage</RootNamespace>
     <AssemblyName>VisualPracticalLanguage</AssemblyName>
   </PropertyGroup>
@@ -29,6 +29,9 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -108,16 +111,7 @@
       <HintPath>lib\Sprache.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="vprimops\" />
-    <Folder Include="vbase\" />
-    <Folder Include="util\" />
-    <Folder Include="lang\" />
-    <Folder Include="codegen\" />
-    <Folder Include="lang\Interface\" />
-    <Folder Include="Resources\" />
-    <Folder Include="runtime\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\trash_icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
