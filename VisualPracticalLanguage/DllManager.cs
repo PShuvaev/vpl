@@ -15,7 +15,6 @@ namespace VisualPracticalLanguage
 	/// </summary>
 	public class DllManager : Form
 	{
-		IList<DllRow> dlls;
 		ToolStripItemCollection menuItems;
 
 		//TODO: ugly getting tabcontrol, ugly!
@@ -28,7 +27,7 @@ namespace VisualPracticalLanguage
 			this.getFunPanelTabs = getFunPanelTabs;
 			Text = "Подключенные модули";
 			StartPosition = FormStartPosition.CenterScreen;
-			Size = new Size (500, 300);
+			Size = new Size (250, 300);
 			
 			this.menuItems = menuItems;
 
@@ -38,7 +37,8 @@ namespace VisualPracticalLanguage
 				panel.Parent = window;
 
 				var addDllBtn = new Button {
-					Text = "Добавить модуль",
+					Text = "Добавить библиотеку",
+                    AutoSize = true
 				};
 				addDllBtn.Click += (object sender, EventArgs e) => {
 					var newLibPath = AskFilePath();
@@ -53,7 +53,7 @@ namespace VisualPracticalLanguage
 
 		public IList<string> getDlls ()
 		{
-			return dlls.EmptyIfNull ().Select (x => x.getDllName ()).ToList ();
+			return Controls.Cast<Control>().Select(x => x as DllRow).Where(x => x != null).Select (x => x.getDllName ()).ToList ();
 		}
 		
 		ToolStripMenuItem NewItem (string name, Action action){
@@ -110,12 +110,11 @@ namespace VisualPracticalLanguage
 				addDll (dllName);
 			}
 			
-			dlls = dllNames.Select (p => new DllRow(menuItems, p)).ToList();
+			dllNames.Select (p => new DllRow(menuItems, getFunPanelTabs(), p)).DoAll();
 		}
 
 		private void addDll(string dllName){
-			var dllRow = new DllRow (menuItems, dllName);
-			dlls.Add (dllRow);
+			var dllRow = new DllRow (menuItems, getFunPanelTabs(), dllName);
 			dllRow.Parent = this;
 
 			menuItems.Add(NewItem(dllName, () => {}));
@@ -130,44 +129,35 @@ namespace VisualPracticalLanguage
 			}));
 		}
 
-		class DllRow : FlowLayoutPanel {
-			Label pathLabel;
-			Button selectDllBtn, removeDllBtn;
+		class DllRow : TableLayoutPanel {
+            Label pathLabel;
+			Button removeDllBtn;
 
-			public DllRow(ToolStripItemCollection menuItems, string dllPath){
+			public DllRow(ToolStripItemCollection menuItems, TabControl funPanelTabs, string dllPath){
 				Dock = DockStyle.Top;
-				Height = 30;
-				pathLabel = new Label{
-					Text = dllPath,
-					Dock = DockStyle.Left,
-					Width = 300
-				};
-				Controls.Add(pathLabel);
-				pathLabel.BringToFront ();
+                BackColor = Color.LightCoral;
+                Height = 30;
+                ColumnCount = 2;
+
+                pathLabel = new Label {
+                    Text = dllPath,
+                    AutoSize = true,
+                    Padding = new Padding(7)
+                };
 
 				removeDllBtn = new Button {
 					Text = "Удалить",
-					Dock = DockStyle.Left
-				};
+                    AutoSize = true
+                };
 				removeDllBtn.Click += (object sender, EventArgs e) => {
-					ToolStripItem item = menuItems.Cast<ToolStripItem>().SingleOrDefault<ToolStripItem> (x => x.Text == pathLabel.Text);
-					menuItems.Remove(item);
+                    menuItems.Cast<ToolStripItem>().SingleOrDefault(x => x.Text == pathLabel.Text).With(menuItems.Remove);
+                    var tabs = funPanelTabs.Controls;
+                    tabs.Cast<TabPage>().SingleOrDefault(x => x.Text == pathLabel.Text).With(tabs.Remove);
+                    this.Parent = null;
 				};
 				Controls.Add(removeDllBtn);
-				removeDllBtn.BringToFront ();
-
-				selectDllBtn = new Button {
-					Text = "Изменить путь",
-					Dock = DockStyle.Left
-				};
-				selectDllBtn.Click += (object sender, EventArgs e) => {
-					var newLibPath = AskFilePath();
-					if(string.IsNullOrEmpty(newLibPath)) return;
-					pathLabel.Text = newLibPath;
-				};
-				Controls.Add(selectDllBtn);
-				selectDllBtn.BringToFront ();
-			}
+                Controls.Add(pathLabel);
+            }
 
 			public string getDllName(){
 				return Path.GetFileNameWithoutExtension(pathLabel.Text);
