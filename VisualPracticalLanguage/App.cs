@@ -223,7 +223,13 @@ namespace VisualPracticalLanguage
 		[STAThread]
 		static public void Main()
 		{
-			Application.Run(Form = new MForm());
+            try
+            {
+                Application.Run(Form = new MForm());
+            } catch(Exception e)
+            {
+                File.AppendAllText("ErrorLog.txt", "Error: " + e.Message + "\r\n" + e.StackTrace);
+            }
 		}
 	}
 }
