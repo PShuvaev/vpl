@@ -36,8 +36,8 @@ namespace VisualPracticalLanguage
 				_.Items.Add(new ToolStripMenuItem("Файл").With(__ => {
 					__.DropDownItems.Add(newItem("Новый проект", NewWorkspace));
 					__.DropDownItems.Add(newItem("Открыть", OpenWorkspace));
-					__.DropDownItems.Add(newItem("Сохранить", SaveToCurrentFile));
-					__.DropDownItems.Add(newItem("Сохранить как", SaveToNewFile));
+					__.DropDownItems.Add(newItem("Сохранить", () => SaveToCurrentFile()));
+					__.DropDownItems.Add(newItem("Сохранить как", () => SaveToNewFile()));
 					__.DropDownItems.Add(new ToolStripMenuItem("Выход"));
 				}));
 				_.Items.Add(new ToolStripMenuItem("Сборка").With(__ => {
@@ -167,7 +167,7 @@ namespace VisualPracticalLanguage
 			dllManager.SetImportDlls (currentNamespace.importedDlls);
 		}
 
-		void SaveToNewFile(){
+		bool SaveToNewFile(){
 			var dialog = new SaveFileDialog {
 				Filter = "Проектные файлы (*.cs)|*.cs"
 			};
@@ -176,17 +176,21 @@ namespace VisualPracticalLanguage
 				currentFile = dialog.FileName;
 				currentNamespace.namespaceName = Path.GetFileNameWithoutExtension (dialog.FileName);
 				SaveToCurrentFile ();
-			}
-		}
+                return true;
+            }
+            return false;
+        }
 
-		void SaveToCurrentFile(){
-			if (currentFile == null)
-				SaveToNewFile ();
-			var output = new StringWriter ();
+		bool SaveToCurrentFile(){
+            if (currentFile != null || currentFile == null && SaveToNewFile()) {
+                var output = new StringWriter();
 
-			currentNamespace.importedDlls = dllManager.getDlls ();
-			new Generator (output).Generate (currentNamespace);
-			File.WriteAllText (currentFile, output.ToString());
+                currentNamespace.importedDlls = dllManager.getDlls();
+                new Generator(output).Generate(currentNamespace);
+                File.WriteAllText(currentFile, output.ToString());
+                return true;
+            }
+            return false;
 		}
 
 		void EditDlls(){

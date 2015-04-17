@@ -57,13 +57,13 @@ namespace VisualPracticalLanguage
 			File.Delete(outputAssemblyName);
 
 			var csc = new CSharpCodeProvider(new Dictionary<string, string>() { { "CompilerVersion", "v4.0" } });
-			var dlls = new[] { "mscorlib.dll", "System.Core.dll" }.Concat(
+			var dlls = new[] { "mscorlib.dll", "System.Core.dll", "Microsoft.CSharp.dll" }.Concat(
 				ns.importedDlls.EmptyIfNull ().Select (x => x + ".dll"));
 			var parameters = new CompilerParameters(dlls.ToArray(), outputAssemblyName, false){
-				GenerateExecutable = false,
-				GenerateInMemory = true,
+				GenerateExecutable = true,
+				GenerateInMemory = false,
 				TreatWarningsAsErrors = false,
-				MainClass = "test",
+				MainClass = ns.namespaceName,
 				CompilerOptions = "/target:winexe"
 			};
 
@@ -71,12 +71,23 @@ namespace VisualPracticalLanguage
 			Logger.Log (src);
 
 			var results = csc.CompileAssemblyFromSource(parameters, src);
-			results.Errors.Cast<CompilerError>().ToList().ForEach(error => Console.WriteLine(error.ErrorText));
+            var errors = results.Errors.Cast<CompilerError>().ToList();
+
+            if (!errors.Empty())
+            {
+                MessageBox.Show(
+                    string.Join("\r\n", errors.Select(x => x.ErrorText)), "Ошибка"
+                    );
+                return null;
+            }
+
 			return results.CompiledAssembly;
 		}
 
 		public void Execute(){
 			Assembly assembly = Build ();
+            if (assembly == null) return;
+
 			Type type = assembly.GetTypes ().FirstOrDefault (t => t.IsClass);
 
 			try {
