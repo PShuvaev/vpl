@@ -25,10 +25,10 @@ namespace VisualPracticalLanguage
 				decimal result;
 				if(newName.Length == 0 || !decimal.TryParse(newName, out result)) return;
 
-				number = result;
-				lbl.Text = number.ToString();
-				UpdateSize();
-			};
+				this.number = result;
+				lbl.Text = this.number.ToString();
+                this.UpdateRecSize();
+            };
 
 			Controls.Add (lbl);
             UpdateSize();

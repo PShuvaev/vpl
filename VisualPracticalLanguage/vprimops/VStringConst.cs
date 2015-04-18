@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public class VStringConst : DraggableControl, IConstExpression
+	public class VStringConst : DraggableControl, IConstExpression, IResizable
 	{
 		private string str;
 		CustomLabel lbl;
@@ -20,14 +20,16 @@ namespace VisualPracticalLanguage
 			lbl.Location = new Point (Const.TAB_SIZE / 2, Const.TAB_SIZE / 2);
 
 			lbl.MouseDoubleClick += (object sender, MouseEventArgs e) => {
-				str = DiverseUtilExtensions.ShowDialog("Введите новое значение", "Новое значение");
-				lbl.Text = str;
-				UpdateSize();
+				this.str = DiverseUtilExtensions.ShowDialog("Введите новое значение", "Новое значение");
+				lbl.Text = this.str;
+				this.UpdateRecSize();
 			};
 		}
 
 		public object constValue {
-			get { return str; }
+			get {
+                return str;
+            }
 		}
 
 		public void UpdateSize(){

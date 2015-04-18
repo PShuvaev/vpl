@@ -18,10 +18,6 @@ namespace VisualPracticalLanguage
 		private ArgumentPlaceholder argPlaceHolder;
 		private ArgumentPlaceholder varPlaceHolder;
 
-		
-		// отступ от границ компонента
-		private const int BorderPadding = 10;
-
 		// промежуток между операцией и аргументом
 		private const int OpArgPadding = 5;
 
