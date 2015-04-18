@@ -59,7 +59,9 @@ namespace VisualPracticalLanguage
 			var csc = new CSharpCodeProvider(new Dictionary<string, string>() { { "CompilerVersion", "v4.0" } });
 			var dlls = new[] { "mscorlib.dll", "System.Core.dll", "Microsoft.CSharp.dll" }.Concat(
 				ns.importedDlls.EmptyIfNull ().Select (x => x + ".dll"));
-			var parameters = new CompilerParameters(dlls.ToArray(), outputAssemblyName, false){
+
+            var tempOutputFileName = Path.GetTempFileName() + ".exe";
+            var parameters = new CompilerParameters(dlls.ToArray(), tempOutputFileName, false){
 				GenerateExecutable = true,
 				GenerateInMemory = false,
 				TreatWarningsAsErrors = false,
@@ -76,10 +78,11 @@ namespace VisualPracticalLanguage
             if (!errors.Empty())
             {
                 MessageBox.Show(
-                    string.Join("\r\n", errors.Select(x => x.ErrorText)), "Ошибка"
-                    );
+                    string.Join("\r\n", errors.Select(x => x.ErrorText)), "Ошибка");
                 return null;
             }
+
+            File.Copy(tempOutputFileName, outputAssemblyName, true);
 
 			return results.CompiledAssembly;
 		}

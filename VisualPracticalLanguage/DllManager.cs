@@ -65,8 +65,9 @@ namespace VisualPracticalLanguage
 		IList<MethodInfo> GetFunsFromAssembly(string pathToAssembly){
 			return Assembly.LoadFrom (pathToAssembly)
 				.GetExportedTypes ()
-				.Where(x => x.IsClass)
+				.Where(x => x.IsAbstract && x.IsSealed) // hack to check static class
 				.SelectMany (x => x.GetMethods ())
+                .Where(x => x.IsStatic)
 				.Where(x => !new []{"Equals", "GetType", "ToString", "GetHashCode"}.Contains(x.Name))
 				.ToList();
 		}

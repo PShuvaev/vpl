@@ -153,4 +153,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VplLibrary\VplLibrary.csproj">
+      <Project>{2fdf1300-b03e-4292-9eeb-5a4ae495b49e}</Project>
+      <Name>VplLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

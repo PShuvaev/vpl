@@ -33,7 +33,10 @@ namespace VisualPracticalLanguage
 		}
 
 		public string varName {
-			get { return variable.OrDef(_ => _.varName) ?? markInitVarName; }
+			get
+            {
+                return variable.OrDef(_ => _.varName) ?? markInitVarName;
+            }
 		}
 
 		public void UpdateName(){
