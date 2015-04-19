@@ -1,11 +1,8 @@
-using System;
-
 namespace VisualPracticalLanguage.Interface
 {
-	public interface ISetVariableStatement : IStatement
-	{
-		IVariableRef variableRef { get; }
-		IExpression expression { get; }
-	}
+    public interface ISetVariableStatement : IStatement
+    {
+        IVariableRef variableRef { get; }
+        IExpression expression { get; }
+    }
 }
-

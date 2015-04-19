@@ -1,7 +1,6 @@
 namespace VisualPracticalLanguage
 {
-	public interface IDllInterface
-	{
-	}
+    public interface IDllInterface
+    {
+    }
 }
-

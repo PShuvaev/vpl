@@ -1,72 +1,78 @@
-using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Collections.Generic;
 using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VVariable : CustomLabel, IVariable
-	{
-		public VFunction parentFunc { get; set; }
-		public string varName { get; set; }
+    public class VVariable : CustomLabel, IVariable
+    {
+        public VVariable(string name, VFunction parentFunc) : base(name, Color.Red)
+        {
+            varName = name;
+            this.parentFunc = parentFunc;
 
-		public IList<VVariableRef> VariableRefs { get; set; }
+            BackColor = Color.Orange;
+            Size = new Size(20, 20);
 
-		public VVariable (string name, VFunction parentFunc):base(name, Color.Red)
-		{
-			varName = name;
-			this.parentFunc = parentFunc;
+            VariableRefs = new List<VVariableRef>();
 
-			BackColor = Color.Orange;
-			Size = new Size (20, 20);
+            MouseDoubleClick += (sender, e) =>
+            {
+                var newName = DiverseUtilExtensions.ShowDialog("Введите имя переменной", "Переименование");
+                if (newName.Trim().Length == 0) return;
 
-			VariableRefs = new List<VVariableRef> ();
+                varName = newName;
+                Text = newName;
+                foreach (var varRef in VariableRefs)
+                {
+                    varRef.UpdateName();
+                }
+            };
 
-			MouseDoubleClick += (object sender, MouseEventArgs e) => {
-				var newName = DiverseUtilExtensions.ShowDialog("Введите имя переменной", "Переименование");
-				if(newName.Trim().Length == 0) return;
+            MouseClick += (sender, e) =>
+            {
+                if (ModifierKeys == Keys.Control)
+                {
+                    CreateVVariableRef();
+                }
+                if (ModifierKeys == Keys.Shift)
+                {
+                    parentFunc.RemoveArgument(this);
+                }
+            };
+        }
 
-				varName = newName;
-				this.Text = newName;
-				foreach(var varRef in VariableRefs){
-					varRef.UpdateName();
-				}
-			};
-			
-			MouseClick += (object sender, MouseEventArgs e) => {
-				if (Control.ModifierKeys == Keys.Control) {
-					CreateVVariableRef();
-				}
-				if (Control.ModifierKeys == Keys.Shift) {
-					parentFunc.RemoveArgument(this);
-				}
-			};
-		}
+        public VFunction parentFunc { get; set; }
+        public IList<VVariableRef> VariableRefs { get; set; }
+        public string varName { get; set; }
 
-		public void CreateVVariableRef(){
-			var v = new VVariableRef (this);
-			VariableRefs.Add(v);
+        public void CreateVVariableRef()
+        {
+            var v = new VVariableRef(this);
+            VariableRefs.Add(v);
 
-			v.Parent = App.Form.workPanel;
-			v.BringToFront ();
-		}
+            v.Parent = App.Form.workPanel;
+            v.BringToFront();
+        }
 
-		public void AttachVarRef(VVariableRef vRef){
-			VariableRefs.Add(vRef);
-			vRef.SetInitVariable (this);
-		}
+        public void AttachVarRef(VVariableRef vRef)
+        {
+            VariableRefs.Add(vRef);
+            vRef.SetInitVariable(this);
+        }
 
-		public void Remove(){
-			if (VariableRefs.Count == 0) {
-				parentFunc.Controls.Remove (this);
-			}
-		}
+        public void Remove()
+        {
+            if (VariableRefs.Count == 0)
+            {
+                parentFunc.Controls.Remove(this);
+            }
+        }
 
-		public void Disconnect (VVariableRef vRef)
-		{
-			VariableRefs.Remove(vRef);
-		}
-	}
+        public void Disconnect(VVariableRef vRef)
+        {
+            VariableRefs.Remove(vRef);
+        }
+    }
 }
-

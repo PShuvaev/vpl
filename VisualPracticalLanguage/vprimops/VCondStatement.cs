@@ -1,173 +1,187 @@
 using System;
-using System.Windows.Forms;
-using System.Drawing;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
-	public class VCondStatement : DraggableControl, ICondStatement, IPlaceholderContainer, IVariableRefsHolder
-	{
-		private DraggableControl condArg;
-		private ArgumentPlaceholder condPlaceholder;
-		private IList<DraggableControl> controlStatements;
-		private IList<ArgumentPlaceholder> placeholders;
+    public class VCondStatement : DraggableControl, ICondStatement, IPlaceholderContainer, IVariableRefsHolder
+    {
+        // промежуток между операцией и аргументом
+        private const int OpArgPadding = 5;
+        private DraggableControl condArg;
+        private readonly ArgumentPlaceholder condPlaceholder;
+        private readonly CustomLabel condTypeLabel;
+        private readonly IList<DraggableControl> controlStatements;
+        private readonly IList<ArgumentPlaceholder> placeholders;
 
-		private CustomLabel condTypeLabel;
+        public VCondStatement(string condType, ICondStatement condStatement) : this(condType)
+        {
+            foreach (var statement in condStatement.statements)
+            {
+                AddExpression(VElementBuilder.Create(statement));
+            }
 
-		// отступ от границ компонента
-		private const int BorderPadding = 10;
+            SetCondElement(VElementBuilder.Create(condStatement.condition));
+            UpdateSize();
+        }
 
-		// промежуток между операцией и аргументом
-		private const int OpArgPadding = 5;
+        public VCondStatement(string condType)
+        {
+            condTypeLabel = new CustomLabel(condType, Color.Black)
+            {
+                Parent = this,
+                Location = new Point(5, 5)
+            };
 
-		
-		public VCondStatement (string condType, ICondStatement condStatement) : this(condType)
-		{
-			foreach (var statement in condStatement.statements) {
-				AddExpression (VElementBuilder.Create (statement));
-			}
+            controlStatements = new List<DraggableControl>();
+            placeholders = new List<ArgumentPlaceholder>
+            {
+                new ArgumentPlaceholder(this).With(_ => { _.Parent = this; })
+            };
 
-			SetCondElement (VElementBuilder.Create (condStatement.condition));
-			UpdateSize ();
-		}
+            condPlaceholder = new ArgumentPlaceholder(this)
+            {
+                Parent = this,
+                Location = new Point(25, 5)
+            };
 
-		public VCondStatement (string condType)
-		{
-			condTypeLabel = new CustomLabel (condType, Color.Black){
-				Parent = this,
-				Location = new Point(5, 5)
-			};
+            UpdateSize();
+        }
 
-			controlStatements = new List<DraggableControl> ();
-			placeholders = new List<ArgumentPlaceholder> { 
-				new ArgumentPlaceholder(this).With(_ => {
-					_.Parent = this;
-				})
-			};
+        public IList<IStatement> statements
+        {
+            get { return controlStatements.Cast<IStatement>().ToList(); }
+        }
 
-			condPlaceholder = new ArgumentPlaceholder (this) {
-				Parent = this,
-				Location = new Point(25, 5)
-			};
+        public IExpression condition
+        {
+            get { return condArg as IExpression; }
+        }
 
-			UpdateSize ();
-		}
+        public IResizable ResizableParent
+        {
+            get { return EParent; }
+        }
 
-		public IList<IStatement> statements {
-			get { return controlStatements.Cast<IStatement> ().ToList (); }
-		}
+        public void UpdateSize()
+        {
+            var condControl = (Control) condArg ?? condPlaceholder;
+            ;
+            var declwidth = condTypeLabel.Size.Width + 2*OpArgPadding + condControl.Width;
+            var bodyexprWidth = Const.TAB_SIZE + controlStatements.Aggregate(0, (acc, e) => Math.Max(acc, e.Size.Width));
+            var width = 2*BorderPadding + Math.Max(declwidth, bodyexprWidth);
 
-		public IExpression condition {
-			get { return condArg as IExpression; }
-		}
-		
-		public IResizable ResizableParent { get{ return EParent; } }
+            condControl.Location = new Point(condTypeLabel.Size.Width + 2*OpArgPadding, 5);
 
-		public void UpdateSize(){
-			var condControl = (Control)condArg ?? condPlaceholder;;
-			var declwidth = condTypeLabel.Size.Width + 2*OpArgPadding +condControl.Width;
-			var bodyexprWidth = Const.TAB_SIZE + controlStatements.Aggregate (0, (acc, e) => Math.Max (acc, e.Size.Width));
-			var width = 2 * BorderPadding + Math.Max(declwidth, bodyexprWidth);
+            var height = BorderPadding + Math.Max(condTypeLabel.Size.Height, condControl.Height);
 
-			condControl.Location = new Point (condTypeLabel.Size.Width + 2*OpArgPadding, 5);
+            var isPlaceholder = true;
+            foreach (var el in placeholders.Intercalate<Control>(controlStatements))
+            {
+                var xlocation = isPlaceholder ? Const.TAB_SIZE : 2*Const.TAB_SIZE;
+                isPlaceholder = !isPlaceholder;
+                el.Location = new Point(xlocation, height);
+                height += el.Size.Height;
+            }
 
-			var height = BorderPadding + Math.Max(condTypeLabel.Size.Height, condControl.Height);
-			
-			bool isPlaceholder = true;
-			foreach (var el in placeholders.Intercalate<Control>(controlStatements)) {
-				var xlocation = isPlaceholder ? Const.TAB_SIZE : 2 * Const.TAB_SIZE;
-				isPlaceholder = !isPlaceholder;
-				el.Location = new Point(xlocation, height);
-				height += el.Size.Height;
-			}
+            height += BorderPadding;
 
-			height += BorderPadding;
+            Size = new Size(width, height);
+        }
 
-			Size = new Size (width, height);
-		}
+        public bool CanPutElement(ArgumentPlaceholder p, DraggableControl el)
+        {
+            if (p == condPlaceholder)
+                return el is IExpression;
 
-		public void AddExpression(DraggableControl expr){
-			expr.Parent = this;
-			expr.EParent = this;
+            return el is IStatement && placeholders.IndexOf(p) >= 0;
+        }
 
-			if (!controlStatements.Any ()) {
-				expr.Location = new Point (Const.TAB_SIZE, Const.HEADER_SIZE);
-			} else {
-				var lastExpr = controlStatements.Last ();
-				expr.Location = new Point (Const.TAB_SIZE, lastExpr.Location.Y + lastExpr.Size.Height + 2);
-			}
+        public bool PutElement(ArgumentPlaceholder p, DraggableControl el)
+        {
+            if (!CanPutElement(p, el))
+                return false;
 
-			controlStatements.Add (expr);
-			placeholders.Add (
-				new ArgumentPlaceholder(this).With(_ => {
-				_.Parent = this;
-			}));
-			this.UpdateRecSize ();
-		}
+            if (p == condPlaceholder)
+            {
+                SetCondElement(el);
+                return true;
+            }
 
-		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
-		{
-			if (p == condPlaceholder)
-				return el is IExpression;
+            var pos = placeholders.IndexOf(p);
+            controlStatements.Insert(pos, el);
 
-			return el is IStatement && placeholders.IndexOf (p) >= 0;
-		}
+            el.Parent = this;
+            el.EParent = this;
 
-		private void SetCondElement(DraggableControl el){
-			condArg = el;
-			if (el == null)
-				return;
-			condArg.Parent = this;
-			condArg.EParent = this;
-			Hide (condPlaceholder);
-		}
+            placeholders.Insert(pos, new ArgumentPlaceholder(this)
+            {
+                Parent = this
+            });
 
-		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
-		{
-			if (!CanPutElement (p, el))
-				return false;
+            return true;
+        }
 
-			if (p == condPlaceholder) {
-				SetCondElement (el);
-				return true;
-			}
+        public void OnChildDisconnect(DraggableControl c)
+        {
+            if (condArg == c)
+            {
+                condArg = null;
+            }
+            else
+            {
+                var pos = controlStatements.IndexOf(c);
+                Controls.Remove(placeholders[pos]);
+                controlStatements.RemoveAt(pos);
+                placeholders.RemoveAt(pos);
+            }
 
-			var pos = placeholders.IndexOf (p);
-			controlStatements.Insert (pos, el);
+            Controls.Remove(c);
+        }
 
-			el.Parent = this;
-			el.EParent = this;
+        public IList<VVariableRef> refs
+        {
+            get
+            {
+                var condVars = (condArg as IVariableRefsHolder).OrDef(_ => _.refs).EmptyIfNull();
+                var statementsVars = controlStatements.Select(x => x as IVariableRefsHolder)
+                    .Where(x => x != null).SelectMany(x => x.refs);
+                return condVars.Concat(statementsVars).ToList();
+            }
+        }
 
-			placeholders.Insert (pos, new ArgumentPlaceholder(this){
-				Parent = this
-			});
+        public void AddExpression(DraggableControl expr)
+        {
+            expr.Parent = this;
+            expr.EParent = this;
 
-			return true;
-		}
+            if (!controlStatements.Any())
+            {
+                expr.Location = new Point(Const.TAB_SIZE, Const.HEADER_SIZE);
+            }
+            else
+            {
+                var lastExpr = controlStatements.Last();
+                expr.Location = new Point(Const.TAB_SIZE, lastExpr.Location.Y + lastExpr.Size.Height + 2);
+            }
 
-		public void OnChildDisconnect (DraggableControl c){
-			if (condArg == c) {
-				condArg = null;
-			} else {
-				var pos = controlStatements.IndexOf (c);
-				Controls.Remove (placeholders [pos]);
-				controlStatements.RemoveAt (pos);
-				placeholders.RemoveAt (pos);
-			}
+            controlStatements.Add(expr);
+            placeholders.Add(
+                new ArgumentPlaceholder(this).With(_ => { _.Parent = this; }));
+            this.UpdateRecSize();
+        }
 
-			Controls.Remove (c);
-		}
-
-		public IList<VVariableRef> refs {
-			get {
-				var condVars = (condArg as IVariableRefsHolder).OrDef(_ => _.refs).EmptyIfNull();
-				var statementsVars = controlStatements.Select (x => x as IVariableRefsHolder)
-					.Where (x => x != null).SelectMany (x => x.refs);
-				return condVars.Concat (statementsVars).ToList ();
-			}
-		}
-	}
+        private void SetCondElement(DraggableControl el)
+        {
+            condArg = el;
+            if (el == null)
+                return;
+            condArg.Parent = this;
+            condArg.EParent = this;
+            Hide(condPlaceholder);
+        }
+    }
 }
-

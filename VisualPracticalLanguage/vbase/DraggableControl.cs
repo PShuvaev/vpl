@@ -1,130 +1,134 @@
-using System;
-using System.Windows.Forms;
 using System.Drawing;
-using System.IO;
+using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public abstract class DraggableControl : Control
-	{
-		// отступ от границ компонента
-		protected const int BorderPadding = 10;
+    public abstract class DraggableControl : Control
+    {
+        // отступ от границ компонента
+        protected const int BorderPadding = 10;
+        private bool isDragging;
+        private IPlaceholder lastControl;
+        private Point oldPos;
 
-		private bool isDragging = false;
+        private readonly Label markLabel = new Label
+        {
+            Text = "*",
+            AutoSize = true,
+            Location = new Point(1, 1),
+            ForeColor = Color.Red
+        };
 
-		//TODO: уточнить семантику поля
-		public IPlaceholderContainer EParent{ get; set; }
+        public DraggableControl()
+        {
+            MouseDown += OnMouseDown;
+            MouseUp += OnMouseUp;
+            MouseMove += OnMouseMove;
+        }
 
-		private Label markLabel = new Label ()
-		{
-			Text = "*",
-			AutoSize = true,
-			Location = new Point (1, 1),
-			ForeColor = Color.Red
-		};
+        //TODO: уточнить семантику поля
+        public IPlaceholderContainer EParent { get; set; }
 
-		public DraggableControl(){
-			MouseDown += new MouseEventHandler(OnMouseDown);
-			MouseUp += new MouseEventHandler(OnMouseUp);
-			MouseMove += new MouseEventHandler(OnMouseMove);
-		}
+        private void OnMouseDown(object sender, MouseEventArgs e)
+        {
+            SetDragged();
+        }
 
-		private void OnMouseDown(object sender, MouseEventArgs e) 
-		{
-			SetDragged ();
-		}
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (isDragging)
+            {
+                var control = GetTargetControl() as IPlaceholder;
 
-		private Point oldPos;
+                if (lastControl != control && lastControl != null)
+                {
+                    lastControl.OnLeave(this);
+                }
+                lastControl = control.With(_ => _.OnOver(this));
 
-		private IPlaceholder lastControl;
+                var pos = Cursor.Position;
+                Top = Top + (pos.Y - oldPos.Y);
+                Left = Left + (pos.X - oldPos.X);
+                oldPos = Cursor.Position;
+            }
+        }
 
-		private void OnMouseMove(object sender, MouseEventArgs e) 
-		{
-			if (isDragging)
-			{
-				var control = GetTargetControl () as IPlaceholder;
+        private void OnMouseUp(object sender, MouseEventArgs e)
+        {
+            Release();
+        }
 
-				if (lastControl != control && lastControl != null) {
-					lastControl.OnLeave (this);
-				}
-				lastControl = control.With(_ => _.OnOver(this));
+        private Control GetTargetControl()
+        {
+            var movedContolPos = this.AbsolutePoint();
+            movedContolPos.X--;
+            movedContolPos.Y--;
 
-				var pos = Cursor.Position;
-				Top = Top + (pos.Y - oldPos.Y);
-				Left = Left + (pos.X - oldPos.X);
-				oldPos = Cursor.Position;
-			}
-		}
+            return App.Form.GetDeepChild(movedContolPos);
+        }
 
-		private void OnMouseUp(object sender, MouseEventArgs e) 
-		{
-			Release ();
-		}
+        protected void Hide(ArgumentPlaceholder h)
+        {
+            h.Location = new Point(-100, -100);
+        }
 
-		private Control GetTargetControl(){
-			var movedContolPos = this.AbsolutePoint ();
-			movedContolPos.X--;
-			movedContolPos.Y--;
+        private void DisconnectFromParent()
+        {
+            // сохраняем абсолютную позицию, ибо она изменится при отсоединении от родителя
+            var absPos = this.AbsolutePoint();
 
-			return App.Form.GetDeepChild (movedContolPos);
-		}
+            if (EParent != null)
+            {
+                EParent.OnChildDisconnect(this);
+                EParent.UpdateRecSize();
+            }
+            EParent = null;
 
-		
-		protected void Hide(ArgumentPlaceholder h){
-			h.Location = new Point (-100, -100);
-		}
+            Parent = App.Form.workPanel;
 
-		private void DisconnectFromParent(){
-			// сохраняем абсолютную позицию, ибо она изменится при отсоединении от родителя
-			var absPos = this.AbsolutePoint ();
+            // уродливое восстановление позиции. todo отрефакторить!
+            var workspaceLocation = App.Form.workPanel.Parent.Location;
+            Location = new Point(absPos.X - workspaceLocation.X, absPos.Y - workspaceLocation.Y);
+        }
 
-			if (EParent != null) {
-				EParent.OnChildDisconnect (this);
-				EParent.UpdateRecSize ();
-			}
-			EParent = null;
+        private void SetDragged()
+        {
+            isDragging = true;
 
-			this.Parent = App.Form.workPanel;
+            DisconnectFromParent();
 
-			// уродливое восстановление позиции. todo отрефакторить!
-			var workspaceLocation = App.Form.workPanel.Parent.Location;
-			this.Location = new Point(absPos.X - workspaceLocation.X, absPos.Y - workspaceLocation.Y);
-		}
+            BringToFront();
 
-		private void SetDragged(){
-			isDragging = true;
+            Controls.Add(markLabel);
+            markLabel.BringToFront();
 
-			DisconnectFromParent ();
+            oldPos = Cursor.Position;
+        }
 
-			BringToFront ();
+        private void Release()
+        {
+            isDragging = false;
+            Controls.Remove(markLabel);
 
-			Controls.Add (markLabel);
-			markLabel.BringToFront ();
+            var targetControl = GetTargetControl();
 
-			oldPos = Cursor.Position;
-		}
+            var placeholder = targetControl as IPlaceholder;
+            if (placeholder != null)
+            {
+                var result = placeholder.OnDrop(this);
+                if (result)
+                {
+                    placeholder.parent.UpdateRecSize();
+                }
+            }
+        }
 
-		private void Release(){
-			isDragging = false;
-			Controls.Remove (markLabel);
-
-			var targetControl = GetTargetControl ();
-
-			var placeholder = targetControl as IPlaceholder;
-			if (placeholder != null) {
-				var result = placeholder.OnDrop (this);
-				if (result) {
-					placeholder.parent.UpdateRecSize ();
-				}
-			}
-		}
-
-		protected override void OnPaint(PaintEventArgs e)
-		{
-			var pen = new Pen (Color.Orchid, 3);
-			e.Graphics.DrawRectangle(pen, new Rectangle(1, 1, Width - 3, Height - 3));
-			var pen2 = new Pen (Color.BlueViolet, 1);
-			e.Graphics.DrawRectangle(pen2, new Rectangle(1, 1, Width - 3, Height - 3));
-		}
-	}
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            var pen = new Pen(Color.Orchid, 3);
+            e.Graphics.DrawRectangle(pen, new Rectangle(1, 1, Width - 3, Height - 3));
+            var pen2 = new Pen(Color.BlueViolet, 1);
+            e.Graphics.DrawRectangle(pen2, new Rectangle(1, 1, Width - 3, Height - 3));
+        }
+    }
 }

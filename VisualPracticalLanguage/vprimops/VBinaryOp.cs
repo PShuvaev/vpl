@@ -1,162 +1,167 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using VisualPracticalLanguage.Interface;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace VisualPracticalLanguage
 {
-	public class VBinaryOp : DraggableControl, IFunctionCall, IPlaceholderContainer, IVariableRefsHolder
-	{
-		private string symbol;
+    public class VBinaryOp : DraggableControl, IFunctionCall, IPlaceholderContainer, IVariableRefsHolder
+    {
+        // отступ от границ компонента
+        private const int BorderPadding = 10;
+        // промежуток между операцией и аргументом
+        private const int OpArgPadding = 5;
+        private DraggableControl firstArg;
+        private DraggableControl secondArg;
+        private readonly ArgumentPlaceholder firstArgPlaceHolder;
+        private readonly CustomLabel OpSymbol;
+        private readonly ArgumentPlaceholder secondArgPlaceHolder;
+        private readonly string symbol;
 
-		CustomLabel OpSymbol;
+        public VBinaryOp(IFunctionCall functionCall) : this(functionCall.function)
+        {
+            firstArg = VElementBuilder.Create(functionCall.arguments.FirstOrDefault());
+            SetFirstArg(firstArg);
+            secondArg = VElementBuilder.Create(functionCall.arguments.Skip(1).FirstOrDefault());
+            SetSecondArg(secondArg);
+            UpdateSize();
+        }
 
-		// отступ от границ компонента
-		private const int BorderPadding = 10;
+        public VBinaryOp(IFunctionDeclaration functionDeclaration)
+        {
+            function = functionDeclaration;
+            symbol = functionDeclaration.name;
 
-		// промежуток между операцией и аргументом
-		private const int OpArgPadding = 5;
+            BackColor = Color.GreenYellow;
 
-		private DraggableControl firstArg;
-		private DraggableControl secondArg;
+            firstArgPlaceHolder = new ArgumentPlaceholder(this);
+            secondArgPlaceHolder = new ArgumentPlaceholder(this);
 
-		private ArgumentPlaceholder firstArgPlaceHolder;
-		private ArgumentPlaceholder secondArgPlaceHolder;
+            firstArgPlaceHolder.Parent = this;
+            secondArgPlaceHolder.Parent = this;
 
-		private IFunctionDeclaration functionDeclaration;
+            OpSymbol = new CustomLabel(symbol, BackColor);
+            OpSymbol.Parent = this;
 
-		public VBinaryOp (IFunctionCall functionCall) : this(functionCall.function)
-		{
-			firstArg = VElementBuilder.Create (functionCall.arguments.FirstOrDefault ());
-			SetFirstArg (firstArg);
-			secondArg = VElementBuilder.Create (functionCall.arguments.Skip(1).FirstOrDefault ());
-			SetSecondArg (secondArg);
-			UpdateSize ();
-		}
+            UpdateSize();
 
-		public VBinaryOp (IFunctionDeclaration functionDeclaration)
-		{
-			this.functionDeclaration = functionDeclaration;
-			this.symbol = functionDeclaration.name;
-			
-			BackColor = Color.GreenYellow;
-			
-			firstArgPlaceHolder = new ArgumentPlaceholder (this);
-			secondArgPlaceHolder = new ArgumentPlaceholder (this);
+            BackColor = Color.LightGreen;
+        }
 
-			firstArgPlaceHolder.Parent = this;
-			secondArgPlaceHolder.Parent = this;
+        public IFunctionDeclaration function { get; }
 
-			OpSymbol = new CustomLabel (symbol, BackColor);
-			OpSymbol.Parent = this;
+        public IList<IExpression> arguments
+        {
+            get { return new List<IExpression> {firstArg as IExpression, secondArg as IExpression}; }
+        }
 
-			UpdateSize ();
+        public IResizable ResizableParent
+        {
+            get { return EParent; }
+        }
 
-			BackColor = Color.LightGreen;
-		}
+        public void UpdateSize()
+        {
+            var fArg = (Control) firstArg ?? firstArgPlaceHolder;
+            var sArg = (Control) secondArg ?? secondArgPlaceHolder;
 
-		public IFunctionDeclaration function {
-			get { return functionDeclaration; }
-		}
+            var argHeight = Math.Max(fArg.OrDef(_ => _.Height, 0), sArg.OrDef(_ => _.Height, 0));
+            var height = 2*BorderPadding + argHeight;
 
-		public IList<IExpression> arguments {
-			get { return new List<IExpression> { firstArg as IExpression, secondArg as IExpression }; }
-		}
-		
-		public IResizable ResizableParent { get{ return EParent; } }
+            var argsWidth = fArg.OrDef(_ => _.Width, 0) + sArg.OrDef(_ => _.Width, 0);
+            var width = 2*BorderPadding + 2*OpArgPadding + argsWidth + OpSymbol.Width;
 
-		public void UpdateSize(){
-			Control fArg = (Control)firstArg ?? firstArgPlaceHolder;
-			Control sArg = (Control)secondArg ?? secondArgPlaceHolder;
+            Size = new Size(width, height);
 
-			var argHeight = Math.Max (fArg.OrDef(_ => _.Height, 0), sArg.OrDef(_ => _.Height, 0));
-			var height = 2 * BorderPadding + argHeight;
+            fArg.Location = new Point(BorderPadding, (height - fArg.Height)/2);
+            OpSymbol.Location = new Point(fArg.Location.X + fArg.Width + OpArgPadding, (height - OpSymbol.Height)/2);
+            sArg.Location = new Point(Size.Width - BorderPadding - sArg.Width, (height - sArg.Height)/2);
+        }
 
-			var argsWidth = fArg.OrDef(_ => _.Width, 0) + sArg.OrDef(_ => _.Width, 0);
-			var width = 2 * BorderPadding + 2 * OpArgPadding + argsWidth + OpSymbol.Width;
+        public bool CanPutElement(ArgumentPlaceholder p, DraggableControl el)
+        {
+            if (!(el is IExpression))
+                return false;
 
-			Size = new Size (width, height);
-			
-			fArg.Location = new Point (BorderPadding, (height - fArg.Height) / 2);
-			OpSymbol.Location = new Point (fArg.Location.X + fArg.Width + OpArgPadding, (height-OpSymbol.Height) / 2);
-			sArg.Location = new Point (Size.Width - BorderPadding - sArg.Width, (height - sArg.Height) / 2);
-		}
+            if (p == firstArgPlaceHolder && firstArg == null)
+            {
+                return true;
+            }
 
-		
-		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
-		{
-			if (!(el is IExpression))
-				return false;
+            if (p == secondArgPlaceHolder && secondArg == null)
+            {
+                return true;
+            }
 
-			if (p == firstArgPlaceHolder && firstArg == null) {
-				return true;
-			}
+            return false;
+        }
 
-			if (p == secondArgPlaceHolder && secondArg == null) {
-				return true;
-			}
+        /// <summary>
+        ///     Вызывается плейсхолдером p при попытке заменить плейсходер выражением el
+        /// </summary>
+        public bool PutElement(ArgumentPlaceholder p, DraggableControl el)
+        {
+            if (!CanPutElement(p, el))
+                return false;
 
-			return false;
-		}
+            if (p == firstArgPlaceHolder && firstArg == null)
+            {
+                SetFirstArg(el);
+                return true;
+            }
 
-		void SetFirstArg(DraggableControl el){
-			firstArg = el;
-			if (el == null)
-				return;
-			firstArg.Parent = this;
-			firstArg.EParent = this;
-			Hide (firstArgPlaceHolder);
-		}
+            if (p == secondArgPlaceHolder && secondArg == null)
+            {
+                SetSecondArg(el);
+                return true;
+            }
 
-		void SetSecondArg(DraggableControl el){
-			secondArg = el;
-			if (el == null)
-				return;
-			secondArg.Parent = this;
-			secondArg.EParent = this;
-			Hide (secondArgPlaceHolder);
-		}
+            return false;
+        }
 
-		/// <summary>
-		/// Вызывается плейсхолдером p при попытке заменить плейсходер выражением el
-		/// </summary>
-		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
-		{
-			if (!CanPutElement(p, el))
-				return false;
-			
-			if (p == firstArgPlaceHolder && firstArg == null) {
-				SetFirstArg (el);
-				return true;
-			}
-			
-			if (p == secondArgPlaceHolder && secondArg == null) {
-				SetSecondArg (el);
-				return true;
-			}
+        public void OnChildDisconnect(DraggableControl c)
+        {
+            if (firstArg == c)
+            {
+                firstArg = null;
+            }
+            if (secondArg == c)
+            {
+                secondArg = null;
+            }
 
-			return false;
-		}
+            Controls.Remove(c);
+        }
 
-		public void OnChildDisconnect (DraggableControl c){
-			if (firstArg == c) {
-				firstArg = null;
-			}
-			if (secondArg == c) {
-				secondArg = null;
-			}
-			
-			Controls.Remove (c);
-		}
-		
-		public IList<VVariableRef> refs {
-			get {
-				return (firstArg as IVariableRefsHolder).OrDef(x => x.refs).EmptyIfNull().Concat
-					((secondArg as IVariableRefsHolder).OrDef(x => x.refs).EmptyIfNull()).ToList();
-			}
-		}
-	}
+        public IList<VVariableRef> refs
+        {
+            get
+            {
+                return (firstArg as IVariableRefsHolder).OrDef(x => x.refs).EmptyIfNull().Concat
+                    ((secondArg as IVariableRefsHolder).OrDef(x => x.refs).EmptyIfNull()).ToList();
+            }
+        }
+
+        private void SetFirstArg(DraggableControl el)
+        {
+            firstArg = el;
+            if (el == null)
+                return;
+            firstArg.Parent = this;
+            firstArg.EParent = this;
+            Hide(firstArgPlaceHolder);
+        }
+
+        private void SetSecondArg(DraggableControl el)
+        {
+            secondArg = el;
+            if (el == null)
+                return;
+            secondArg.Parent = this;
+            secondArg.EParent = this;
+            Hide(secondArgPlaceHolder);
+        }
+    }
 }
-

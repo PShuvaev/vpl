@@ -1,92 +1,103 @@
 using System;
-using System.Windows.Forms;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public class Trasher : PictureBox, IPlaceholderContainer, IPlaceholder
-	{
-		private PictureBox box;
-		private Image openTrash, closedTrash;
-		Action<DraggableControl> onElementRemove;
+    public class Trasher : PictureBox, IPlaceholderContainer, IPlaceholder
+    {
+        private PictureBox box;
+        private readonly Image closedTrash;
+        private readonly Action<DraggableControl> onElementRemove;
+        private readonly Image openTrash;
 
-		public Trasher (Panel workPanel, Action<DraggableControl> onElementRemove)
-		{
-			this.onElementRemove = onElementRemove;
-			openTrash = Image.FromFile ("./Resources/open_trash_icon.png");
-			closedTrash = Image.FromFile ("./Resources/trash_icon.png");
-			SetImage (closedTrash);
+        public Trasher(Panel workPanel, Action<DraggableControl> onElementRemove)
+        {
+            this.onElementRemove = onElementRemove;
+            openTrash = Image.FromFile("./Resources/open_trash_icon.png");
+            closedTrash = Image.FromFile("./Resources/trash_icon.png");
+            SetImage(closedTrash);
 
-			Parent = workPanel;
-			BringToFront();
-			SetLocation(workPanel);
-			workPanel.Resize += (object sender, EventArgs e) => {
-				SetLocation(workPanel);
-			};
-		}
+            Parent = workPanel;
+            BringToFront();
+            SetLocation(workPanel);
+            workPanel.Resize += (object sender, EventArgs e) => { SetLocation(workPanel); };
+        }
 
-		void SetLocation(Panel workPanel){
-			Location = new Point(10, workPanel.Height - Height - 10);
-		}
+        public bool OnDrop(DraggableControl el)
+        {
+            // не давем удалять главную функцию
+            if (IsMainFun(el))
+                return false;
+            onElementRemove(el);
+            el.Parent = null;
+            ResetColor();
+            return true;
+        }
 
-		void SetImage(Image img){
-			Image = img;
-			Width = img.Width;
-			Height = img.Height;
-		}
+        public void OnOver(DraggableControl c)
+        {
+            // не давем удалять главную функцию
+            if (IsMainFun(c))
+                return;
+            SetImage(openTrash);
+        }
 
-		bool IsMainFun(DraggableControl el){
-			return (el is VFunction) && (el as VFunction).name == Const.MainFunName;
-		}
+        public void OnLeave(DraggableControl c)
+        {
+            SetImage(closedTrash);
+        }
 
-		public bool CanPutElement (ArgumentPlaceholder p, DraggableControl el)
-		{
-			return !IsMainFun (el);
-		}
+        public void ResetColor()
+        {
+            SetImage(closedTrash);
+        }
 
-		public bool PutElement (ArgumentPlaceholder p, DraggableControl el)
-		{
-			return true;
-		}
+        public IPlaceholderContainer parent
+        {
+            get { return this; }
+        }
 
-		public void OnChildDisconnect (DraggableControl c){}
-		
-		public IResizable ResizableParent { get{ return EParent; } }
+        public bool CanPutElement(ArgumentPlaceholder p, DraggableControl el)
+        {
+            return !IsMainFun(el);
+        }
 
-		public void UpdateSize (){}
+        public bool PutElement(ArgumentPlaceholder p, DraggableControl el)
+        {
+            return true;
+        }
 
-		public IPlaceholderContainer EParent { get; set; }
+        public void OnChildDisconnect(DraggableControl c)
+        {
+        }
 
-		public bool OnDrop (DraggableControl el)
-		{
-			// не давем удалять главную функцию
-			if (IsMainFun (el))
-				return false;
-			onElementRemove (el);
-			el.Parent = null;
-			ResetColor ();
-			return true;
-		}
+        public IResizable ResizableParent
+        {
+            get { return EParent; }
+        }
 
-		public void OnOver (DraggableControl c)
-		{
-			// не давем удалять главную функцию
-			if (IsMainFun (c))
-				return;
-			SetImage (openTrash);
-		}
+        public void UpdateSize()
+        {
+        }
 
-		public void OnLeave (DraggableControl c)
-		{
-			SetImage (closedTrash);
-		}
+        public IPlaceholderContainer EParent { get; set; }
 
-		public void ResetColor ()
-		{
-			SetImage (closedTrash);
-		}
+        private void SetLocation(Panel workPanel)
+        {
+            Location = new Point(10, workPanel.Height - Height - 10);
+        }
 
-		public IPlaceholderContainer parent { get { return this; } }
-	}
+        private void SetImage(Image img)
+        {
+            Image = img;
+            Width = img.Width;
+            Height = img.Height;
+        }
+
+        private bool IsMainFun(DraggableControl el)
+        {
+            return (el is VFunction) && (el as VFunction).name == Const.MainFunName;
+        }
+    }
 }
-

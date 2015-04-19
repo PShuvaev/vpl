@@ -1,9 +1,6 @@
-using System;
-
 namespace VisualPracticalLanguage.Interface
 {
-	public interface IExpression
-	{
-	}
+    public interface IExpression
+    {
+    }
 }
-

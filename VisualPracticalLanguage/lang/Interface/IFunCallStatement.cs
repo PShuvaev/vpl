@@ -1,14 +1,11 @@
-using System;
-
-namespace VisualPracticalLanguage.Interface
+﻿namespace VisualPracticalLanguage.Interface
 {
-	/// <summary>
-	/// Выражение - вызов функции.
-	/// e.g. "print(42);"
-	/// </summary>
-	public interface IFunCallStatement : IStatement
-	{
-		IFunctionCall functionCall { get; }
-	}
+    /// <summary>
+    ///     Выражение - вызов функции.
+    ///     e.g. "print(42);"
+    /// </summary>
+    public interface IFunCallStatement : IStatement
+    {
+        IFunctionCall functionCall { get; }
+    }
 }
-

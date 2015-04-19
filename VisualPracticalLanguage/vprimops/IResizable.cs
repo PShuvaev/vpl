@@ -1,9 +1,8 @@
 namespace VisualPracticalLanguage
 {
-	public interface IResizable
-	{
-		IResizable ResizableParent { get; }
-		void UpdateSize ();
-	}
+    public interface IResizable
+    {
+        IResizable ResizableParent { get; }
+        void UpdateSize();
+    }
 }
-

@@ -1,16 +1,14 @@
-using System;
-using System.Windows.Forms;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public class WorkspacePanel : Panel
-	{
-		public WorkspacePanel ()
-		{
-			Dock = DockStyle.Fill;
-			BackColor = Color.White;
-		}
-	}
+    public class WorkspacePanel : Panel
+    {
+        public WorkspacePanel()
+        {
+            Dock = DockStyle.Fill;
+            BackColor = Color.White;
+        }
+    }
 }
-

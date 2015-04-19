@@ -1,23 +1,21 @@
-using System;
-using System.Windows.Forms;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace VisualPracticalLanguage
 {
-	public class CustomLabel : Label
-	{
-		public CustomLabel (string text, Color color)
-		{
-			this.Text = text;
-			this.BackColor = color;
-			this.AutoSize = true;
-			this.ForeColor = InvertColour (color);
-		}
+    public class CustomLabel : Label
+    {
+        public CustomLabel(string text, Color color)
+        {
+            Text = text;
+            BackColor = color;
+            AutoSize = true;
+            ForeColor = InvertColour(color);
+        }
 
-		private Color InvertColour(Color ColourToInvert)
-		{
-			return Color.FromArgb((byte)~ColourToInvert.R, (byte)~ColourToInvert.G, (byte)~ColourToInvert.B);
-		}
-	}
+        private Color InvertColour(Color ColourToInvert)
+        {
+            return Color.FromArgb((byte) ~ColourToInvert.R, (byte) ~ColourToInvert.G, (byte) ~ColourToInvert.B);
+        }
+    }
 }
-
