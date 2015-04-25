@@ -154,6 +154,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EduGame\EduGame.csproj">
+      <Project>{eae7cec0-a11f-4020-9387-9bbf4326dd76}</Project>
+      <Name>EduGame</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VplLibrary\VplLibrary.csproj">
       <Project>{2fdf1300-b03e-4292-9eeb-5a4ae495b49e}</Project>
       <Name>VplLibrary</Name>

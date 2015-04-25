@@ -4,13 +4,16 @@ using System.Windows.Forms;
 
 namespace VplLibrary
 {
-    public static class Кортеж
+    public static class Вывод
     {
         public static void Сообщение(object obj)
         {
             MessageBox.Show(obj.ToString());
         }
+    }
 
+    public static class Кортеж
+    {
         public static object Кортеж2(object элемент1, object элемент2)
         {
             return new Dictionary<object, object> {{1, элемент1}, {2, элемент2}};
