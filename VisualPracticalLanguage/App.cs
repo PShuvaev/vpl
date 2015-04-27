@@ -121,33 +121,31 @@ namespace VisualPracticalLanguage
             {
                 Filter = "Проектные файлы (*.cs)|*.cs"
             };
-            if (dialog.ShowDialog() == DialogResult.OK && dialog.CheckFileExists)
+            if (dialog.ShowDialog() != DialogResult.OK || !dialog.CheckFileExists) return;
+            currentFile = dialog.FileName;
+            var src = File.ReadAllText(currentFile);
+            currentNamespace = VplSharpParser.NamespaceP.Parse(src);
+
+            foreach (var c in workPanel.Controls.OfType<VFunction>())
             {
-                currentFile = dialog.FileName;
-                var src = File.ReadAllText(currentFile);
-                currentNamespace = VplSharpParser.NamespaceP.Parse(src);
-
-                foreach (var c in workPanel.Controls)
-                {
-                    if (c is VFunction)
-                        workPanel.Controls.Remove((Control) c);
-                }
-
-                CleanCustomFunPanel();
-
-                var funPosX = 10;
-                currentNamespace.functions = currentNamespace.functions.EmptyIfNull()
-                    .Select(f => (IFunctionDefinition) new VFunction(f).With(_ =>
-                    {
-                        _.Location = new Point(funPosX, 10);
-                        _.Parent = workPanel;
-                        funPosX += _.Width + 10;
-                        createdFunsPanel.AddFunBtn(_);
-                    })).ToList();
-
-                Text = currentNamespace.namespaceName;
-                dllManager.SetImportDlls(currentNamespace.importedDlls);
+                workPanel.Controls.Remove(c);
             }
+
+            CleanCustomFunPanel();
+            CleanWorkspacePanel();
+
+            var funPosX = 10;
+            currentNamespace.functions = currentNamespace.functions.EmptyIfNull()
+                .Select(f => (IFunctionDefinition) new VFunction(f).With(_ =>
+                {
+                    _.Location = new Point(funPosX, 10);
+                    _.Parent = workPanel;
+                    funPosX += _.Width + 10;
+                    createdFunsPanel.AddFunBtn(_);
+                })).ToList();
+
+            Text = currentNamespace.namespaceName;
+            dllManager.SetImportDlls(currentNamespace.importedDlls);
         }
 
         /// <summary>
@@ -159,11 +157,18 @@ namespace VisualPracticalLanguage
                 .Select(x => (x as Button).With(btn => { btn.Parent = null; })).DoAll();
         }
 
+        private void CleanWorkspacePanel()
+        {
+
+            if (workPanel != null) workPanel.Parent = null;
+            (workPanel = new WorkspacePanel()).Parent = groupPanel;
+        }
+
         private void NewWorkspace()
         {
             CleanCustomFunPanel();
+            CleanWorkspacePanel();
 
-            (workPanel = new WorkspacePanel()).Parent = groupPanel;
             currentNamespace = new Namespace
             {
                 namespaceName = "New" + newNamespaceNameNumber++,
