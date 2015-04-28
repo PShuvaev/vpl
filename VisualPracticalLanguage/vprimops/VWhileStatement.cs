@@ -7,12 +7,12 @@ namespace VisualPracticalLanguage
     {
         public VWhileStatement(IWhileStatement whileStatement) : base("выполнять пока", whileStatement)
         {
-            BackColor = Color.Bisque;
+            BackColor = ColorSettings.Get("WhileStatement");
         }
 
         public VWhileStatement() : base("выполнять пока")
         {
-            BackColor = Color.Bisque;
+            BackColor = ColorSettings.Get("WhileStatement");
         }
     }
 }

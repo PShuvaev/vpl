@@ -25,8 +25,7 @@ namespace VisualPracticalLanguage
 
         public VSetVariable()
         {
-            BackColor = Color.Yellow;
-            BackColor = Color.Yellow;
+            BackColor = ColorSettings.Get("SetVariable");
             Size = new Size(100, Const.EXPR_HEIGHT);
 
             argPlaceHolder = new ArgumentPlaceholder(this);

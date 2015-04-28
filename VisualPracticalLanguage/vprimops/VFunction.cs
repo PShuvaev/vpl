@@ -45,9 +45,9 @@ namespace VisualPracticalLanguage
         {
             this.name = name;
 
-            BackColor = Color.LightBlue;
+            BackColor = ColorSettings.Get("Function");
 
-            funName = new CustomLabel(name, Color.Black)
+            funName = new CustomLabel(name, ColorSettings.Get("FunctionName"))
             {
                 Parent = this,
                 Location = new Point(BorderPadding, BorderPadding)

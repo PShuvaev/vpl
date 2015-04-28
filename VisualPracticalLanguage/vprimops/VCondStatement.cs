@@ -30,7 +30,7 @@ namespace VisualPracticalLanguage
 
         public VCondStatement(string condType)
         {
-            condTypeLabel = new CustomLabel(condType, Color.Black)
+            condTypeLabel = new CustomLabel(condType, ColorSettings.Get("CondLabel"))
             {
                 Parent = this,
                 Location = new Point(5, 5)

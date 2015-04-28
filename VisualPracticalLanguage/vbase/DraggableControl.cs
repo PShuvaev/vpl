@@ -125,10 +125,8 @@ namespace VisualPracticalLanguage
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            var pen = new Pen(Color.Orchid, 3);
+            var pen = new Pen(ColorSettings.Get("ElementBorder"), 3);
             e.Graphics.DrawRectangle(pen, new Rectangle(1, 1, Width - 3, Height - 3));
-            var pen2 = new Pen(Color.BlueViolet, 1);
-            e.Graphics.DrawRectangle(pen2, new Rectangle(1, 1, Width - 3, Height - 3));
         }
     }
 }

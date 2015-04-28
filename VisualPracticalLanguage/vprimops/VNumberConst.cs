@@ -1,5 +1,4 @@
 using System.Drawing;
-using System.Windows.Forms;
 using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
@@ -13,12 +12,11 @@ namespace VisualPracticalLanguage
         {
             this.number = number;
 
-            BackColor = Color.Blue;
+            BackColor = ColorSettings.Get("NumberConst");
             lbl = new CustomLabel(number.ToString(), BackColor);
-            lbl.BackColor = Color.Red;
             lbl.Location = new Point(Const.TAB_SIZE/2, Const.TAB_SIZE/2);
 
-            lbl.MouseDoubleClick += (object sender, MouseEventArgs e) =>
+            lbl.MouseDoubleClick += (sender, e) =>
             {
                 var newName = DiverseUtilExtensions.ShowDialog("Введите новое значение", "Новое значение");
                 newName = newName.Trim();

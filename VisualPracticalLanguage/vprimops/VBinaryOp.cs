@@ -33,9 +33,7 @@ namespace VisualPracticalLanguage
         {
             function = functionDeclaration;
             symbol = functionDeclaration.name;
-
-            BackColor = Color.GreenYellow;
-
+            
             firstArgPlaceHolder = new ArgumentPlaceholder(this);
             secondArgPlaceHolder = new ArgumentPlaceholder(this);
 
@@ -47,7 +45,7 @@ namespace VisualPracticalLanguage
 
             UpdateSize();
 
-            BackColor = Color.LightGreen;
+            BackColor = ColorSettings.Get("BinaryOp");
         }
 
         public IFunctionDeclaration function { get; }

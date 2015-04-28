@@ -24,8 +24,7 @@ namespace VisualPracticalLanguage
 
         public VReturnStatement()
         {
-            BackColor = Color.Yellow;
-            BackColor = Color.Yellow;
+            BackColor = ColorSettings.Get("ReturnStatement");
             Size = new Size(100, Const.EXPR_HEIGHT);
 
             argPlaceHolder = new ArgumentPlaceholder(this);

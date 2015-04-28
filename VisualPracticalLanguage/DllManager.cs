@@ -156,7 +156,7 @@ namespace VisualPracticalLanguage
             public DllRow(ToolStripItemCollection menuItems, TabControl funPanelTabs, string dllPath)
             {
                 Dock = DockStyle.Top;
-                BackColor = Color.LightGreen;
+                BackColor = ColorSettings.Get("DllRow");
                 Height = 30;
                 ColumnCount = 2;
 

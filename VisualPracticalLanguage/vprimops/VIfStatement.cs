@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using VisualPracticalLanguage.Interface;
+﻿using VisualPracticalLanguage.Interface;
 
 namespace VisualPracticalLanguage
 {
@@ -7,12 +6,12 @@ namespace VisualPracticalLanguage
     {
         public VIfStatement(IIfStatement ifStatement) : base("если", ifStatement)
         {
-            BackColor = Color.LightGray;
+            BackColor = ColorSettings.Get("IfStatement");
         }
 
         public VIfStatement() : base("если")
         {
-            BackColor = Color.LightGray;
+            BackColor = ColorSettings.Get("IfStatement");
         }
     }
 }

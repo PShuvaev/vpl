@@ -12,7 +12,7 @@ namespace VisualPracticalLanguage
         {
             this.str = str;
 
-            BackColor = Color.Orange;
+            BackColor = ColorSettings.Get("StringConst");
             lbl = new CustomLabel(str, BackColor);
             Controls.Add(lbl);
             UpdateSize();

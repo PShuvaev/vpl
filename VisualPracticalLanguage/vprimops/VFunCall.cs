@@ -38,7 +38,7 @@ namespace VisualPracticalLanguage
                 SetArgument(i, elArg);
             }
 
-            BackColor = Color.Green;
+            BackColor = ColorSettings.Get("FunCall");
             UpdateSize();
         }
 

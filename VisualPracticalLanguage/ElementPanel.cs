@@ -17,7 +17,7 @@ namespace VisualPracticalLanguage
         {
             Width = Const.ELEMENT_PANEL_WIDTH;
             Dock = DockStyle.Right;
-            BackColor = Color.MintCream;
+            BackColor = ColorSettings.Get("ElementPanel");
             BorderStyle = BorderStyle.FixedSingle;
             OnAddFunctionToWorkspace = onAddFunctionToWorkspace;
 

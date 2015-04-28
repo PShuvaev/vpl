@@ -12,7 +12,7 @@ namespace VisualPracticalLanguage
             varName = name;
             this.parentFunc = parentFunc;
 
-            BackColor = Color.Orange;
+            BackColor = ColorSettings.Get("Variable");
             Size = new Size(20, 20);
 
             VariableRefs = new List<VVariableRef>();

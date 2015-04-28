@@ -51,6 +51,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="ColorSettings.cs" />
     <Compile Include="IVExpression.cs" />
     <Compile Include="Const.cs" />
     <Compile Include="vbase\DraggableControl.cs" />
@@ -162,5 +163,10 @@
       <Project>{2fdf1300-b03e-4292-9eeb-5a4ae495b49e}</Project>
       <Name>VplLibrary</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="colors.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

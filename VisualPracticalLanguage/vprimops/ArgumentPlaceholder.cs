@@ -15,7 +15,7 @@ namespace VisualPracticalLanguage
         {
             this.parent = parent;
             Size = new Size(15, 15);
-            BackColor = Color.WhiteSmoke;
+            BackColor = ColorSettings.Get("ArgumentPlaceholder");
         }
 
         public IPlaceholderContainer parent { get; set; }
@@ -29,7 +29,7 @@ namespace VisualPracticalLanguage
         {
             if (parent.CanPutElement(this, c))
             {
-                BackColor = Color.Red;
+                BackColor = ColorSettings.Get("ArgumentPlaceholderOnOver");
             }
         }
 
@@ -40,7 +40,7 @@ namespace VisualPracticalLanguage
 
         public void ResetColor()
         {
-            BackColor = Color.WhiteSmoke;
+            BackColor = ColorSettings.Get("ArgumentPlaceholder");
         }
     }
 }

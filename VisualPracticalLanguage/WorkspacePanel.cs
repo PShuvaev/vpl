@@ -8,7 +8,7 @@ namespace VisualPracticalLanguage
         public WorkspacePanel()
         {
             Dock = DockStyle.Fill;
-            BackColor = Color.White;
+            BackColor = ColorSettings.Get("WorkspacePanel");
         }
     }
 }
