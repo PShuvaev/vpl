@@ -19,6 +19,7 @@ namespace VisualPracticalLanguage
         public Panel workPanel;
         private readonly TabControl funPanelTabs;
         private readonly Panel groupPanel;
+		private Trasher trasher;
 
         public MForm()
         {
@@ -88,10 +89,13 @@ namespace VisualPracticalLanguage
                 _.Controls.Add(createdFunsPanel = new ElementPanel(OnAddFunctionToWorkspace, createdFuns));
             }));
 
-
             NewWorkspace();
 
-            new Trasher(workPanel, element =>
+            CenterToScreen();
+        }
+		
+		private void mkTrasher(){
+			trasher = new Trasher(workPanel, element =>
             {
                 (element as IFunctionDefinition).With(_ =>
                 {
@@ -111,9 +115,7 @@ namespace VisualPracticalLanguage
                     }
                 });
             });
-
-            CenterToScreen();
-        }
+		}
 
         private void OpenWorkspace()
         {
@@ -146,6 +148,7 @@ namespace VisualPracticalLanguage
 
             Text = currentNamespace.namespaceName;
             dllManager.SetImportDlls(currentNamespace.importedDlls);
+			mkTrasher();
         }
 
         /// <summary>
@@ -187,6 +190,7 @@ namespace VisualPracticalLanguage
             };
             Text = currentNamespace.namespaceName;
             dllManager.SetImportDlls(currentNamespace.importedDlls);
+			mkTrasher();
         }
 
         private bool SaveToNewFile()
