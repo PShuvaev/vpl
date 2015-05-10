@@ -222,10 +222,6 @@ namespace VisualPracticalLanguage
                 Generate(expression as IFunctionCall);
                 return;
             }
-            if (expression is IReturnStatement)
-            {
-                Generate(expression as IReturnStatement);
-            }
         }
     }
 }
