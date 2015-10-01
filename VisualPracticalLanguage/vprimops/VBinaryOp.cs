@@ -48,7 +48,7 @@ namespace VisualPracticalLanguage
             BackColor = ColorSettings.Get("BinaryOp");
         }
 
-        public IFunctionDeclaration function { get; }
+        public IFunctionDeclaration function { get; set; }
 
         public IList<IExpression> arguments
         {

@@ -47,7 +47,7 @@ namespace VisualPracticalLanguage
             get { return new FunctionCall {function = function, arguments = arguments}; }
         }
 
-        public IFunctionDeclaration function { get; }
+        public IFunctionDeclaration function { get; set; }
 
         public IList<IExpression> arguments
         {
